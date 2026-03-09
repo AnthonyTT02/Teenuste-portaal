@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SOS Narva - Регистрация поставщика услуг</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="sos-page">
+
+
+<div class="sos-sidebar" id="sidebar">
+  <h4>Меню</h4>
+  <a href="Provider_Reg_1.html">Авторизация поставщика услуг</a>
+  <a href="cabinet.html">Личный кабинет</a>
+  <a href="settings.html">Настройки</a>
+  <a href="terms.html">Условия пользования</a>
+  <a href="security.html">Правила безопасности</a>
+  <a href="get-started.html">Как начать работать</a>
+  <a href="for-business.html">— для юр. лиц</a>
+  <a href="for-individuals.html">— для физ. лиц</a>
+  <a href="contacts.html">Контакты</a>
+</div>
+<div class="sos-overlay" id="overlay"></div>
+
+<div class="phone-frame">
+
+  
+  <div class="sos-header">
+    <a href="cabinet.html" class="sos-logo">SOS Narva</a>
+    <button class="sos-menu-btn" id="menuBtn">
+      <svg class="sos-menu-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h16M4 18h6"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="sos-company-header" id="companyHeader">Elite Car Service OÜ &nbsp; 12102527</div>
+  <br>
+
+  <div class="sos-form-label">Владелец</div>
+
+  <form id="ownerForm">
+    <div class="sos-form-group">
+      <label class="sos-form-label">Логин компании</label>
+      <input type="text" id="companyLogin" name="companyLogin" class="sos-form-input" placeholder="Логин компании">
+      <div id="companyLoginFeedback" style="margin-top:6px; color:#dc2626; font-size:13px; display:none;"></div>
+    </div>
+
+    <div class="sos-form-group">
+      <label class="sos-form-label">Пароль компании</label>
+      <input type="password" id="companyPassword" name="companyPassword" class="sos-form-input" placeholder="Пароль компании">
+    </div>
+
+    <div class="sos-form-group">
+      <label class="sos-form-label">Телефон компании</label>
+      <input type="tel" id="companyPhone" name="companyPhone" class="sos-form-input phone-input" placeholder="Номер телефона" maxlength="14">
+    </div>
+    <div class="sos-form-group">
+      <input type="text" class="sos-form-input" name="ownerName" value="Белозеров Максим" required>
+    </div>
+
+    <div class="sos-form-group">
+      <label class="sos-form-label">Телефон</label>
+      <input type="tel" class="sos-form-input phone-input" name="phone" value="+3725296507" maxlength="14" required>
+    </div>
+
+    <div class="sos-form-group">
+      <label class="sos-form-label">Mail</label>
+      <input type="email" class="sos-form-input" name="email" value="info@multiweb.ee" required>
+    </div>
+
+    <div class="sos-form-group">
+      <label class="sos-form-label">B-kaart</label>
+      <div class="sos-file-upload" onclick="document.getElementById('fileInput').click()">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+        </svg>
+        <span id="fileName">Загрузите файл</span>
+      </div>
+      <input type="file" id="fileInput" style="display: none" accept=".pdf,.jpg,.jpeg,.png">
+    </div>
+
+    <button type="submit" class="btn-sos-primary">Подтвердить</button>
+  </form>
+
+</div>
+
+<script>
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("overlay");
+  const menuBtn = document.getElementById("menuBtn");
+
+  menuBtn.onclick = () => {
+    sidebar.classList.add("active");
+    overlay.classList.add("active");
+  };
+
+  overlay.onclick = () => {
+    sidebar.classList.remove("active");
+    overlay.classList.remove("active");
+  };
+
+  
+  // Initialize provider data from sessionStorage
+  if (!window.providerData) window.providerData = {};
+  
+  // Load company data
+  try {
+    const companyData = JSON.parse(sessionStorage.getItem('providerCompany') || '{}');
+    Object.assign(window.providerData, companyData);
+  } catch (err) {
+    console.error('Error loading company data:', err);
+  }
+  
+  const company = window.providerData;
+  
+  if (company.companyName && company.regNumber) {
+    document.getElementById("companyHeader").textContent = `${company.companyName}  ${company.regNumber}`;
+  }
+
+  
+  document.getElementById("fileInput").addEventListener("change", function(e) {
+    const fileName = e.target.files[0]?.name || "Загрузите файл";
+    document.getElementById("fileName").textContent = fileName;
+  });
+
+  // Phone formatting
+  function formatPhoneNumber(value) {
+    let cleaned = value.replace(/\D/g, '').replace(/^\+/, '');
+    if (!cleaned) return '';
+    if (cleaned.length <= 3) {
+      return '+' + cleaned;
+    } else if (cleaned.length <= 7) {
+      return '+' + cleaned.slice(0, 3) + ' ' + cleaned.slice(3);
+    } else {
+      return '+' + cleaned.slice(0, 3) + ' ' + cleaned.slice(3, 7) + ' ' + cleaned.slice(7, 11);
+    }
+  }
+
+  const phoneInputs = document.querySelectorAll('.phone-input');
+  phoneInputs.forEach(input => {
+    input.addEventListener('input', function() {
+      this.value = formatPhoneNumber(this.value);
+    });
+  });
+
+  document.getElementById("ownerForm").addEventListener("submit", e => {
+    e.preventDefault();
+    // If companyLogin provided, ensure availability before continuing
+    const companyLoginVal = document.getElementById('companyLogin')?.value.trim() || '';
+    if (companyLoginVal && window.companyLoginAvailable === false) {
+      const fb = document.getElementById('companyLoginFeedback');
+      fb.textContent = 'Этот логин занят. Выберите другой.';
+      fb.style.display = 'block';
+      return;
+    }
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData);
+
+    // Also read the new company fields by id (they may not be part of formData in some browsers)
+    data.companyLogin = document.getElementById('companyLogin')?.value || '';
+    data.companyPassword = document.getElementById('companyPassword')?.value || '';
+    data.companyPhone = document.getElementById('companyPhone')?.value || '';
+
+    // Save to sessionStorage and window object
+    sessionStorage.setItem("providerOwner", JSON.stringify(data));
+    if (!window.providerData) window.providerData = {};
+    window.providerData.ownerName = data.ownerName;
+    window.providerData.ownerEmail = data.email;  // Note: form field is "email"
+    window.providerData.ownerPhone = data.phone;
+    window.providerData.bkaartDocument = data.bkaart;
+
+    // Save company credentials to providerData so final registration can create company user
+    window.providerData.companyLogin = data.companyLogin;
+    window.providerData.companyPassword = data.companyPassword;
+    window.providerData.companyPhone = data.companyPhone;
+
+    console.log('Provider owner saved:', window.providerData);
+    window.location.href = "Provider_Reg_4.html";
+  });
+
+  // Client-side username availability check (debounced)
+  (function() {
+    const input = document.getElementById('companyLogin');
+    const feedback = document.getElementById('companyLoginFeedback');
+    let t = null;
+
+    async function checkUsername(value) {
+      if (!value) {
+        feedback.style.display = 'none';
+        window.companyLoginAvailable = undefined;
+        return;
+      }
+      try {
+        const res = await fetch('/api/check-username?username=' + encodeURIComponent(value));
+        if (!res.ok) throw new Error('Network');
+        const data = await res.json();
+        if (data.ok) {
+          if (data.available) {
+            feedback.style.display = 'none';
+            window.companyLoginAvailable = true;
+          } else {
+            feedback.textContent = 'Логин уже занят';
+            feedback.style.display = 'block';
+            window.companyLoginAvailable = false;
+          }
+        } else {
+          feedback.textContent = data.error || 'Ошибка проверки';
+          feedback.style.display = 'block';
+          window.companyLoginAvailable = false;
+        }
+      } catch (err) {
+        feedback.textContent = 'Ошибка сети';
+        feedback.style.display = 'block';
+        window.companyLoginAvailable = false;
+      }
+    }
+
+    function scheduleCheck() {
+      clearTimeout(t);
+      t = setTimeout(() => checkUsername(input.value.trim()), 500);
+    }
+
+    input.addEventListener('input', scheduleCheck);
+    input.addEventListener('blur', () => checkUsername(input.value.trim()));
+  })();
+
+</script>
+
+</body>
+</html>

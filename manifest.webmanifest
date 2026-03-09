@@ -1,0 +1,13 @@
+{
+  "name": "SOS Narva",
+  "short_name": "SOS Narva",
+  "start_url": "/sos-narva/index.html",
+  "scope": "/sos-narva/",
+  "display": "standalone",
+  "background_color": "#e53935",
+  "theme_color": "#e53935",
+  "icons": [
+    { "src": "/sos-narva/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/sos-narva/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

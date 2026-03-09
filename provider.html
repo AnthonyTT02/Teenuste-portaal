@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Профиль компании — SOS Narva</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="sos-page">
+  <div class="phone-frame">
+    <div class="sos-header">
+      <a href="cabinet.html" class="sos-logo">SOS Narva</a>
+    </div>
+
+    <div style="padding:20px;">
+      <h2 id="companyName">Загружается...</h2>
+      <div id="companyInfo" style="color:#444;margin-top:8px;"></div>
+
+      <h3 style="margin-top:18px;">Машины</h3>
+      <div id="carsList" style="color:#555;"></div>
+
+      <h3 style="margin-top:12px;">Услуги</h3>
+      <div id="servicesList" style="color:#555;"></div>
+    </div>
+  </div>
+
+  <script>
+    function getQueryParam(name) {
+      const params = new URLSearchParams(window.location.search);
+      return params.get(name);
+    }
+
+    (async function loadProvider() {
+      const id = getQueryParam('providerId');
+      if (!id) {
+        document.getElementById('companyName').textContent = 'ProviderId не указан';
+        return;
+      }
+      try {
+        const res = await fetch('/api/provider/' + encodeURIComponent(id));
+        if (!res.ok) throw new Error('Fetch failed');
+        const data = await res.json();
+        if (!data.ok) throw new Error(data.error || 'Error');
+        const p = data.provider;
+        document.getElementById('companyName').textContent = p.companyName || '—';
+        document.getElementById('companyInfo').innerHTML = `Регистр. номер: ${p.regNumber || '—'}<br>Владелец: ${p.ownerName || '—'}<br>Телефон: ${p.ownerPhone || '—'}`;
+
+        const carsList = document.getElementById('carsList');
+        carsList.innerHTML = (p.cars && p.cars.length) ? p.cars.map(c=>`• ${c.brand} ${c.model}`).join('<br>') : 'Нет машин';
+
+        const servicesList = document.getElementById('servicesList');
+        servicesList.innerHTML = (p.services && p.services.length) ? p.services.map(s=>`• ${s.name}: ${s.price}`).join('<br>') : 'Цены не указаны';
+      } catch (err) {
+        document.getElementById('companyName').textContent = 'Ошибка загрузки: ' + err.message;
+      }
+    })();
+  </script>
+</body>
+</html>

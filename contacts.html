@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Контакты - SOS Narva</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="sos-page">
+
+<div class="sos-sidebar" id="sidebar">
+  <h4>Меню</h4>
+  <a href="Provider_Reg_1.html">Авторизация поставщика услуг</a>
+  <a href="cabinet.html">Личный кабинет</a>
+  <a href="settings.html">Настройки</a>
+  <a href="terms.html">Условия пользования</a>
+  <a href="security.html">Правила безопасности</a>
+  <a href="get-started.html">Как начать работать</a>
+  <a href="for-business.html">— для юр. лиц</a>
+  <a href="for-individuals.html">— для физ. лиц</a>
+  <a href="contacts.html">Контакты</a>
+</div>
+<div class="sos-overlay" id="overlay"></div>
+
+<div class="phone-frame">
+  <div class="sos-header">
+    <a href="cabinet.html" class="sos-logo">SOS Narva</a>
+    <button class="sos-menu-btn" id="menuBtn">
+      <svg class="sos-menu-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 12h16M4 18h6"/>
+      </svg>
+    </button>
+  </div>
+
+  <div style="padding: 20px;">
+    <h2>Контакты</h2>
+    
+    <div style="margin-top: 20px;">
+      <h3>Адрес</h3>
+      <p>ООО "SOS Narva"<br>Эстония, г. Нарва<br>ул. Пушкина, 15<br>Почтовый индекс: 20307</p>
+    </div>
+
+    <div style="margin-top: 20px;">
+      <h3>Телефон</h3>
+      <p>Основной номер: +372 357 51000<br>Техническая поддержка: +372 357 51001<br>Бухгалтерия: +372 357 51002<br>Режим: ПН-ПТ 08:00 - 20:00</p>
+    </div>
+
+    <div style="margin-top: 20px;">
+      <h3>Email</h3>
+      <p>Общее обращение: info@sosnarva.ee<br>Техническая поддержка: support@sosnarva.ee<br>Партнерам: partners@sosnarva.ee<br>Жалобы: compliance@sosnarva.ee</p>
+    </div>
+
+    <div style="margin-top: 20px;">
+      <h3>Социальные сети</h3>
+      <p>Facebook: /sosnarva.ee<br>Instagram: @sosnarva<br>Telegram: @sosnarva_support<br>VK: vk.com/sosnarva</p>
+    </div>
+
+    <button class="btn-sos-primary sos-mb-3" style="margin-top: 20px;">Отправить сообщение</button>
+  </div>
+</div>
+
+<script>
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('overlay');
+  const menuBtn = document.getElementById('menuBtn');
+
+  menuBtn.addEventListener('click', () => {
+    sidebar.classList.add('active');
+    overlay.classList.add('active');
+  });
+
+  overlay.addEventListener('click', () => {
+    sidebar.classList.remove('active');
+    overlay.classList.remove('active');
+  });
+</script>
+
+</body>
+</html>
