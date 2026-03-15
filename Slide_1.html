@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SOS Narva</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="sos-page">
+
+
+<div class="sos-sidebar" id="sidebar">
+  <h4>Меню</h4>
+  <a href="Provider_Reg_1.html">Авторизация поставщика услуг</a>
+  <a href="cabinet.html">Личный кабинет</a>
+  <a href="settings.html">Настройки</a>
+  <a href="terms.html">Условия пользования</a>
+  <a href="security.html">Правила безопасности</a>
+  <a href="get-started.html">Как начать работать</a>
+  <a href="for-business.html">— для юр. лиц</a>
+  <a href="for-individuals.html">— для физ. лиц</a>
+  <a href="contacts.html">Контакты</a>
+</div>
+<div class="sos-overlay" id="overlay"></div>
+
+<div class="phone-frame">
+
+  
+  <div class="sos-header">
+    <a href="cabinet.html" class="sos-logo">SOS Narva</a>
+    <button class="sos-menu-btn" id="menuBtn">
+      <svg class="sos-menu-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 12h16M4 18h6"/>
+      </svg>
+    </button>
+  </div>
+  
+  <p class="sos-mb-3"><b>Требуется</b></p>
+
+  <div id="servicesContainer">
+    <div class="sos-service-list" id="servicesList">
+    
+    </div>
+    <div class="sos-check-line" id="optionsList">
+      
+    </div>
+
+    <button class="btn-sos-primary sos-mb-3" id="confirmBtn">
+      Подтвердить
+    </button>
+  </div>
+</div>
+
+<script>
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('overlay');
+  const menuBtn = document.getElementById('menuBtn');
+
+  menuBtn.addEventListener('click', () => {
+    sidebar.classList.add('active');
+    overlay.classList.add('active');
+  });
+
+  overlay.addEventListener('click', () => {
+    sidebar.classList.remove('active');
+    overlay.classList.remove('active');
+  });
+
+  
+  async function loadServices() {
+    try {
+      const res = await fetch('/api/services');
+      const data = await res.json();
+      const servicesList = document.getElementById('servicesList');
+      const optionsList = document.getElementById('optionsList');
+      servicesList.innerHTML = '';
+      optionsList.innerHTML = '';
+      if (!data.ok) {
+        servicesList.innerHTML = '<div class="text-value">Ошибка загрузки сервисов</div>';
+        return;
+      }
+      const orderState = JSON.parse(localStorage.getItem('orderState') || '{}');
+      const selected = new Set(orderState.services || []);
+      data.services.forEach(s => {
+        const id = 'service_' + s.id;
+        
+        if (String(s.name).trim() === 'Разрешить доступ к геолокации') {
+          const label = document.createElement('label');
+          label.className = 'sos-check-line';
+          const input = document.createElement('input');
+          input.type = 'checkbox';
+          input.dataset.id = s.id;
+          input.id = id;
+          input.style.display = 'none';
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'btn-sos-small';
+          btn.textContent = 'Разрешить доступ к геолокации';
+          const status = document.createElement('span');
+          status.style.marginLeft = '8px';
+          status.textContent = '';
+          btn.addEventListener('click', () => {
+            if (!navigator.geolocation) {
+              status.textContent = ' Геолокация не поддерживается';
+              return;
+            }
+            status.textContent = ' Запрос позиции...';
+            navigator.geolocation.getCurrentPosition(async pos => {
+              const lat = pos.coords.latitude;
+              const lon = pos.coords.longitude;
+             
+              try {
+                const r = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+                const j = await r.json();
+                const display = j.display_name || (lat + ',' + lon);
+                const orderState = JSON.parse(localStorage.getItem('orderState') || '{}');
+                orderState.address = display;
+                orderState.lat = lat;
+                orderState.lng = lon;
+                
+                input.checked = true;
+                orderState.services = Array.from(document.querySelectorAll('#servicesList input[type=checkbox]'))
+                  .filter(i => i.checked)
+                  .map(i => i.dataset.id);
+               
+                if (!orderState.services.includes(String(s.id))) orderState.services.push(String(s.id));
+                localStorage.setItem('orderState', JSON.stringify(orderState));
+                status.textContent = ' Доступ разрешён';
+              } catch (err) {
+                status.textContent = ' Ошибка определения адреса';
+              }
+            }, err => {
+              status.textContent = ' Доступ отклонён';
+            }, { enableHighAccuracy: true, timeout: 10000 });
+          });
+          label.appendChild(input);
+          label.appendChild(btn);
+          label.appendChild(status);
+          optionsList.appendChild(label);
+          return;
+        }
+        const label = document.createElement('label');
+        label.className = 'sos-service-item';
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.dataset.id = s.id;
+        input.id = id;
+        if (selected.has(String(s.id)) || selected.has(s.name)) input.checked = true;
+        const text = document.createTextNode(' ' + s.name);
+        label.appendChild(input);
+        label.appendChild(text);
+        servicesList.appendChild(label);
+      });
+    } catch (err) {
+      document.getElementById('servicesList').innerHTML = '<div class="text-value">Ошибка сети при загрузке сервисов</div>';
+    }
+  }
+
+ 
+  document.getElementById('confirmBtn').addEventListener('click', () => {
+    const checked = Array.from(document.querySelectorAll('#servicesList input[type=checkbox], #optionsList input[type=checkbox]'))
+      .filter(i => i.checked)
+      .map(i => i.dataset.id || i.nextSibling?.textContent?.trim() || i.parentNode?.textContent?.trim());
+    const orderState = JSON.parse(localStorage.getItem('orderState') || '{}');
+    orderState.services = checked;
+    localStorage.setItem('orderState', JSON.stringify(orderState));
+    location.href = 'Slide_2.html';
+  });
+
+  loadServices();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SOS Narva — экран с фирмами</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="sos-page">
+
+<div class="phone-frame">
+
+  
+  <div class="sos-header">
+    <a href="cabinet.html" class="sos-logo">SOS Narva</a>
+    <button class="sos-menu-btn" id="menuBtn">
+      <svg class="sos-menu-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h16M4 18h6"/>
+      </svg>
+    </button>
+  </div>
+
+  
+  <div class="sos-field-box">
+    <div class="text-value"><b>Volvo X70 &nbsp; 123 ADC</b></div>
+    <div class="text-value">Местоположение: <span id="address">Загрузка адреса...</span></div>
+    <div class="text-value" id="paymentLine" style="color:#e53935; font-weight:bold;"></div>
+  </div>
+
+
+
+  
+  <div id="providersList">
+    <!-- Providers will be loaded here from the database -->
+  </div>
+
+</div>
+
+
+<div class="sos-sidebar" id="sidebar">
+  <h4>Меню</h4>
+  <a href="Provider_Reg_1.html">Авторизация поставщика услуг</a>
+  <a href="cabinet.html">Личный кабинет</a>
+  <a href="settings.html">Настройки</a>
+  <a href="terms.html">Условия пользования</a>
+  <a href="security.html">Правила безопасности</a>
+  <a href="get-started.html">Как начать работать</a>
+  <a href="for-business.html">— для юр. лиц</a>
+  <a href="for-individuals.html">— для физ. лиц</a>
+  <a href="contacts.html">Контакты</a>
+</div>
+<div class="sos-overlay" id="overlay"></div>
+
+<script>
+  
+  const state = JSON.parse(localStorage.getItem("orderState") || "{}");
+  const addressDiv = document.getElementById("address");
+  addressDiv.textContent = state.address || "Адрес не определён";
+  // read orderId from query param if present
+  const urlParams = new URLSearchParams(window.location.search);
+  const orderId = urlParams.get('order') || state.orderId || null;
+
+  // Fetch order details to populate vehicle info and selected services
+  async function loadOrderInfo() {
+    if (!orderId) return;
+    try {
+      // Get order details
+      const r = await fetch(`/api/orders/${orderId}`);
+      const data = await r.json();
+      if (!data.ok) return;
+      const o = data.order;
+
+      // Update vehicle info display
+      const fieldBox = document.querySelector('.sos-field-box');
+      if (fieldBox) {
+        // Keep vehicle field empty - do not show order vehicle or provider vehicle
+        fieldBox.children[0].innerHTML = '';
+        if (o.address) addressDiv.textContent = o.address;
+
+        // Get all services and resolve selected service IDs to names
+        try {
+          const sv = await fetch('/api/services');
+          const svdata = await sv.json();
+          const allServices = svdata.services || [];
+          const selectedIds = JSON.parse(o.services || '[]');
+          const selectedNames = selectedIds.map(id => {
+            const s = allServices.find(x => x.id == id);
+            return s ? s.name : 'Неизвестный сервис';
+          });
+          // Update services display (second element in fieldBox)
+          if (fieldBox.children[1]) {
+            fieldBox.children[1].textContent = selectedNames.length > 0 ? selectedNames.join(', ') : 'Услуги не выбраны';
+          }
+        } catch (err) {
+          // silent
+        }
+      }
+    } catch (err) {
+      // silent
+    }
+  }
+  loadOrderInfo();
+
+  
+  const menuBtn = document.getElementById("menuBtn");
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("overlay");
+
+  menuBtn.addEventListener("click", () => {
+    sidebar.classList.add("active");
+    overlay.classList.add("active");
+  });
+
+  overlay.addEventListener("click", () => {
+    sidebar.classList.remove("active");
+    overlay.classList.remove("active");
+  });
+
+  // Use paymentType from orderState (set during order creation on Slide_2)
+  const paymentType = state.paymentType;
+  const paymentLine = document.getElementById("paymentLine");
+
+  if (paymentType === "cash") {
+   paymentLine.textContent = "Оплата на месте наличными";
+  } else if (paymentType === "card") {
+   paymentLine.textContent = "Оплата картой";
+  } else {
+   paymentLine.textContent = "Способ оплаты: " + (paymentType || "не выбран");
+  }
+
+  // Haversine distance calculation in kilometers
+  function haversineDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Earth's radius in km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  }
+
+  // Calculate ETA based on distance
+  function calculateEta(distance) {
+    const avgCitySpeed = 40; // km/h
+    const baseEta = Math.round((distance / avgCitySpeed) * 60);
+    // Add small jitter between -5 and +5 minutes
+    const jitter = Math.floor(Math.random() * 11) - 5;
+    const MIN_ETA = 10;
+    const MAX_ETA = 45;
+    return Math.max(MIN_ETA, Math.min(MAX_ETA, baseEta + jitter));
+  }
+
+  // Load providers offering the selected service
+  async function loadProviders() {
+    try {
+      if (!orderId) {
+        document.getElementById('providersList').innerHTML = '<div class="text-value">Заказ не найден. Сначала подтвердите заказ.</div>';
+        return;
+      }
+
+      // Get order details to retrieve service ID and user location
+      const orderRes = await fetch(`/api/orders/${orderId}`);
+      const orderData = await orderRes.json();
+      if (!orderData.ok) throw new Error('Order not found');
+      
+      const order = orderData.order;
+      const userLat = order.lat;
+      const userLng = order.lng;
+      const serviceIds = JSON.parse(order.services || '[]');
+      
+      if (!serviceIds || serviceIds.length === 0) {
+        document.getElementById('providersList').innerHTML = '<div class="text-value">Услуги не выбраны</div>';
+        return;
+      }
+
+      // Get first selected service (assuming single service for now)
+      const serviceId = serviceIds[0];
+      
+      // Fetch providers offering this service
+      const providersRes = await fetch(`/api/providers-for-service/${serviceId}`);
+      const providersData = await providersRes.json();
+      
+      if (!providersData.ok || !providersData.providers || providersData.providers.length === 0) {
+        document.getElementById('providersList').innerHTML = '<div class="text-value">Поставщики не найдены</div>';
+        return;
+      }
+
+      const list = document.getElementById('providersList');
+      list.innerHTML = '';
+
+      // Display all available providers
+      providersData.providers.forEach(provider => {
+        const distance = haversineDistance(userLat, userLng, provider.lat, provider.lng);
+        const eta = calculateEta(distance);
+        const price = provider.price || 0;
+
+        const card = document.createElement('div');
+        card.className = 'sos-company-card';
+        card.innerHTML = `
+          <div class="name">${provider.companyName || 'Без имени'}</div>
+          <div class="meta">на месте: через ${eta} мин (${distance.toFixed(1)} км)<br>Телефон: ${provider.ownerPhone || '-'}</div>
+          <div class="text-value">Доступные мастера: <b>${provider.onlineEmployees.length}</b></div>
+          <div class="text-value">Доступные авто: <b>${provider.onlineCars.length}</b></div>
+          <div class="text-value">Цена: <b>${Number(price).toFixed(2)} €</b></div>
+          <button class="confirm-btn" data-provider-id="${provider.id}" data-eta="${eta}" data-price="${price}">Подтвердить</button>
+        `;
+
+        const btn = card.querySelector('button');
+        btn.addEventListener('click', async () => {
+          try {
+            // Randomly select an online employee
+            if (provider.onlineEmployees.length === 0) {
+              alert('Нет доступных мастеров');
+              return;
+            }
+            const selectedEmployee = provider.onlineEmployees[
+              Math.floor(Math.random() * provider.onlineEmployees.length)
+            ];
+
+            // Randomly select an online car
+            if (provider.onlineCars.length === 0) {
+              alert('Нет доступных автомобилей');
+              return;
+            }
+            const selectedCar = provider.onlineCars[
+              Math.floor(Math.random() * provider.onlineCars.length)
+            ];
+
+            // Mark employee as offline
+            const statusRes = await fetch(`/api/employee/${selectedEmployee.id}/status`, {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ isOnline: false })
+            });
+            if (!statusRes.ok) throw new Error('Failed to update employee status');
+
+            // Attach provider to order
+            const attachRes = await fetch(`/api/order/attach`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                orderId: orderId,
+                providerId: provider.id,
+                employeeId: selectedEmployee.id,
+                carId: selectedCar.id
+              })
+            });
+            if (!attachRes.ok) throw new Error('Failed to attach provider');
+
+            // Navigate to Slide_6 with actual data
+            const params = new URLSearchParams({
+              order: orderId,
+              provider: provider.id,
+              employee: selectedEmployee.id,
+              car: selectedCar.id,
+              eta: eta,
+              price: Number(price).toFixed(2)
+            });
+            location.href = `Slide_6.html?${params.toString()}`;
+          } catch (err) {
+            alert('Ошибка при выборе провайдера: ' + err.message);
+          }
+        });
+
+        list.appendChild(card);
+      });
+    } catch (err) {
+      console.error('Error loading providers:', err);
+      const list = document.getElementById('providersList');
+      list.innerHTML = '<div class="text-value">Ошибка при загрузке поставщиков: ' + err.message + '</div>';
+    }
+  }
+
+  loadProviders();
+
+</script>
+
+</body>
+</html>

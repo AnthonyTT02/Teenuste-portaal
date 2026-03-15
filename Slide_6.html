@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SOS Narva — фирма 1</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="sos-page">
+
+<div class="phone-frame">
+
+ 
+  <div class="sos-header">
+    <a href="cabinet.html" class="sos-logo">SOS Narva</a>
+    <button class="sos-menu-btn" id="menuBtn">
+      <svg class="sos-menu-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h16M4 18h6"/>
+      </svg>
+    </button>
+  </div>
+
+  
+  <div class="sos-field-box">
+    <div class="text-value"><b id="vehicleInfo">Volvo X70 &nbsp; 123 ADC</b></div>
+    <div class="text-value" id="servicesInfo">Услуги...</div>
+    <div class="text-value">Местоположение: <span id="address">Загрузка адреса...</span></div>
+    <div class="text-value" id="paymentLine" style="color:#e53935; font-weight:bold;"></div>
+</div>
+
+  
+  <div class="sos-company-card" id="providerCard">
+    <div class="name" id="providerName">Загрузка фирмы...</div>
+    <div class="meta" id="providerMeta">
+      Загрузка информации...
+    </div>
+    <div class="text-value" id="priceInfo"></div>
+    <div class="text-value" id="breakdownInfo"></div>
+    <a href="" id="callButton" class="call-button">
+      📞 Позвонить
+    </a>
+  </div>
+
+</div>
+
+
+<div class="sos-sidebar" id="sidebar">
+  <h4>Меню</h4>
+  <a href="Provider_Reg_1.html">Авторизация поставщика услуг</a>
+  <a href="cabinet.html">Личный кабинет</a>
+  <a href="settings.html">Настройки</a>
+  <a href="terms.html">Условия пользования</a>
+  <a href="security.html">Правила безопасности</a>
+  <a href="get-started.html">Как начать работать</a>
+  <a href="for-business.html">— для юр. лиц</a>
+  <a href="for-individuals.html">— для физ. лиц</a>
+  <a href="contacts.html">Контакты</a>
+</div>
+<div class="sos-overlay" id="overlay"></div>
+
+<script>
+  const state = JSON.parse(localStorage.getItem("orderState") || "{}");
+  const addressDiv = document.getElementById("address");
+  addressDiv.textContent = state.address || "Адрес не определён";
+
+  const menuBtn = document.getElementById("menuBtn");
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("overlay");
+
+  menuBtn.addEventListener("click", () => {
+    sidebar.classList.add("active");
+    overlay.classList.add("active");
+  });
+
+  overlay.addEventListener("click", () => {
+    sidebar.classList.remove("active");
+    overlay.classList.remove("active");
+  });
+
+
+  const ETA_MIN = 10;
+  const ETA_MAX = 40;
+
+ 
+  const urlParams = new URLSearchParams(window.location.search);
+  const orderId = urlParams.get('order');
+  const providerId = urlParams.get('provider');
+  const employeeId = urlParams.get('employee');
+  const carId = urlParams.get('car');
+
+  
+  async function loadOrderAndProvider() {
+    try {
+      if (!orderId || !providerId || !employeeId || !carId) {
+        alert('Некорректные параметры заказа');
+        return;
+      }
+
+   
+      const orderRes = await fetch(`/api/orders/${orderId}`);
+      const orderData = await orderRes.json();
+      if (!orderData.ok) throw new Error('Order not found');
+      const order = orderData.order;
+
+      
+      const pricesRes = await fetch(`/api/providers/prices?orderId=${orderId}`);
+      const pricesData = await pricesRes.json();
+      if (!pricesData.ok) throw new Error('Providers not found');
+      
+      const providerData = pricesData.providers.find(pw => pw.provider.id == providerId);
+      if (!providerData) throw new Error('Provider not found in order');
+      
+      const provider = providerData.provider;
+
+      
+      const empRes = await fetch(`/api/employee/${employeeId}`);
+      let employeeName = 'Работник не найден';
+      let employeePhone = '';
+      if (empRes.ok) {
+        const empData = await empRes.json();
+        if (empData.ok && empData.employee) {
+          employeeName = empData.employee.name || employeeName;
+          employeePhone = empData.employee.phone || '';
+        }
+      }
+
+      
+      const carRes = await fetch(`/api/car/${carId}`);
+      let carName = 'Автомобиль не найден';
+      if (carRes.ok) {
+        const carData = await carRes.json();
+        if (carData.ok && carData.car) {
+          carName = carData.car.name || carName;
+        }
+      }
+
+      
+      const vehicleInfo = document.getElementById('vehicleInfo');
+      const servicesInfo = document.getElementById('servicesInfo');
+      const paymentLine = document.getElementById('paymentLine');
+      
+      vehicleInfo.innerHTML = '';
+      
+      if (order.address) addressDiv.textContent = order.address;
+
+      
+      const sv = await fetch('/api/services');
+      const svdata = await sv.json();
+      const allServices = svdata.services || [];
+      const selectedIds = JSON.parse(order.services || '[]');
+      const selectedNames = selectedIds.map(id => {
+        const s = allServices.find(x => x.id == id);
+        return s ? s.name : 'Неизвестный сервис';
+      }).filter(name => name !== 'Эвакуатор');
+      servicesInfo.textContent = selectedNames.length > 0 ? selectedNames.join(', ') : 'Услуги не выбраны';
+
+     
+      const paymentType = state.paymentType || order.paymentType;
+      if (paymentType === "cash") {
+        paymentLine.textContent = "Оплата на месте наличными";
+      } else if (paymentType === "card") {
+        paymentLine.textContent = "Оплата картой";
+      }
+
+     
+      document.getElementById('providerName').textContent = provider.companyName || 'Без имени';
+      const etaParam = urlParams.get('eta');
+      document.getElementById('providerMeta').innerHTML = `на месте: через ${etaParam} мин<br>Телефон: ${provider.ownerPhone || '-'}`;
+      
+      const priceParam = urlParams.get('price');
+      document.getElementById('priceInfo').innerHTML = `Мастер: <b>${employeeName || 'Работник не найден'}</b>`;
+      document.getElementById('breakdownInfo').innerHTML = `
+        Автомобиль: <b>${carName || 'Автомобиль не найден'}</b><br>
+        Цена: <b>${priceParam} €</b><br>
+        <button id="orderCompletedBtn" class="confirm-btn" style="width: 100%; margin-top: 12px;">
+          ✓ Заказ выполнен
+        </button>
+      `;
+      
+      document.getElementById('callButton').href = `tel:${provider.ownerPhone}`;
+      document.getElementById('callButton').textContent = `📞 ${provider.ownerPhone}`;
+
+      const completedBtn = document.getElementById('orderCompletedBtn');
+      if (completedBtn) {
+        completedBtn.addEventListener('click', async () => {
+          try {
+            
+            const empStatusRes = await fetch(`/api/employee/${employeeId}/status`, {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ isOnline: true })
+            });
+            if (!empStatusRes.ok) throw new Error('Failed to update employee status');
+
+           
+            const completeRes = await fetch(`/api/order/${orderId}/complete`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({})
+            });
+            if (!completeRes.ok) throw new Error('Failed to complete order');
+
+            alert('Заказ успешно завершен! Спасибо за использование SOS Narva.');
+           
+            location.href = 'index.html';
+          } catch (err) {
+            alert('Ошибка при завершении заказа: ' + err.message);
+          }
+        });
+      }
+
+    } catch (err) {
+      console.error('Error loading order and provider:', err);
+      alert('Ошибка при загрузке данных: ' + err.message);
+    }
+  }
+
+  loadOrderAndProvider();
+</script>
+
+</body>
+</html>

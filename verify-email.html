@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Подтверждение Email — SOS Narva</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="sos-page">
+<div class="phone-frame">
+  <div style="text-align: center; padding: 40px 20px;">
+    <div style="margin-bottom: 32px;">
+      <div style="font-size: 48px; font-weight: 700; color: #e53935; margin-bottom: 8px; letter-spacing: -1px;">SOS Narva</div>
+      <div style="font-size: 14px; color: #999; letter-spacing: 0.5px; text-transform: uppercase; font-weight: 500;">Подтверждение Email</div>
+    </div>
+
+    <div id="verifyContainer">
+      <h3 style="color:#e53935;margin-bottom:16px;">Проверяем ваш email...</h3>
+      <p style="color:#666;font-size:14px;margin-bottom:24px;">Пожалуйста подождите...</p>
+      <div style="width:40px;height:40px;border:4px solid #f0f0f0;border-top-color:#e53935;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto;"></div>
+    </div>
+
+    <div id="successContainer" style="display:none;">
+      <div style="font-size:60px;margin-bottom:16px;">✅</div>
+      <h2 style="color:#28a745;margin-bottom:8px;">Email подтвержден!</h2>
+      <p style="color:#666;font-size:14px;margin-bottom:24px;">Ваш аккаунт успешно создан. Перенаправляем на страницу входа...</p>
+    </div>
+
+    <div id="errorContainer" style="display:none;">
+      <div style="font-size:60px;margin-bottom:16px;">❌</div>
+      <h2 style="color:#e53935;margin-bottom:8px;">Ошибка проверки</h2>
+      <p id="errorMessage" style="color:#666;font-size:14px;margin-bottom:24px;"></p>
+      <button onclick="window.location.href='index.html'" class="btn-sos-primary">Вернуться на начало</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+</style>
+
+<script>
+  
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get('token');
+
+  if (!token) {
+    showError('Токен подтверждения не найден');
+  } else {
+    verifyEmail(token);
+  }
+
+  async function verifyEmail(token) {
+    try {
+      console.log('Verifying email with token:', token);
+      
+      const res = await fetch('/api/verify-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token })
+      });
+
+      console.log('Verification response status:', res.status);
+      const data = await res.json();
+      console.log('Verification response data:', data);
+
+      if (data.ok) {
+        showSuccess();
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 3000);
+      } else {
+        showError(data.error || 'Ошибка подтверждения email');
+      }
+    } catch (err) {
+      console.error('Verification error:', err);
+      showError('Ошибка сети: ' + err.message);
+    }
+  }
+
+  function showSuccess() {
+    document.getElementById('verifyContainer').style.display = 'none';
+    document.getElementById('successContainer').style.display = 'block';
+  }
+
+  function showError(message) {
+    document.getElementById('verifyContainer').style.display = 'none';
+    document.getElementById('errorContainer').style.display = 'block';
+    document.getElementById('errorMessage').innerText = message;
+  }
+</script>
+
+</body>
+</html>

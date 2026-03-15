@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SOS Narva - Экстренная помощь на дороге</title>
+  <link rel="stylesheet" href="styles.css">
+
+  
+  <link rel="manifest" href="/sos-narva/manifest.webmanifest">
+  <link rel="icon" href="/sos-narva/icon-32.png">
+  <link rel="apple-touch-icon" href="/sos-narva/icon-180.png">
+  <meta name="theme-color" content="#e53935">
+</head>
+<body class="sos-page">
+
+
+<div class="phone-frame">
+
+  <div style="text-align: center; padding: 40px 20px;">
+    <div style="margin-bottom: 32px;">
+      <div style="font-size: 48px; font-weight: 700; color: #e53935; margin-bottom: 8px; letter-spacing: -1px;">SOS Narva</div>
+    </div>
+    
+    <div id="authContainer" style="display:flex;flex-direction:column;gap:12px;">
+      <!-- ВХОД -->
+      <div>
+        <h3>Вход</h3>
+        <input type="text" id="loginUsername" placeholder="Имя пользователя">
+        <input type="password" id="loginPassword" placeholder="Пароль">
+        <button id="loginBtn" class="btn-sos-primary">Войти</button>
+        <div id="loginError"></div>
+      </div>
+
+      <hr>
+
+      <!-- РЕГИСТРАЦИЯ -->
+      <div id="registerForm">
+        <h3>Регистрация</h3>
+        <input type="text" id="regUsername" placeholder="Имя пользователя">
+        <input type="password" id="regPassword" placeholder="Пароль">
+        <input type="tel" id="regPhone" placeholder="Номер телефона" maxlength="14">
+        <button id="regBtn" class="btn-sos-primary">Зарегистрироваться</button>
+        <div id="regError"></div>
+      </div>
+
+      <hr>
+
+      <!-- ВХОД В КОМПАНИЮ -->
+      <div id="companyLoginForm">
+        <h3>Вход в компанию</h3>
+        <input type="text" id="companyLoginUsername" placeholder="Логин компании">
+        <input type="password" id="companyLoginPassword" placeholder="Пароль">
+        <button id="companyLoginBtn" class="btn-sos-primary">Войти</button>
+        <div id="companyLoginError"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  async function handleLogin() {
+    const username = document.getElementById('loginUsername').value.trim();
+    const password = document.getElementById('loginPassword').value.trim();
+    const errorDiv = document.getElementById('loginError');
+    
+    console.log('Handle login:', { username, password });
+    
+    // Очистить ошибку
+    errorDiv.innerHTML = '';
+    errorDiv.style.display = 'none';
+    
+    if (!username || !password) {
+      errorDiv.innerHTML = 'Заполните все поля';
+      errorDiv.style.display = 'block';
+      return;
+    }
+    
+    try {
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      
+      console.log('Login response status:', res.status);
+      const data = await res.json();
+      console.log('Login response data:', data);
+      
+      if (data.ok) {
+        localStorage.setItem('userId', data.userId);
+        localStorage.setItem('username', username);
+        window.location.href = 'cabinet.html';
+      } else {
+        errorDiv.innerHTML = data.error || 'Ошибка входа';
+        errorDiv.style.display = 'block';
+      }
+    } catch (err) {
+      console.error('Login error:', err);
+      errorDiv.innerHTML = 'Ошибка сети: ' + err.message;
+      errorDiv.style.display = 'block';
+    }
+  }
+
+  async function handleCompanyLogin() {
+    const username = document.getElementById('companyLoginUsername').value.trim();
+    const password = document.getElementById('companyLoginPassword').value.trim();
+    const errorDiv = document.getElementById('companyLoginError');
+    
+    console.log('Handle company login:', { username, password });
+    
+    // Очистить ошибку
+    errorDiv.innerHTML = '';
+    errorDiv.style.display = 'none';
+    
+    if (!username || !password) {
+      errorDiv.innerHTML = 'Заполните все поля';
+      errorDiv.style.display = 'block';
+      return;
+    }
+    
+    try {
+      const res = await fetch('/api/company-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      
+      console.log('Company login response status:', res.status);
+      const data = await res.json();
+      console.log('Company login response data:', data);
+      
+      if (data.ok) {
+        localStorage.setItem('userId', data.userId);
+        localStorage.setItem('providerId', data.providerId);
+        localStorage.setItem('companyName', data.companyName);
+        window.location.href = 'company.html?providerId=' + encodeURIComponent(data.providerId);
+      } else {
+        errorDiv.innerHTML = data.error || 'Ошибка входа';
+        errorDiv.style.display = 'block';
+      }
+    } catch (err) {
+      console.error('Company login network error:', err);
+      console.error('Error stack:', err.stack);
+      errorDiv.innerHTML = 'Ошибка сети: ' + (err.message || 'Failed to fetch. Проверьте соединение и логи консоли.');
+      errorDiv.style.display = 'block';
+    }
+  }
+
+  async function handleRegister() {
+    const username = document.getElementById('regUsername').value.trim();
+    const password = document.getElementById('regPassword').value.trim();
+    const phone = document.getElementById('regPhone').value.trim();
+    const errorDiv = document.getElementById('regError');
+    
+    console.log('🔴 Handle register:', { username, password });
+    
+    errorDiv.innerHTML = '';
+    errorDiv.style.display = 'none';
+    
+    if (!username || !password) {
+      errorDiv.innerHTML = 'Заполните все поля';
+      errorDiv.style.display = 'block';
+      return;
+    }
+    
+    if (password.length < 3) {
+      errorDiv.innerHTML = 'Пароль должен быть минимум 3 символа';
+      errorDiv.style.display = 'block';
+      return;
+    }
+    
+    try {
+      console.log('🟡 Отправляю запрос регистрации...');
+      const res = await fetch('/api/register-user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password, phone })
+      });
+      
+      console.log('🟡 Ответ получен, статус:', res.status);
+      const data = await res.json();
+      console.log('🟢 Данные:', data);
+      
+      if (data.ok) {
+        alert('✅ Аккаунт создан! Теперь вы можете войти.');
+        document.getElementById('regUsername').value = '';
+        document.getElementById('regPassword').value = '';
+        document.getElementById('regPhone').value = '';
+      } else {
+        errorDiv.innerHTML = data.error || 'Ошибка регистрации';
+        errorDiv.style.display = 'block';
+      }
+    } catch (err) {
+      console.error('🔴 Ошибка регистрации:', err);
+      errorDiv.innerHTML = 'Ошибка сети: ' + err.message;
+      errorDiv.style.display = 'block';
+    }
+  }
+
+  // Разрешить Enter для входа и регистрации
+  document.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      if (document.activeElement.id === 'loginPassword') handleLogin();
+      if (document.activeElement.id === 'regPassword') handleRegister();
+      if (document.activeElement.id === 'loginUsername') handleLogin();
+      if (document.activeElement.id === 'regUsername') handleRegister();
+      if (document.activeElement.id === 'companyLoginPassword') handleCompanyLogin();
+      if (document.activeElement.id === 'companyLoginUsername') handleCompanyLogin();
+    }
+  });
+
+  // Event listener для кнопки регистрации
+  document.getElementById('regBtn')?.addEventListener('click', handleRegister);
+  document.getElementById('loginBtn')?.addEventListener('click', handleLogin);
+  document.getElementById('companyLoginBtn')?.addEventListener('click', handleCompanyLogin);
+
+  // Phone formatting
+  function formatPhoneNumber(value) {
+    // Оставляем только цифры и "+"
+    let cleaned = value.replace(/\D/g, '').replace(/^\+/, '');
+    
+    // Если пусто, возвращаем пусто
+    if (!cleaned) return '';
+    
+    // Добавляем "+" и форматируем: +XXX XXXX XXXX
+    if (cleaned.length <= 3) {
+      return '+' + cleaned;
+    } else if (cleaned.length <= 7) {
+      return '+' + cleaned.slice(0, 3) + ' ' + cleaned.slice(3);
+    } else {
+      return '+' + cleaned.slice(0, 3) + ' ' + cleaned.slice(3, 7) + ' ' + cleaned.slice(7, 11);
+    }
+  }
+
+  const regPhoneInput = document.getElementById('regPhone');
+  if (regPhoneInput) {
+    regPhoneInput.addEventListener('input', function() {
+      this.value = formatPhoneNumber(this.value);
+    });
+  }
+
+</script>
+
+
+<script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/sos-narva/sw.js");
+  }
+</script>
+
+</body>
+</html>
