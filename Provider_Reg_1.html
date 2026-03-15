@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -157,3 +158,164 @@
 
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SOS Narva</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="sos-page">
+
+
+<div class="sos-sidebar" id="sidebar">
+  <h4>Меню</h4>
+  <a href="Provider_Reg_1.html">Авторизация поставщика услуг</a>
+  <a href="cabinet.html">Личный кабинет</a>
+  <a href="settings.html">Настройки</a>
+  <a href="terms.html">Условия пользования</a>
+  <a href="security.html">Правила безопасности</a>
+  <a href="get-started.html">Как начать работать</a>
+  <a href="for-business.html">— для юр. лиц</a>
+  <a href="for-individuals.html">— для физ. лиц</a>
+  <a href="contacts.html">Контакты</a>
+</div>
+<div class="sos-overlay" id="overlay"></div>
+
+<div class="phone-frame">
+
+  
+  <div class="sos-header">
+    <a href="cabinet.html" class="sos-logo">SOS Narva</a>
+    <button class="sos-menu-btn" id="menuBtn">
+      <svg class="sos-menu-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 12h16M4 18h6"/>
+      </svg>
+    </button>
+  </div>
+
+  
+  <p class="sos-mb-3"><b>Выберите вид деятельности и цены (€)</b></p>
+
+  <div id="servicesContainer">
+    <div class="sos-service-list" id="servicesList">
+      <!-- services loaded from DB will be inserted here -->
+    </div>
+
+    <button class="btn-sos-primary sos-mb-3" id="confirmBtn">
+      Подтвердить
+    </button>
+  </div>
+</div>
+
+<script>
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('overlay');
+  const menuBtn = document.getElementById('menuBtn');
+
+  menuBtn.addEventListener('click', () => {
+    sidebar.classList.add('active');
+    overlay.classList.add('active');
+  });
+
+  overlay.addEventListener('click', () => {
+    sidebar.classList.remove('active');
+    overlay.classList.remove('active');
+  });
+
+  // Initialize provider registration data
+  if (!window.providerData) {
+    window.providerData = {};
+  }
+  
+  // Load services from backend and render inputs for prices
+  async function loadServices() {
+    try {
+      const res = await fetch('/api/services');
+      const data = await res.json();
+      const servicesList = document.getElementById('servicesList');
+      servicesList.innerHTML = '';
+      
+      if (!data.ok) {
+        servicesList.innerHTML = '<div class="text-value">Ошибка загрузки сервисов</div>';
+        return;
+      }
+      
+      data.services.forEach(s => {
+        const label = document.createElement('label');
+        label.className = 'sos-service-item';
+        label.style.display = 'grid';
+        label.style.gridTemplateColumns = '1fr 1fr';
+        label.style.gap = '8px';
+        label.style.alignItems = 'center';
+        
+        const nameSpan = document.createElement('span');
+        nameSpan.textContent = s.name;
+        nameSpan.style.fontWeight = '500';
+        
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.className = 'service-price';
+        input.dataset.serviceId = s.id;
+        input.dataset.serviceName = s.name;
+        input.placeholder = 'цена';
+        input.step = '0.01';
+        input.min = '0';
+        input.style.padding = '8px';
+        input.style.border = '1px solid #d1d5db';
+        input.style.borderRadius = '4px';
+        input.style.fontSize = '14px';
+        
+        label.appendChild(nameSpan);
+        label.appendChild(input);
+        servicesList.appendChild(label);
+      });
+    } catch (err) {
+      document.getElementById('servicesList').innerHTML = '<div class="text-value">Ошибка загрузки сервисов</div>';
+      console.error('Error loading services:', err);
+    }
+  }
+  
+  // Handle confirm button click
+  document.getElementById('confirmBtn').addEventListener('click', (e) => {
+    const services = {};
+    const serviceInputs = document.querySelectorAll('.service-price');
+    
+    serviceInputs.forEach(input => {
+      const serviceId = input.dataset.serviceId;
+      const serviceName = input.dataset.serviceName;
+      const price = input.value.trim();
+      
+      if (price) {
+        services[serviceName] = {
+          id: serviceId,
+          price: parseFloat(price)
+        };
+      }
+    });
+    
+    // Validate that at least one service is selected
+    if (Object.keys(services).length === 0) {
+      alert('⚠️ Пожалуйста, выберите хотя бы один вид услуги и укажите цену');
+      return;
+    }
+    
+    // Save to sessionStorage and window object
+    sessionStorage.setItem('providerServices', JSON.stringify(services));
+    window.providerData.services = services;
+    console.log('Provider services saved:', services);
+    
+    // Go to next step
+    window.location.href = 'Provider_Reg_2.html';
+  });
+  
+  // Load services on page initialization
+  loadServices();
+</script>
+
+</body>
+</html>
+>>>>>>> 749d43b93c75b07192de6f04c21877c6ff7a531e

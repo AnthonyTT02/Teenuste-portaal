@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -531,3 +532,538 @@
 
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SOS Narva - Регистрация поставщика услуг</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="sos-page">
+
+
+<div class="sos-sidebar" id="sidebar">
+  <h4>Меню</h4>
+  <a href="Provider_Reg_1.html">Авторизация поставщика услуг</a>
+  <a href="cabinet.html">Личный кабинет</a>
+  <a href="settings.html">Настройки</a>
+  <a href="terms.html">Условия пользования</a>
+  <a href="security.html">Правила безопасности</a>
+  <a href="get-started.html">Как начать работать</a>
+  <a href="for-business.html">— для юр. лиц</a>
+  <a href="for-individuals.html">— для физ. лиц</a>
+  <a href="contacts.html">Контакты</a>
+</div>
+<div class="sos-overlay" id="overlay"></div>
+
+<div class="phone-frame">
+
+  
+  <div class="sos-header">
+    <a href="cabinet.html" class="sos-logo">SOS Narva</a>
+    <button class="sos-menu-btn" id="menuBtn">
+      <svg class="sos-menu-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h16M4 18h6"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="sos-company-header" id="companyHeader">Elite Car Service OÜ &nbsp; 12102527</div>
+  <br>
+
+  <!-- Owner info -->
+  <div class="sos-owner-card" id="ownerInfo">
+    <div class="sos-owner-card-header">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+      </svg>
+      <span class="sos-owner-card-title">Информация о владельце</span>
+    </div>
+    <div class="sos-owner-card-content">
+      <div class="sos-owner-card-row">
+        <svg class="sos-owner-card-row-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <div class="sos-owner-card-row-content">
+          <div class="sos-owner-card-row-label">Имя владельца</div>
+          <div class="sos-owner-card-row-value" id="ownerLine">—</div>
+        </div>
+      </div>
+      <div class="sos-owner-card-row">
+        <svg class="sos-owner-card-row-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+        </svg>
+        <div class="sos-owner-card-row-content">
+          <div class="sos-owner-card-row-label">Email</div>
+          <div class="sos-owner-card-row-value" id="emailLine">—</div>
+        </div>
+      </div>
+      <div class="sos-owner-card-row">
+        <svg class="sos-owner-card-row-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 00.948-.684l1.498-4.493a1 1 0 011.502-.684l1.498 4.493a1 1 0 00.948.684H19a2 2 0 012 2v1M3 5a2 2 0 012-2h3.28a1 1 0 00.948-.684l1.498-4.493a1 1 0 011.502-.684l1.498 4.493a1 1 0 00.948.684H19a2 2 0 012 2v1m0 0v12a2 2 0 01-2 2H5a2 2 0 01-2-2V6m17 0v12a2 2 0 01-2 2H5a2 2 0 01-2-2V6"/>
+        </svg>
+        <div class="sos-owner-card-row-content">
+          <div class="sos-owner-card-row-label">Номер телефона</div>
+          <div class="sos-owner-card-row-value" id="phoneLine">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <br>
+
+  <div class="sos-form-label" style="opacity:0.7; margin-bottom:12px; font-weight: 600; font-size: 14px;">Сотрудники</div>
+
+  <!-- Cars info display -->
+  <div id="carsInfo" style="display: none; background: #f0f9ff; border-left: 4px solid #00547a; padding: 12px; margin-bottom: 12px; border-radius: 4px; font-size: 13px;">
+    <div style="margin-bottom: 8px;"><strong>Машины компании:</strong></div>
+    <div id="carsDisplay" style="color: #555;"></div>
+    <div style="margin-top: 8px; color: #e53935; font-weight: 500;" id="employeesLimit"></div>
+  </div>
+
+  <form id="employeesForm">
+
+    <div id="employeesContainer">
+      
+      <div class="employee-block" style="margin-bottom: 12px;">
+        <div style="display: flex; gap: 10px; align-items: flex-start;">
+          <div style="flex: 1;">
+            <div class="sos-form-group" style="margin-bottom:8px;">
+              <input type="text" class="sos-form-input employee-name" placeholder="Белозеров Максим" required>
+            </div>
+            <div class="sos-form-group">
+              <input type="tel" class="sos-form-input employee-phone phone-input" placeholder="+3725296507" maxlength="14" required>
+            </div>
+            <div style="margin-top: 8px;">
+              <div class="sos-form-label" style="font-size: 12px; margin-bottom: 6px; opacity: 0.8;">Языки:</div>
+              <div class="employee-langs" style="display: flex; gap: 6px; flex-wrap: wrap;"></div>
+            </div>
+          </div>
+          <button type="button" class="employee-remove-btn" style="display:none; padding: 8px 10px; background: #fee; border: 1px solid #dc2626; color: #dc2626; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px; margin-top: 8px;">
+            ✕
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="addEmployeeBtn" style="display:flex; align-items:center; gap:10px; cursor:pointer; margin: 12px 0 20px; padding: 10px; background: var(--sos-gray-light); border-radius: 8px; border: 1px dashed #d1d5db;">
+      <div style="font-size:20px; line-height:20px; color: var(--sos-blue); font-weight: 600;">+</div>
+      <div class="sos-form-label" style="margin:0; color: var(--sos-blue); font-weight: 500;">Добавить сотрудника</div>
+    </div>
+
+    <div class="sos-form-group" style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
+      <input type="checkbox" id="confirmData" required style="width:22px; height:22px; accent-color:#e53935;">
+      <label for="confirmData" class="sos-form-label" style="text-decoration: underline; cursor:pointer; margin:0;">
+        Подтверждаю данные
+      </label>
+    </div>
+
+    <button type="submit" class="btn-sos-primary">Подтвердить</button>
+  </form>
+
+</div>
+
+<script>
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("overlay");
+  const menuBtn = document.getElementById("menuBtn");
+
+  menuBtn.onclick = () => {
+    sidebar.classList.add("active");
+    overlay.classList.add("active");
+  };
+
+  overlay.onclick = () => {
+    sidebar.classList.remove("active");
+    overlay.classList.remove("active");
+  };
+
+  
+  const company = window.providerData && window.providerData.companyName 
+    ? window.providerData 
+    : JSON.parse(sessionStorage.getItem("providerCompany") || "{}");
+  
+  if (company.companyName && company.regNumber) {
+    document.getElementById("companyHeader").textContent = `${company.companyName}  ${company.regNumber}`;
+  }
+
+ 
+  const owner = window.providerData && window.providerData.ownerName
+    ? window.providerData
+    : JSON.parse(sessionStorage.getItem("providerOwner") || "{}");
+  
+  document.getElementById("ownerLine").textContent = window.providerData?.ownerName || owner.ownerName || "—";
+  document.getElementById("phoneLine").textContent = window.providerData?.ownerPhone || owner.phone || "+—";
+  document.getElementById("emailLine").textContent = window.providerData?.ownerEmail || owner.email || "—";
+
+  const languages = ["RUS", "EST", "ENG", "FIN"];
+
+  // Load cars count and display info
+  let maxEmployees = Infinity; // default: no limit
+  
+  try {
+    const companyData = JSON.parse(sessionStorage.getItem('providerCompany') || '{}');
+    const carsCount = companyData.carsCount ? parseInt(companyData.carsCount) : 0;
+    const companyCars = companyData.companyCars || [];
+    
+    if (carsCount > 0) {
+      maxEmployees = carsCount;
+      const carsInfo = document.getElementById('carsInfo');
+      const carsDisplay = document.getElementById('carsDisplay');
+      const employeesLimit = document.getElementById('employeesLimit');
+      
+      carsInfo.style.display = 'block';
+      
+      if (companyCars && companyCars.length > 0) {
+        carsDisplay.innerHTML = companyCars.map(car => `<div>• ${car}</div>`).join('');
+      } else {
+        carsDisplay.innerHTML = `<div>${carsCount} автомобилей</div>`;
+      }
+      
+      employeesLimit.textContent = `⚠️ Можно добавить максимум ${maxEmployees} сотрудников (по количеству машин)`;
+      
+      console.log('Cars info loaded:', { carsCount, companyCars, maxEmployees });
+    }
+  } catch (err) {
+    console.error('Error loading cars data:', err);
+  }
+
+  // Employees management
+  function updateRemoveButtons() {
+    const blocks = Array.from(document.querySelectorAll(".employee-block"));
+    blocks.forEach((block, index) => {
+      const removeBtn = block.querySelector(".employee-remove-btn");
+      // Show remove button only if there's more than 1 employee
+      removeBtn.style.display = blocks.length > 1 ? "block" : "none";
+
+      removeBtn.onclick = (e) => {
+        e.preventDefault();
+        block.remove();
+        updateRemoveButtons();
+        updateAddButtonVisibility();
+      };
+    });
+  }
+
+  function updateAddButtonVisibility() {
+    const currentCount = document.querySelectorAll(".employee-block").length;
+    const addBtn = document.getElementById("addEmployeeBtn");
+    if (currentCount >= maxEmployees) {
+      addBtn.style.opacity = "0.5";
+      addBtn.style.pointerEvents = "none";
+    } else {
+      addBtn.style.opacity = "1";
+      addBtn.style.pointerEvents = "auto";
+    }
+  }
+
+  document.getElementById("addEmployeeBtn").addEventListener("click", (e) => {
+    e.preventDefault();
+    
+    // Check if maximum employees reached
+    const currentCount = document.querySelectorAll(".employee-block").length;
+    if (currentCount >= maxEmployees) {
+      alert(`❌ Вы не можете добавить больше ${maxEmployees} сотрудников (по количеству машин в компании)`);
+      return;
+    }
+    
+    const container = document.getElementById("employeesContainer");
+
+    const block = document.createElement("div");
+    block.className = "employee-block";
+    block.style.marginBottom = "12px";
+
+    block.innerHTML = `
+      <div style="display: flex; gap: 10px; align-items: flex-start;">
+        <div style="flex: 1;">
+          <div class="sos-form-group" style="margin-bottom:8px;">
+            <input type="text" class="sos-form-input employee-name" placeholder="Имя сотрудника" required>
+          </div>
+          <div class="sos-form-group">
+            <input type="tel" class="sos-form-input employee-phone phone-input" placeholder="+372..." maxlength="14" required>
+          </div>
+          <div style="margin-top: 8px;">
+            <div class="sos-form-label" style="font-size: 12px; margin-bottom: 6px; opacity: 0.8;">Языки:</div>
+            <div class="employee-langs" style="display: flex; gap: 6px; flex-wrap: wrap;"></div>
+          </div>
+        </div>
+        <button type="button" class="employee-remove-btn" style="padding: 8px 10px; background: #fee; border: 1px solid #dc2626; color: #dc2626; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px; margin-top: 8px;">
+          ✕
+        </button>
+      </div>
+    `;
+
+    container.appendChild(block);
+    renderEmployeeLanguages(block);
+    updateRemoveButtons();
+    updateAddButtonVisibility();
+  });
+
+  updateRemoveButtons();
+
+  // Helper function to render language buttons for a specific employee
+  function renderEmployeeLanguages(employeeBlock) {
+    const langsContainer = employeeBlock.querySelector(".employee-langs");
+    if (!langsContainer.dataset.initialized) {
+      langsContainer.dataset.initialized = "true";
+      const employeeLanguages = new Set();
+      langsContainer.dataset.languages = JSON.stringify(Array.from(employeeLanguages));
+      
+      languages.forEach(code => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "employee-lang-btn";
+        btn.textContent = code;
+        btn.dataset.lang = code;
+        
+        btn.style.padding = "4px 10px";
+        btn.style.borderRadius = "6px";
+        btn.style.fontWeight = "500";
+        btn.style.fontSize = "11px";
+        btn.style.cursor = "pointer";
+        btn.style.transition = "all 0.2s ease";
+        btn.style.border = "1.5px solid #e5e7eb";
+        btn.style.color = "var(--sos-text)";
+        btn.style.background = "var(--sos-gray-light)";
+
+        btn.addEventListener("click", (e) => {
+          e.preventDefault();
+          const langs = JSON.parse(langsContainer.dataset.languages || "[]");
+          const idx = langs.indexOf(code);
+          
+          if (idx > -1) {
+            langs.splice(idx, 1);
+            btn.style.border = "1.5px solid #e5e7eb";
+            btn.style.color = "var(--sos-text)";
+            btn.style.background = "var(--sos-gray-light)";
+            btn.style.fontWeight = "500";
+          } else {
+            langs.push(code);
+            btn.style.border = "2px solid var(--sos-red)";
+            btn.style.color = "var(--sos-red)";
+            btn.style.background = "#fff";
+            btn.style.fontWeight = "600";
+          }
+          
+          langsContainer.dataset.languages = JSON.stringify(langs);
+        });
+
+        langsContainer.appendChild(btn);
+      });
+    }
+  }
+
+  // Initialize language buttons for the first employee
+  const firstEmployeeBlock = document.querySelector(".employee-block");
+  if (firstEmployeeBlock) {
+    renderEmployeeLanguages(firstEmployeeBlock);
+  }
+
+  // Update button visibility after checking cars limit
+  updateAddButtonVisibility();
+  if (firstEmployeeBlock) {
+    renderEmployeeLanguages(firstEmployeeBlock);
+  }
+
+  // Initialize provider registration data from sessionStorage
+  if (!window.providerData) {
+    window.providerData = {};
+  }
+  
+  // Restore data from sessionStorage
+  try {
+    const servicesData = JSON.parse(sessionStorage.getItem('providerServices') || '{}');
+    Object.assign(window.providerData, { services: servicesData });
+    
+    const companyData = JSON.parse(sessionStorage.getItem('providerCompany') || '{}');
+    console.log('DEBUG companyData from sessionStorage:', companyData);
+    console.log('DEBUG carsCount:', companyData.carsCount, 'companyCars:', companyData.companyCars);
+    
+    Object.assign(window.providerData, {
+      companyName: companyData.companyName,
+      regNumber: companyData.regNumber,
+      accountNumber: companyData.accountNumber,
+      iban: companyData.iban,
+      kmkr: companyData.kmkr,
+      legalAddress: companyData.legalAddress,
+      lat: companyData.latitude ? parseFloat(companyData.latitude) : null,  // Form sends as "latitude"
+      lng: companyData.longitude ? parseFloat(companyData.longitude) : null,  // Form sends as "longitude"
+      carsCount: companyData.carsCount || 0,
+      companyCars: companyData.companyCars || []
+    });
+    
+    console.log('DEBUG window.providerData after assign:', { 
+      carsCount: window.providerData.carsCount, 
+      companyCars: window.providerData.companyCars 
+    });
+    
+    const ownerData = JSON.parse(sessionStorage.getItem('providerOwner') || '{}');
+    // Map the stored field names to the expected field names
+    Object.assign(window.providerData, {
+      ownerName: ownerData.ownerName,
+      ownerEmail: ownerData.email,  // Stored as "email" in sessionStorage
+      ownerPhone: ownerData.phone,   // Stored as "phone" in sessionStorage
+      // company credentials collected on Provider_Reg_3
+      companyLogin: ownerData.companyLogin || null,
+      companyPassword: ownerData.companyPassword || null,
+      companyPhone: ownerData.companyPhone || null
+    });
+    
+    const paymentData = JSON.parse(sessionStorage.getItem('providerPaymentSafe') || '{}');
+    Object.assign(window.providerData, { paymentInfo: paymentData });
+  } catch (err) {
+    console.error('Error loading sessionStorage data:', err);
+  }
+  
+  console.log('Restored provider data:', window.providerData);
+  
+  document.getElementById("employeesForm").addEventListener("submit", async e => {
+    e.preventDefault();
+
+    const blocks = Array.from(document.querySelectorAll(".employee-block"));
+    const employees = blocks.map(b => {
+      const langsContainer = b.querySelector(".employee-langs");
+      const languages = JSON.parse(langsContainer?.dataset.languages || "[]");
+      
+      return {
+        name: b.querySelector(".employee-name").value.trim(),
+        phone: b.querySelector(".employee-phone").value.trim(),
+        languages: languages
+      };
+    });
+
+    // Validate that each employee has at least one language selected
+    const employeeWithoutLangs = employees.findIndex((emp, idx) => {
+      if (!emp.languages || emp.languages.length === 0) {
+        return true;
+      }
+      return false;
+    });
+
+    if (employeeWithoutLangs !== -1) {
+      alert(`❌ Ошибка: Сотрудник "${employees[employeeWithoutLangs].name}" - нужно выбрать хотя бы один язык`);
+      return;
+    }
+
+    // Prepare full registration payload
+    const payload = {
+      // Provider_Reg_1
+      services: window.providerData.services || {},
+      // Provider_Reg_2
+      companyName: window.providerData.companyName || '',
+      regNumber: window.providerData.regNumber || '',
+      legalAddress: window.providerData.legalAddress || '',
+      lat: window.providerData.lat || null,
+      lng: window.providerData.lng || null,
+      carsCount: window.providerData.carsCount || 0,
+      companyCars: window.providerData.companyCars || [],
+      // Provider_Reg_3
+      ownerName: window.providerData.ownerName || '',
+      ownerEmail: window.providerData.ownerEmail || '',
+      ownerPhone: window.providerData.ownerPhone || '',
+      companyLogin: window.providerData.companyLogin || '',
+      companyPassword: window.providerData.companyPassword || '',
+      companyPhone: window.providerData.companyPhone || '',
+      bkaartDocument: window.providerData.bkaartDocument || '',
+      // Provider_Reg_4
+      accountNumber: window.providerData.accountNumber || '',
+      iban: window.providerData.iban || '',
+      kmkr: window.providerData.kmkr || '',
+      // Provider_Reg_6
+      employees
+    };
+
+    console.log('Full provider registration payload:', JSON.stringify(payload, null, 2));
+    console.log('DEBUG payload.carsCount:', payload.carsCount, typeof payload.carsCount);
+    console.log('DEBUG payload.companyCars:', payload.companyCars, typeof payload.companyCars);
+
+    try {
+      console.log('Sending request to /api/register-provider-full...');
+      const response = await fetch('/api/register-provider-full', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      console.log('Response status:', response.status);
+      console.log('Response headers:', response.headers);
+      
+      const text = await response.text();
+      console.log('Raw response text:', text);
+      
+      if (!text) {
+        alert("Ошибка: сервер вернул пустой ответ");
+        return;
+      }
+
+      let result;
+      try {
+        result = JSON.parse(text);
+      } catch (parseError) {
+        console.error('JSON parse error:', parseError);
+        console.error('Raw response was:', text);
+        alert("Ошибка при парсинге ответа сервера: " + parseError.message);
+        return;
+      }
+
+      console.log('Registration response:', result);
+
+      if (result.ok) {
+        // Clear sessionStorage
+        sessionStorage.clear();
+        
+        alert("Регистрация завершена! ID провайдера: " + result.providerId);
+        window.location.href = "index.html";
+      } else {
+        alert("Ошибка при регистрации: " + result.error);
+      }
+    } catch (err) {
+      console.error('Fetch error:', err);
+      alert("Ошибка при отправке запроса: " + err.message);
+    }
+  });
+
+  // Phone formatting
+  function formatPhoneNumber(value) {
+    let cleaned = value.replace(/\D/g, '').replace(/^\+/, '');
+    if (!cleaned) return '';
+    if (cleaned.length <= 3) {
+      return '+' + cleaned;
+    } else if (cleaned.length <= 7) {
+      return '+' + cleaned.slice(0, 3) + ' ' + cleaned.slice(3);
+    } else {
+      return '+' + cleaned.slice(0, 3) + ' ' + cleaned.slice(3, 7) + ' ' + cleaned.slice(7, 11);
+    }
+  }
+
+  // Apply phone formatting to all phone inputs
+  function attachPhoneFormatting() {
+    const phoneInputs = document.querySelectorAll('.phone-input');
+    phoneInputs.forEach(input => {
+      // Remove old listeners by cloning
+      const newInput = input.cloneNode(true);
+      input.parentNode.replaceChild(newInput, input);
+      
+      newInput.addEventListener('input', function() {
+        this.value = formatPhoneNumber(this.value);
+      });
+    });
+  }
+
+  // Initial attachment
+  attachPhoneFormatting();
+
+  // Re-attach after adding new employee
+  const originalAddEmployeeListener = document.getElementById("addEmployeeBtn").onclick;
+  document.getElementById("addEmployeeBtn").addEventListener("click", function(e) {
+    setTimeout(attachPhoneFormatting, 0);
+  });
+</script>
+
+</body>
+</html>
+>>>>>>> 749d43b93c75b07192de6f04c21877c6ff7a531e

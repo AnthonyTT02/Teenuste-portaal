@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -418,3 +419,425 @@
 
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Личный кабинет - SOS Narva</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="sos-page">
+
+<div class="sos-sidebar" id="sidebar">
+  <h4>Меню</h4>
+  <a href="Provider_Reg_1.html">Авторизация поставщика услуг</a>
+  <a href="cabinet.html">Личный кабинет</a>
+  <a href="settings.html">Настройки</a>
+  <a href="terms.html">Условия пользования</a>
+  <a href="security.html">Правила безопасности</a>
+  <a href="get-started.html">Как начать работать</a>
+  <a href="for-business.html">— для юр. лиц</a>
+  <a href="for-individuals.html">— для физ. лиц</a>
+  <a href="contacts.html">Контакты</a>
+</div>
+<div class="sos-overlay" id="overlay"></div>
+
+<div class="phone-frame">
+  <div class="sos-header">
+    <a href="cabinet.html" class="sos-logo">SOS Narva</a>
+    <div style="display: flex; gap: 12px; align-items: center;">
+      <button id="logoutBtn" class="btn-sos-secondary" style="padding: 8px 16px; font-size: 14px;">Выйти</button>
+      <button class="sos-menu-btn" id="menuBtn">
+        <svg class="sos-menu-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 12h16M4 18h6"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div style="padding: 20px;">
+    <h2 style="color: #111; margin-bottom: 24px; font-size: 28px;">Личный кабинет</h2>
+    
+    <!-- Profile Card -->
+    <div class="cabinet-card" id="profileBlock">
+      <div class="cabinet-card-header">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div class="cabinet-avatar">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                
+              <path d="M12 11C14.4853 11 16.5 8.98528 16.5 6.5C16.5 4.01472 14.4853 2 12 2C9.51472 2 7.5 4.01472 7.5 6.5C7.5 8.98528 9.51472 11 12 11Z"/>
+              
+              <path d="M5 18.5714C5 16.0467 7.0467 14 9.57143 14H14.4286C16.9533 14 19 16.0467 19 18.5714C19 20.465 17.465 22 15.5714 22H8.42857C6.53502 22 5 20.465 5 18.5714Z"/>
+              
+            </svg>
+          </div>
+
+          <div>
+            <h3 style="margin: 0; color: #111; font-size: 18px;">Профиль</h3>
+            <p style="margin: 4px 0 0 0; color: #888; font-size: 13px;">Ваше имя пользователя</p>
+          </div>
+        </div>
+        <button class="cabinet-card-btn" id="editProfileBtn" title="Редактировать">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L21 7"></path>
+          </svg>
+        </button>
+      </div>
+      <div class="cabinet-card-body">
+        <div class="cabinet-info-row">
+          <span class="cabinet-label">Имя:</span>
+          <span class="cabinet-value" id="profileUsername">—</span>
+        </div>
+        <div class="cabinet-info-row">
+          <span class="cabinet-label">Телефон:</span>
+          <span class="cabinet-value" id="profilePhone">—</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Orders Card -->
+    <div class="cabinet-card">
+      <div class="cabinet-card-header">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div class="cabinet-icon cabinet-icon-blue">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                
+              <!-- Колёса -->
+              <circle cx="8" cy="21" r="1"></circle>
+              <circle cx="20" cy="21" r="1"></circle>
+              
+              <!-- Корзина -->
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+              
+            </svg>
+          </div>
+
+
+          <div>
+            <h3 style="margin: 0; color: #111; font-size: 18px;">Активные заказы</h3>
+          </div>
+        </div>
+      </div>
+      <div class="cabinet-card-body" id="activeOrdersContainer">
+        <p style="margin: 0; color: #888; font-size: 14px;">Загрузка...</p>
+      </div>
+    </div>
+
+    <!-- History Card -->
+    <div class="cabinet-card">
+      <div class="cabinet-card-header">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div class="cabinet-icon cabinet-icon-green">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                
+              <!-- Верхняя стрелка -->
+              <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path>
+              <path d="M21 3v5h-5"></path>
+              
+              <!-- Нижняя стрелка -->
+              <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path>
+              <path d="M3 21v-5h5"></path>
+              
+            </svg>
+          </div>
+
+          <div>
+            <h3 style="margin: 0; color: #111; font-size: 18px;">История заказов</h3>
+          </div>
+        </div>
+      </div>
+      <div class="cabinet-card-body" id="completedOrdersContainer">
+        <p style="margin: 0; color: #888; font-size: 14px;">История пуста</p>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div style="display: flex; gap: 12px; margin-top: 24px;">
+      <a href="index.html" class="btn-sos-secondary" style="flex: 1; text-decoration: none; text-align: center; display: flex; align-items: center; justify-content: center;">Выход</a>
+    </div>
+    <a href="Slide_1.html" class="btn-sos-primary" style="margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 5v14M5 12h14"></path>
+      </svg>
+      Вызвать помощь
+    </a>
+  </div>
+</div>
+
+<!-- Edit Profile Modal -->
+<div id="editModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center;">
+  <div style="background: white; border-radius: 12px; padding: 20px; max-width: 90%; width: 400px;">
+    <h3 style="margin-top: 0; color: #dc2626;">Редактировать профиль</h3>
+    <div style="margin-bottom: 16px;">
+      <label style="display: block; margin-bottom: 6px; font-weight: 500; font-size: 14px;">Имя пользователя</label>
+      <input type="text" id="editUsername" placeholder="Имя пользователя" style="width: 100%; padding: 10px 12px; border: 1.5px solid #d1d5db; border-radius: 8px; font-size: 14px; box-sizing: border-box;">
+    </div>
+    <div style="margin-bottom: 16px;">
+      <label style="display: block; margin-bottom: 6px; font-weight: 500; font-size: 14px;">Телефон</label>
+      <input type="tel" id="editPhone" class="phone-input" placeholder="Номер телефона" maxlength="14" style="width: 100%; padding: 10px 12px; border: 1.5px solid #d1d5db; border-radius: 8px; font-size: 14px; box-sizing: border-box;">
+    </div>
+    <div id="editError" style="color: #dc2626; font-size: 13px; margin-bottom: 12px; padding: 8px 10px; background-color: rgba(220, 38, 38, 0.05); border-radius: 6px; display: none;"></div>
+    <div style="display: flex; gap: 10px;">
+      <button id="saveProfileBtn" class="btn-sos-primary" style="flex: 1; margin: 0;">Сохранить</button>
+      <button id="cancelEditBtn" class="btn-sos-secondary" style="flex: 1; margin: 0;">Отменить</button>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('overlay');
+  const menuBtn = document.getElementById('menuBtn');
+
+  menuBtn.addEventListener('click', () => {
+    sidebar.classList.add('active');
+    overlay.classList.add('active');
+  });
+
+  overlay.addEventListener('click', () => {
+    sidebar.classList.remove('active');
+    overlay.classList.remove('active');
+  });
+</script>
+
+<script>
+  // Load user info from localStorage and from server
+  let currentUser = {};
+  (async function loadProfile() {
+    const uid = localStorage.getItem('userId');
+    const usernameStored = localStorage.getItem('username') || '';
+    const usernameEl = document.getElementById('profileUsername');
+    const phoneEl = document.getElementById('profilePhone');
+
+    if (!uid) {
+      usernameEl.textContent = 'Не авторизован';
+      phoneEl.textContent = '-';
+      return;
+    }
+
+    // show cached username immediately
+    usernameEl.textContent = usernameStored || '-';
+
+    try {
+      const res = await fetch('/api/user/' + encodeURIComponent(uid));
+      if (!res.ok) throw new Error('User fetch failed');
+      const data = await res.json();
+      if (data.ok && data.user) {
+        currentUser = data.user;
+        usernameEl.textContent = data.user.username || usernameEl.textContent;
+        phoneEl.textContent = data.user.phone || '-';
+      } else {
+        phoneEl.textContent = '-';
+      }
+    } catch (err) {
+      console.error('Error loading profile:', err);
+    }
+  })();
+
+  // Edit profile modal handlers
+  const editModal = document.getElementById('editModal');
+  const editProfileBtn = document.getElementById('editProfileBtn');
+  const editProfileBtn2 = document.getElementById('editProfileBtn2');
+  const cancelEditBtn = document.getElementById('cancelEditBtn');
+  const saveProfileBtn = document.getElementById('saveProfileBtn');
+  const editUsername = document.getElementById('editUsername');
+  const editPhone = document.getElementById('editPhone');
+  const editError = document.getElementById('editError');
+
+  function openEditModal() {
+    editUsername.value = currentUser.username || '';
+    editPhone.value = currentUser.phone || '';
+    editError.textContent = '';
+    editError.style.display = 'none';
+    editModal.style.display = 'flex';
+  }
+
+  editProfileBtn.addEventListener('click', openEditModal);
+  editProfileBtn2?.addEventListener('click', openEditModal);
+
+  cancelEditBtn.addEventListener('click', () => {
+    editModal.style.display = 'none';
+  });
+
+  editModal.addEventListener('click', (e) => {
+    if (e.target === editModal) {
+      editModal.style.display = 'none';
+    }
+  });
+
+  saveProfileBtn.addEventListener('click', async () => {
+    const uid = localStorage.getItem('userId');
+    if (!uid) {
+      editError.textContent = 'Не авторизован';
+      editError.style.display = 'block';
+      return;
+    }
+
+    const username = editUsername.value.trim();
+    const phone = editPhone.value.trim();
+
+    if (!username && !phone) {
+      editError.textContent = 'Заполните хотя бы одно поле';
+      editError.style.display = 'block';
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/user/' + encodeURIComponent(uid), {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: username || undefined, phone: phone || undefined })
+      });
+      const data = await res.json();
+
+      if (data.ok) {
+        // Update currentUser
+        if (username) currentUser.username = username;
+        if (phone) currentUser.phone = phone;
+        // Update localStorage
+        if (username) localStorage.setItem('username', username);
+        // Update display
+        document.getElementById('profileUsername').textContent = currentUser.username || '-';
+        document.getElementById('profilePhone').textContent = currentUser.phone || '-';
+        editModal.style.display = 'none';
+      } else {
+        editError.textContent = data.error || 'Ошибка обновления';
+        editError.style.display = 'block';
+      }
+    } catch (err) {
+      console.error('Error updating profile:', err);
+      editError.textContent = 'Ошибка сети: ' + err.message;
+      editError.style.display = 'block';
+    }
+  });
+
+  // Phone formatting
+  function formatPhoneNumber(value) {
+    let cleaned = value.replace(/\D/g, '').replace(/^\+/, '');
+    if (!cleaned) return '';
+    if (cleaned.length <= 3) {
+      return '+' + cleaned;
+    } else if (cleaned.length <= 7) {
+      return '+' + cleaned.slice(0, 3) + ' ' + cleaned.slice(3);
+    } else {
+      return '+' + cleaned.slice(0, 3) + ' ' + cleaned.slice(3, 7) + ' ' + cleaned.slice(7, 11);
+    }
+  }
+
+  const phoneInputs = document.querySelectorAll('.phone-input');
+  phoneInputs.forEach(input => {
+    input.addEventListener('input', function() {
+      this.value = formatPhoneNumber(this.value);
+    });
+  });
+
+  // Load active and completed orders
+  async function loadOrders() {
+    const userId = localStorage.getItem('userId');
+    if (!userId) return;
+
+    try {
+      // Load active orders
+      const activeRes = await fetch(`/api/user/${userId}/orders/active`);
+      const activeData = await activeRes.json();
+      const activeContainer = document.getElementById('activeOrdersContainer');
+      
+      if (activeData.ok && activeData.orders && activeData.orders.length > 0) {
+        let html = '';
+        activeData.orders.forEach(order => {
+          const companyName = order.companyName || 'Компания не найдена';
+          const employeeName = order.employee_name || 'Работник';
+          const carName = order.car_name || 'Машина';
+          const address = order.address || 'Адрес';
+          const createdAt = new Date(order.created_at).toLocaleString('ru-RU');
+          
+          html += `
+            <div style="margin-bottom: 16px; padding: 12px; background-color: #f9f9f9; border-radius: 8px; border-left: 4px solid #e53935;">
+              <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
+                <h4 style="margin: 0; color: #111; font-size: 14px; font-weight: 600;">${companyName}</h4>
+                <span style="font-size: 12px; color: #888;">#${order.id}</span>
+              </div>
+              <div style="font-size: 13px; color: #555; margin-bottom: 8px;">
+                <div>📍 Место: ${address}</div>
+                <div>👤 Мастер: ${employeeName}</div>
+                <div>🚗 Машина: ${carName}</div>
+                <div>📅 ${createdAt}</div>
+              </div>
+              <button onclick="location.href='Slide_6.html?order=${order.id}&provider=${order.provider_id}&employee=${order.employee_id}&car=${order.car_id}&eta=15&price=0'" class="btn-sos-primary" style="width: 100%; padding: 8px; font-size: 13px; margin: 0;">Перейти к заказу</button>
+            </div>
+          `;
+        });
+        activeContainer.innerHTML = html;
+      } else {
+        activeContainer.innerHTML = '<p style="margin: 0; color: #888; font-size: 14px;">У вас нет активных заказов</p>';
+      }
+    } catch (err) {
+      console.error('Error loading active orders:', err);
+      document.getElementById('activeOrdersContainer').innerHTML = '<p style="margin: 0; color: #888; font-size: 14px;">Ошибка загрузки заказов</p>';
+    }
+
+    try {
+      // Load completed orders
+      const completedRes = await fetch(`/api/user/${userId}/orders/completed`);
+      const completedData = await completedRes.json();
+      const completedContainer = document.getElementById('completedOrdersContainer');
+      
+      if (completedData.ok && completedData.orders && completedData.orders.length > 0) {
+        let html = '';
+        completedData.orders.forEach(order => {
+          const companyName = order.companyName || 'Компания не найдена';
+          const employeeName = order.employee_name || 'Работник';
+          const carName = order.car_name || 'Машина';
+          const address = order.address || 'Адрес';
+          const completedAt = new Date(order.completed_at).toLocaleString('ru-RU');
+          
+          html += `
+            <div style="margin-bottom: 16px; padding: 12px; background-color: #f9f9f9; border-radius: 8px; border-left: 4px solid #22c55e;">
+              <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
+                <h4 style="margin: 0; color: #111; font-size: 14px; font-weight: 600;">${companyName}</h4>
+                <span style="font-size: 12px; color: #888;">#${order.id}</span>
+              </div>
+              <div style="font-size: 13px; color: #555; margin-bottom: 8px;">
+                <div>📍 Место: ${address}</div>
+                <div>👤 Мастер: ${employeeName}</div>
+                <div>🚗 Машина: ${carName}</div>
+                <div>✓ Завершен: ${completedAt}</div>
+              </div>
+            </div>
+          `;
+        });
+        completedContainer.innerHTML = html;
+      } else {
+        completedContainer.innerHTML = '<p style="margin: 0; color: #888; font-size: 14px;">История пуста</p>';
+      }
+    } catch (err) {
+      console.error('Error loading completed orders:', err);
+      document.getElementById('completedOrdersContainer').innerHTML = '<p style="margin: 0; color: #888; font-size: 14px;">Ошибка загрузки истории</p>';
+    }
+  }
+
+  // Load orders on page load
+  loadOrders();
+
+  // Logout button handler
+  document.getElementById('logoutBtn').addEventListener('click', function() {
+    localStorage.clear();
+    window.location.href = 'index.html';
+  });
+</script>
+
+
+
+</body>
+</html>
+>>>>>>> 749d43b93c75b07192de6f04c21877c6ff7a531e

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -454,3 +455,461 @@
 
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SOS Narva - Регистрация поставщика услуг</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <style>
+    #mapContainer {
+      width: 100% !important;
+      height: 500px !important;
+      border: none !important;
+      border-radius: 8px;
+    }
+    .leaflet-container {
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body class="sos-page">
+
+
+<div class="sos-sidebar" id="sidebar">
+  <h4>Меню</h4>
+  <a href="Provider_Reg_1.html">Авторизация поставщика услуг</a>
+  <a href="cabinet.html">Личный кабинет</a>
+  <a href="settings.html">Настройки</a>
+  <a href="terms.html">Условия пользования</a>
+  <a href="security.html">Правила безопасности</a>
+  <a href="get-started.html">Как начать работать</a>
+  <a href="for-business.html">— для юр. лиц</a>
+  <a href="for-individuals.html">— для физ. лиц</a>
+  <a href="contacts.html">Контакты</a>
+</div>
+<div class="sos-overlay" id="overlay"></div>
+
+<div class="phone-frame">
+
+  
+  <div class="sos-header">
+    <a href="cabinet.html" class="sos-logo">SOS Narva</a>
+    <button class="sos-menu-btn" id="menuBtn">
+      <svg class="sos-menu-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h16M4 18h6"/>
+      </svg>
+    </button>
+  </div>
+
+  <form id="companyForm">
+    <div class="sos-form-group">
+      <label class="sos-form-label">Название фирмы</label>
+      <input type="text" class="sos-form-input" name="companyName" value="Multiweb OÜ" required>
+    </div>
+
+    <div class="sos-form-group">
+      <label class="sos-form-label">Регистрационный номер</label>
+      <input type="text" class="sos-form-input" name="regNumber" value="12102527" required>
+    </div>
+
+    <div class="sos-form-group">
+      <label class="sos-form-label">Номер счёта</label>
+      <input type="text" class="sos-form-input" name="accountNumber" value="EE252200221052270573" required>
+    </div>
+
+    <div class="sos-form-group">
+      <label class="sos-form-label">IBAN</label>
+      <input type="text" class="sos-form-input" name="iban" value="EE13101022046204543" required>
+    </div>
+
+    <div class="sos-form-group">
+      <label class="sos-form-label">KMKR</label>
+      <input type="text" class="sos-form-input" name="kmkr" value="EE100000000" placeholder="KMKR номер" required>
+    </div>
+
+    
+    <div class="sos-address-display">
+      <svg width="16" height="16" fill="none" stroke="#e53935" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+      </svg>
+      <div style="flex: 1;">
+        <strong>Юридический адрес:</strong>
+        <div id="currentLocation" style="margin-top: 6px;">
+          Определяем местоположение...
+        </div>
+        <div style="margin-top: 8px; font-size: 12px; color: #666;">
+          Широта: <span id="locLat">-</span> | Долгота: <span id="locLng">-</span>
+        </div>
+        <button type="button" id="editAddressBtn" class="btn-sos-secondary" style="margin-top: 10px; padding: 8px 12px; font-size: 13px;">Выбрать на карте</button>
+      </div>
+    </div>
+
+    <input type="hidden" id="formLat" name="latitude">
+    <input type="hidden" id="formLng" name="longitude">
+
+    <div class="sos-form-group">
+      <label class="sos-form-label">Количество машин в компании</label>
+      <input type="number" class="sos-form-input" id="carsCount" name="carsCount" min="1" max="50" placeholder="Введите количество машин" required>
+    </div>
+
+    <div id="carsContainer" style="display: none;">
+      <div class="sos-form-label" style="margin-bottom: 12px; margin-top: 12px;">Регистрационные номера машин:</div>
+      <div id="carsList"></div>
+    </div>
+
+    <button type="submit" class="btn-sos-primary">Подтвердить</button>
+  </form>
+
+</div><!-- phone-frame end -->
+
+<!-- Map Modal (outside phone-frame) -->
+<div id="mapModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; padding: 10px; box-sizing: border-box;">
+  <div style="margin: auto; display: flex; align-items: center; justify-content: center; height: 100%;">
+    <div style="background: white; border-radius: 12px; padding: 20px; width: 95%; max-width: 900px; max-height: 90vh; display: flex; flex-direction: column;">
+      <h3 style="margin: 0 0 10px 0; color: #dc2626; font-size: 18px;">Выберите местоположение компании</h3>
+      <p style="margin: 0 0 10px 0; font-size: 13px; color: #666;">Кликните на карту для выбора точки</p>
+      <div id="mapContainer" style="width: 100%; height: 450px; margin-bottom: 15px; border-radius: 8px; background: #e8e8e8; position: relative;"></div>
+      <div style="background: #f5f5f5; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 13px;max-height: 80px; overflow-y: auto;">
+        <div><strong>Координаты:</strong> <span id="mapCoords" style="font-family: monospace;">-</span></div>
+        <div style="margin-top: 8px;"><strong>Адрес:</strong><br><span id="mapAddress" style="word-break: break-word; font-size: 12px;">-</span></div>
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <button id="confirmLocationBtn" type="button" style="flex: 1; padding: 12px; background: #00547a; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px;">Подтвердить</button>
+        <button id="cancelLocationBtn" type="button" style="flex: 1; padding: 12px; background: #e5e7eb; color: #333; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px;">Отменить</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Check if Leaflet is loaded
+  if (typeof L === 'undefined') {
+    console.error('Leaflet library not loaded!');
+    document.addEventListener('DOMContentLoaded', function() {
+      const editBtn = document.getElementById('editAddressBtn');
+      if (editBtn) {
+        editBtn.textContent = 'Карта недоступна (загрузка...)';
+        editBtn.disabled = true;
+      }
+    });
+  } else {
+    console.log('Leaflet loaded successfully:', L);
+  }
+
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("overlay");
+  const menuBtn = document.getElementById("menuBtn");
+
+  menuBtn.onclick = () => {
+    sidebar.classList.add("active");
+    overlay.classList.add("active");
+  };
+
+  overlay.onclick = () => {
+    sidebar.classList.remove("active");
+    overlay.classList.remove("active");
+  };
+
+  let currentLat = null;
+  let currentLng = null;
+  let map = null;
+  let marker = null;
+
+  // Get initial location
+  function setLocationText(lat, lon) {
+    currentLat = lat;
+    currentLng = lon;
+    document.getElementById('formLat').value = lat.toFixed(6);
+    document.getElementById('formLng').value = lon.toFixed(6);
+    document.getElementById('locLat').textContent = lat.toFixed(4);
+    document.getElementById('locLng').textContent = lon.toFixed(4);
+    
+    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18`, {
+      headers: { "User-Agent": "SOS-Narva-App" }
+    })
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("currentLocation").innerText = data.display_name;
+    })
+    .catch(() => {
+      document.getElementById("currentLocation").innerText = `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+    });
+  }
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      pos => setLocationText(pos.coords.latitude, pos.coords.longitude),
+      () => {
+        document.getElementById("currentLocation").innerText = "Не удалось определить местоположение";
+        // Default to Narva
+        setLocationText(59.3706, 28.1938);
+      }
+    );
+  } else {
+    document.getElementById("currentLocation").innerText = "Геолокация не поддерживается";
+    // Default to Narva
+    setLocationText(59.3706, 28.1938);
+  }
+
+  document.getElementById("companyForm").addEventListener("submit", e => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData);
+    
+    console.log('Form data:', data);
+    
+    // Collect car data
+    const cars = [];
+      const carInputs = document.querySelectorAll('.car-reg-number');
+    carInputs.forEach(input => {
+      if (input.value.trim()) {
+        cars.push(input.value.trim());
+      }
+    });
+    
+    data.companyCars = cars;
+    data.carsCount = parseInt(data.carsCount) || 0;
+    
+    // Validate required fields
+    if (!data.companyName || !data.companyName.trim()) {
+      alert('Пожалуйста, заполните название фирмы');
+      return;
+    }
+    if (!data.regNumber || !data.regNumber.trim()) {
+      alert('Пожалуйста, заполните регистрационный номер');
+      return;
+    }
+    if (!data.accountNumber || !data.accountNumber.trim()) {
+      alert('Пожалуйста, заполните номер счёта');
+      return;
+    }
+    
+    // Validate for duplicates before saving
+    const validatePayload = {
+      companyName: data.companyName.trim(),
+      regNumber: data.regNumber.trim(),
+      accountNumber: data.accountNumber.trim()
+    };
+    
+    console.log('Sending validation request:', validatePayload);
+    
+    fetch('/api/validate-provider', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(validatePayload)
+    })
+    .then(res => {
+      console.log('Validation response status:', res.status);
+      return res.json();
+    })
+    .then(result => {
+      console.log('Validation result:', result);
+      
+      if (!result.ok) {
+        alert('❌ ' + result.error);
+        return;
+      }
+      
+      // Save to sessionStorage and window object
+      sessionStorage.setItem("providerCompany", JSON.stringify(data));
+      if (!window.providerData) window.providerData = {};
+      window.providerData.companyName = data.companyName;
+      window.providerData.regNumber = data.regNumber;
+      window.providerData.accountNumber = data.accountNumber;
+      window.providerData.iban = data.iban;
+      window.providerData.kmkr = data.kmkr;
+      window.providerData.legalAddress = data.longitude ? `Широта: ${data.latitude}, Долгота: ${data.longitude}` : '';
+      window.providerData.lat = parseFloat(data.latitude);
+      window.providerData.lng = parseFloat(data.longitude);
+      window.providerData.carsCount = data.carsCount;
+      window.providerData.companyCars = data.companyCars;
+      
+      console.log('Provider company saved:', window.providerData);
+      window.location.href = "Provider_Reg_3.html";
+    })
+    .catch(err => {
+      console.error('Validation error:', err);
+      alert('Ошибка при проверке данных: ' + err.message);
+    });
+  });
+
+  // Map modal handlers
+  const mapModal = document.getElementById('mapModal');
+  const editAddressBtn = document.getElementById('editAddressBtn');
+  const confirmLocationBtn = document.getElementById('confirmLocationBtn');
+  const cancelLocationBtn = document.getElementById('cancelLocationBtn');
+
+  console.log('Map modal elements:', { mapModal, editAddressBtn, confirmLocationBtn, cancelLocationBtn });
+
+  editAddressBtn.addEventListener('click', () => {
+    console.log('Edit address button clicked');
+    mapModal.style.display = 'block';
+    console.log('Map modal display set to block');
+    
+    setTimeout(() => {
+      console.log('Map initialization timeout triggered, current map:', map);
+      console.log('currentLat:', currentLat, 'currentLng:', currentLng);
+      
+      const mapContainer = document.getElementById('mapContainer');
+      console.log('mapContainer element:', mapContainer);
+      
+      if (!map) {
+        console.log('Creating new map...');
+        try {
+          if (!mapContainer) {
+            throw new Error('mapContainer element not found!');
+          }
+          
+          console.log('Initializing Leaflet map...');
+          map = L.map('mapContainer', {
+            preferCanvas: true
+          }).setView([currentLat || 59.3706, currentLng || 28.1938], 13);
+          console.log('Map created:', map);
+          
+          const tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 19
+          });
+          tileLayer.addTo(map);
+          console.log('Tile layer added');
+
+          // Add click handler for map
+          map.on('click', function(e) {
+            console.log('Map clicked at:', e.latlng);
+            const lat = e.latlng.lat;
+            const lng = e.latlng.lng;
+            updateMapMarker(lat, lng);
+          });
+
+          // Add initial marker
+          if (currentLat && currentLng) {
+            console.log('Adding initial marker at:', currentLat, currentLng);
+            updateMapMarker(currentLat, currentLng);
+          }
+          
+          console.log('Map initialization complete');
+        } catch (err) {
+          console.error('Error initializing map:', err);
+          console.error('Stack:', err.stack);
+          alert('Ошибка при загрузке карты: ' + err.message);
+        }
+      } else {
+        console.log('Map already exists, invalidating size');
+        map.invalidateSize();
+      }
+    }, 300);
+  });
+
+  function updateMapMarker(lat, lng) {
+    if (marker) {
+      map.removeLayer(marker);
+    }
+    marker = L.marker([lat, lng]).addTo(map);
+    map.setView([lat, lng], 15);
+    document.getElementById('mapCoords').textContent = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+    
+    // Get address from coordinates
+    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18`, {
+      headers: { "User-Agent": "SOS-Narva-App" }
+    })
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById('mapAddress').textContent = data.display_name;
+    })
+    .catch(() => {
+      document.getElementById('mapAddress').textContent = 'Адрес не найден';
+    });
+  }
+
+  confirmLocationBtn.addEventListener('click', () => {
+    if (marker) {
+      const lat = marker.getLatLng().lat;
+      const lng = marker.getLatLng().lng;
+      currentLat = lat;
+      currentLng = lng;
+      
+      document.getElementById('formLat').value = lat.toFixed(6);
+      document.getElementById('formLng').value = lng.toFixed(6);
+      document.getElementById('locLat').textContent = lat.toFixed(4);
+      document.getElementById('locLng').textContent = lng.toFixed(4);
+      
+      // Update address display
+      fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18`, {
+        headers: { "User-Agent": "SOS-Narva-App" }
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("currentLocation").innerText = data.display_name;
+      })
+      .catch(() => {
+        document.getElementById("currentLocation").innerText = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+      });
+      
+      mapModal.style.display = 'none';
+    }
+  });
+
+  cancelLocationBtn.addEventListener('click', () => {
+    mapModal.style.display = 'none';
+  });
+
+  mapModal.addEventListener('click', (e) => {
+    if (e.target === mapModal) {
+      mapModal.style.display = 'none';
+    }
+  });
+
+  // Handle cars count input
+  const carsCountInput = document.getElementById('carsCount');
+  const carsContainer = document.getElementById('carsContainer');
+  const carsList = document.getElementById('carsList');
+
+  carsCountInput.addEventListener('change', (e) => {
+    const count = parseInt(e.target.value) || 0;
+    if (count > 0) {
+      carsContainer.style.display = 'block';
+      carsList.innerHTML = '';
+      
+      for (let i = 0; i < count; i++) {
+        const div = document.createElement('div');
+        div.className = 'sos-form-group';
+        div.style.marginBottom = '10px';
+        div.innerHTML = `
+          <input type="text" class="sos-form-input car-reg-number" placeholder="Например: 123 ABC" required>
+        `;
+        carsList.appendChild(div);
+        // attach plate formatter to the created input
+        const input = div.querySelector('.car-reg-number');
+        if (input) {
+          input.addEventListener('input', function(){
+            let v = this.value.toUpperCase();
+            v = v.replace(/[^0-9A-Z]/g, '');
+            const digits = (v.match(/^\d{0,3}/) || [''])[0];
+            const rest = v.slice(digits.length).replace(/[^A-Z]/g, '').slice(0,3);
+            if (digits.length < 3) {
+              this.value = digits;
+            } else {
+              this.value = digits + (rest ? ' ' + rest : ' ');
+            }
+          });
+        }
+      }
+    } else {
+      carsContainer.style.display = 'none';
+      carsList.innerHTML = '';
+    }
+  });
+
+</script>
+
+</body>
+</html>
+>>>>>>> 749d43b93c75b07192de6f04c21877c6ff7a531e
