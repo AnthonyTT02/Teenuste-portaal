@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> f6dfbbf69b75ceb173df6b2e55d64e1943954ee2
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -292,3 +296,302 @@
 
 </body>
 </html>
+<<<<<<< HEAD
+=======
+=======
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SOS Narva - Регистрация поставщика услуг</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="sos-page">
+
+<!-- Sidebar -->
+<div class="sos-sidebar" id="sidebar">
+  <h4>Меню</h4>
+  <a href="Provider_Reg_1.html">Авторизация поставщика услуг</a>
+  <a href="cabinet.html">Личный кабинет</a>
+  <a href="settings.html">Настройки</a>
+  <a href="terms.html">Условия пользования</a>
+  <a href="security.html">Правила безопасности</a>
+  <a href="get-started.html">Как начать работать</a>
+  <a href="for-business.html">— для юр. лиц</a>
+  <a href="for-individuals.html">— для физ. лиц</a>
+  <a href="contacts.html">Контакты</a>
+</div>
+<div class="sos-overlay" id="overlay"></div>
+
+<div class="phone-frame">
+
+  <!-- Header -->
+  <div class="sos-header">
+    <a href="cabinet.html" class="sos-logo">SOS Narva</a>
+    <button class="sos-menu-btn" id="menuBtn">
+      <svg class="sos-menu-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h16M4 18h6"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Company header -->
+  <div class="sos-company-header" id="companyHeader">Elite Car Service OÜ &nbsp; 12102527</div>
+  <br>
+
+  <!-- Owner info -->
+  <div class="sos-owner-card" id="ownerInfo">
+    <div class="sos-owner-card-header">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+      </svg>
+      <span class="sos-owner-card-title">Информация о владельце</span>
+    </div>
+    <div class="sos-owner-card-content">
+      <div class="sos-owner-card-row">
+        <svg class="sos-owner-card-row-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <div class="sos-owner-card-row-content">
+          <div class="sos-owner-card-row-label">Имя владельца</div>
+          <div class="sos-owner-card-row-value" id="ownerNameText">—</div>
+        </div>
+      </div>
+      <div class="sos-owner-card-row">
+        <svg class="sos-owner-card-row-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+        </svg>
+        <div class="sos-owner-card-row-content">
+          <div class="sos-owner-card-row-label">Email</div>
+          <div class="sos-owner-card-row-value" id="ownerEmailText">—</div>
+        </div>
+      </div>
+      <div class="sos-owner-card-row">
+        <svg class="sos-owner-card-row-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 00.948-.684l1.498-4.493a1 1 0 011.502-.684l1.498 4.493a1 1 0 00.948.684H19a2 2 0 012 2v1M3 5a2 2 0 012-2h3.28a1 1 0 00.948-.684l1.498-4.493a1 1 0 011.502-.684l1.498 4.493a1 1 0 00.948.684H19a2 2 0 012 2v1m0 0v12a2 2 0 01-2 2H5a2 2 0 01-2-2V6m17 0v12a2 2 0 01-2 2H5a2 2 0 01-2-2V6"/>
+        </svg>
+        <div class="sos-owner-card-row-content">
+          <div class="sos-owner-card-row-label">Номер телефона</div>
+          <div class="sos-owner-card-row-value" id="ownerPhoneText">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Payment form -->
+  <form id="paymentForm" autocomplete="off">
+
+    <div class="sos-form-group">
+      <label class="sos-form-label">
+        <svg width="16" height="16" fill="none" stroke="red" viewBox="0 0 24 24">
+          <rect x="1" y="4" width="22" height="16" rx="2" stroke-width="2"/>
+          <line x1="1" y1="10" x2="23" y2="10" stroke-width="2"/>
+        </svg>
+        Добавьте карту <span class="sos-required-badge">обязательно</span>
+      </label>
+
+      <!-- Платежный блок как у тебя -->
+      <div class="sos-card-section">
+        <div class="sos-card-logos">
+          <div class="sos-card-logo visa">VISA</div>
+          <div class="sos-card-logo mastercard">MC</div>
+          <div class="sos-card-logo amex">AMEX</div>
+          <div class="sos-card-logo discover">DISC</div>
+          <div class="sos-card-logo maestro">MAES</div>
+          <div class="sos-card-logo diners">DIN</div>
+          <div class="sos-card-logo jcb">JCB</div>
+          <div class="sos-card-logo unionpay">UP</div>
+        </div>
+
+        <div class="sos-card-number-wrapper">
+          <svg class="sos-card-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <rect x="1" y="4" width="22" height="16" rx="2" stroke-width="2"/>
+            <line x1="1" y1="10" x2="23" y2="10" stroke-width="2"/>
+          </svg>
+
+          <!-- НЕ сохраняем номер, только ввод -->
+          <input
+            type="text"
+            id="cardNumber"
+            class="sos-card-number-input"
+            placeholder="0000 0000 0000 0000"
+            maxlength="19"
+            inputmode="numeric"
+            autocomplete="off"
+            required
+          >
+
+          <svg id="cardCheck" class="sos-check-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+          </svg>
+        </div>
+
+        <div class="sos-card-details-row">
+          <div class="sos-select-wrapper">
+            <select id="expMonth" class="sos-form-select" required autocomplete="off">
+              <option value="">Месяц</option>
+              <option value="01">01</option><option value="02">02</option><option value="03">03</option>
+              <option value="04">04</option><option value="05">05</option><option value="06">06</option>
+              <option value="07">07</option><option value="08">08</option><option value="09">09</option>
+              <option value="10">10</option><option value="11">11</option><option value="12">12</option>
+            </select>
+            <svg class="sos-select-arrow" width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </div>
+
+          <div class="sos-select-wrapper">
+            <select id="expYear" class="sos-form-select" required autocomplete="off">
+              <option value="">Год</option>
+              <option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option>
+              <option value="2027">2027</option><option value="2028">2028</option><option value="2029">2029</option>
+              <option value="2030">2030</option><option value="2031">2031</option><option value="2032">2032</option>
+              <option value="2033">2033</option>
+            </select>
+            <svg class="sos-select-arrow" width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </div>
+
+          <!-- CVV вводим, но НЕ сохраняем -->
+          <div class="sos-cvv-wrapper">
+            <input
+              type="text"
+              id="cvv"
+              class="sos-cvv-input"
+              placeholder="CVV"
+              maxlength="4"
+              inputmode="numeric"
+              autocomplete="off"
+              required
+            >
+            <svg class="sos-cvv-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="sos-security-badge">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+          </svg>
+          Все данные надёжно защищены
+        </div>
+      </div>
+    </div>
+
+    <button type="submit" class="btn-sos-primary">Подтвердить</button>
+  </form>
+
+</div>
+
+<script>
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("overlay");
+  const menuBtn = document.getElementById("menuBtn");
+
+  menuBtn.onclick = () => {
+    sidebar.classList.add("active");
+    overlay.classList.add("active");
+  };
+
+  overlay.onclick = () => {
+    sidebar.classList.remove("active");
+    overlay.classList.remove("active");
+  };
+
+  // Load company data
+  if (!window.providerData) window.providerData = {};
+  
+  // Restore from sessionStorage first
+  try {
+    const companyData = JSON.parse(sessionStorage.getItem('providerCompany') || '{}');
+    Object.assign(window.providerData, companyData);
+  } catch (err) {
+    console.error('Error loading company data:', err);
+  }
+  
+  const company = window.providerData;
+  
+  if (company.companyName && company.regNumber) {
+    document.getElementById("companyHeader").textContent = `${company.companyName}  ${company.regNumber}`;
+  }
+
+  // Load owner data
+  try {
+    const ownerData = JSON.parse(sessionStorage.getItem('providerOwner') || '{}');
+    Object.assign(window.providerData, {
+      ownerName: ownerData.ownerName,
+      ownerEmail: ownerData.email,  // Stored as "email" in sessionStorage
+      ownerPhone: ownerData.phone    // Stored as "phone" in sessionStorage
+    });
+  } catch (err) {
+    console.error('Error loading owner data:', err);
+  }
+  
+  const owner = window.providerData;
+  
+  document.getElementById("ownerNameText").textContent = owner.ownerName || "—";
+  document.getElementById("ownerPhoneText").textContent = owner.ownerPhone || "—";
+  document.getElementById("ownerEmailText").textContent = owner.ownerEmail || "—";
+
+  // --- helpers ---
+  function detectBrand(digits) {
+    if (!digits) return "Card";
+    if (digits.startsWith("4")) return "VISA";
+    if (/^5[1-5]/.test(digits) || /^2(2[2-9]|[3-6]|7[01]|720)/.test(digits)) return "Mastercard";
+    if (/^3[47]/.test(digits)) return "AMEX";
+    if (/^6(011|5)/.test(digits)) return "Discover";
+    if (/^(5018|5020|5038|56|57|58|6)/.test(digits)) return "Maestro";
+    return "Card";
+  }
+
+  // Format & check
+  const cardInput = document.getElementById("cardNumber");
+  const cardCheck = document.getElementById("cardCheck");
+
+  cardInput.addEventListener("input", e => {
+    let val = e.target.value.replace(/\D/g, "").substring(0, 16);
+    e.target.value = val.replace(/(\d{4})(?=\d)/g, "$1 ");
+    cardCheck.classList.toggle("visible", val.length === 16);
+  });
+
+  document.getElementById("cvv").addEventListener("input", e => {
+    e.target.value = e.target.value.replace(/\D/g, "").substring(0, 4);
+  });
+
+  // Submit: сохраняем ТОЛЬКО last4 + срок + бренд. Номер и CVV НЕ сохраняем.
+  document.getElementById("paymentForm").addEventListener("submit", e => {
+    e.preventDefault();
+
+    const digits = cardInput.value.replace(/\D/g, "");
+    const expMonth = document.getElementById("expMonth").value;
+    const expYear = document.getElementById("expYear").value;
+
+    const safe = {
+      brand: detectBrand(digits),
+      last4: digits.slice(-4),
+      expMonth,
+      expYear,
+      ts: Date.now()
+    };
+
+    // Save to sessionStorage and window object
+    sessionStorage.setItem("providerPaymentSafe", JSON.stringify(safe));
+    if (!window.providerData) window.providerData = {};
+    window.providerData.paymentInfo = safe;
+    
+    // На всякий случай: если где-то раньше ты сохранял providerPayment — сотрем
+    sessionStorage.removeItem("providerPayment");
+
+    console.log('Provider payment saved:', window.providerData);
+    window.location.href = "Provider_Reg_5.html";
+  });
+</script>
+
+</body>
+</html>
+>>>>>>> 749d43b93c75b07192de6f04c21877c6ff7a531e
+>>>>>>> f6dfbbf69b75ceb173df6b2e55d64e1943954ee2

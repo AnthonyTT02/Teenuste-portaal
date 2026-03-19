@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> f6dfbbf69b75ceb173df6b2e55d64e1943954ee2
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -97,3 +101,107 @@
 
 </body>
 </html>
+<<<<<<< HEAD
+=======
+=======
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SOS Narva</title>
+  <link href="styles.css" rel="stylesheet">
+</head>
+<body class="sos-page">
+
+  <div class="phone-frame">
+
+    
+    <div class="sos-header">
+      <a href="cabinet.html" class="sos-logo">SOS Narva</a>
+      <button class="sos-menu-btn">
+        <svg class="sos-menu-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h16M4 18h6"/>
+        </svg>
+      </button>
+    </div>
+
+    
+    <div class="sos-sidebar" id="sidebar">
+      <h4>Меню</h4>
+      <a href="Provider_Reg_1.html">Регистрация поставщика услуг</a>
+      <a href="#">Личный кабинет</a>
+      <a href="#">Настройки</a>
+      <a href="#">Условия пользования</a>
+      <a href="#">Правила безопасности</a>
+      <a href="#">Как начать работать с платформой</a>
+      <a href="#">- для юр. лиц</a>
+      <a href="#">- для физ. лиц</a>
+      <a href="#">Контакты</a>
+    </div>
+    <div class="sos-overlay" id="overlay"></div>
+
+    
+    <div class="sos-field-box">
+      <label>Машина:</label>
+      <div class="text-value">Volvo X70 123ADC</div>
+    </div>
+
+    <div class="sos-field-box">
+      <label>Услуга:</label>
+      <div class="text-value">Эвакуатор</div>
+    </div>
+
+    <div class="sos-field-box">
+      <label>Местоположение:</label>
+      <div id="address" class="text-value">Загрузка адреса...</div>
+    </div>
+
+    <div class="sos-field-box">
+      <label>Страховой полис:</label>
+      <div class="text-value">454545454545454 PFZ</div>
+    </div>
+
+    <div class="sos-field-box">
+      <label>Оплата на месте наличными:</label>
+      
+    </div>
+
+    <button class="btn-sos-primary" onclick="goWithCash()">
+      <img src="emergency.svg" alt="emergency" style="width:24px; margin-right:8px; transform: translateY(4px);">
+      ОТПРАВИТЬ ЗАПРОС
+    </button>
+
+    
+  </div>
+
+  <script>
+    
+    const state = JSON.parse(localStorage.getItem("orderState") || "{}");
+    const addressDiv = document.getElementById("address");
+    addressDiv.textContent = state.address || "Адрес не определён";
+
+    
+    const menuBtn = document.querySelector(".sos-menu-btn");
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+
+    menuBtn.addEventListener("click", () => {
+      sidebar.classList.add("active");
+      overlay.classList.add("active");
+    });
+    overlay.addEventListener("click", () => {
+      sidebar.classList.remove("active");
+      overlay.classList.remove("active");
+    });
+
+    function goWithCash() {
+       localStorage.setItem("paymentType", "cash");
+       window.location.href = "Slide_5.html";
+    }
+  </script>
+
+</body>
+</html>
+>>>>>>> 749d43b93c75b07192de6f04c21877c6ff7a531e
+>>>>>>> f6dfbbf69b75ceb173df6b2e55d64e1943954ee2

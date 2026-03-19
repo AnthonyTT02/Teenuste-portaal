@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> f6dfbbf69b75ceb173df6b2e55d64e1943954ee2
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -376,3 +380,386 @@
   </script>
 </body>
 </html>
+<<<<<<< HEAD
+=======
+=======
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Панель компании — SOS Narva</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="sos-page company-page">
+  <div class="phone-frame">
+    <div class="sos-header">
+      <a href="cabinet.html" class="sos-logo">SOS Narva</a>
+    </div>
+    <div class="company-container">
+      <!-- Left: employees + cars -->
+      <div class="company-left card">
+        <h3>Сотрудники</h3>
+        <div id="employees" class="list-area"></div>
+        <div class="form-row compact">
+          <input id="newEmployeeName" placeholder="Имя сотрудника" class="sos-form-input" />
+          <input id="newEmployeePhone" placeholder="Телефон" class="sos-form-input phone-input" />
+          <button id="addEmployeeBtnLocal" class="btn-sos-primary btn-sm">Добавить</button>
+        </div>
+
+        <h3>Машины</h3>
+        <div id="cars" class="list-area"></div>
+        <div class="form-row compact">
+          <input id="newCarText" placeholder="Регистрационный номер (напр. 123 ABC)" class="sos-form-input car-reg-input" />
+          <button id="addCarBtnLocal" class="btn-sos-primary btn-sm">Добавить</button>
+        </div>
+      </div>
+
+      <!-- Right: active orders -->
+      <div class="company-right card">
+        <h3>Активные заказы</h3>
+        <div id="orders" class="list-area"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function getQueryParam(name) {
+      return new URLSearchParams(window.location.search).get(name);
+    }
+
+    async function loadProviderData(providerId) {
+      try {
+        console.log('Loading provider data for:', providerId);
+        const userId = localStorage.getItem('userId');
+        const res = await fetch('/api/provider/' + encodeURIComponent(providerId) + '?userId=' + encodeURIComponent(userId));
+        console.log('Provider fetch response status:', res.status);
+        if (!res.ok) throw new Error('Не удалось загрузить данные провайдера: ' + res.status);
+        const data = await res.json();
+        console.log('Provider data:', data);
+        if (!data.ok) throw new Error(data.error || 'Ошибка');
+        const p = data.provider;
+
+        // Employees
+        const employeesEl = document.getElementById('employees');
+        let employees = Array.isArray(p.employees) ? p.employees : [];
+        if (employees.length === 0) {
+          employeesEl.innerHTML = '<div style="color:#888;">Сотрудники не указаны</div>';
+        } else {
+          employeesEl.innerHTML = employees.map((e, idx) => {
+            const id = e.id || idx;
+            const langs = Array.isArray(e.languages) ? e.languages : [];
+            // render languages as button group compatible with Provider_Reg pages
+            const langsJson = JSON.stringify(langs || []);
+            return `<div data-emp-id="${id}" class="employee-row">
+                <div><strong>${e.name}</strong>
+                        <div style="margin-top:6px;">
+                          <input class="emp-phone sos-form-input" data-emp-phone="${id}" value="${e.phone||''}" style="width:160px; display:inline-block; margin-right:8px;" readonly />
+                        </div>
+                      </div>
+                <div style="margin-top:8px;">
+                  <div class="sos-form-label" style="font-size:12px; margin-bottom:6px; opacity:0.8;">Языки:</div>
+                    <div class="employee-langs" data-languages='${langsJson}' data-editable="false" style="display:flex; gap:6px; flex-wrap:wrap; opacity:0.9;"></div>
+                    <div style="margin-top:8px;">
+                      <button data-emp-toggle="${id}" class="btn-sos-secondary" style="margin-right:8px;">Редактировать</button>
+                      <button data-emp-delete="${id}" class="btn-sos-danger">Удалить</button>
+                    </div>
+                </div>
+              </div>`;
+          }).join('');
+          // attach handlers and language buttons after render
+          setTimeout(()=>{
+            attachEmployeeHandlers();
+            document.querySelectorAll('.employee-row').forEach(b=>renderEmployeeLanguages(b));
+          },0);
+        }
+
+        // Cars
+        const carsEl = document.getElementById('cars');
+        let cars = [];
+        try { cars = p.cars || []; } catch (e) { cars = []; }
+        if (!cars || cars.length === 0) {
+          carsEl.innerHTML = '<div style="color:#888;">Машины не указаны</div>';
+        } else {
+          carsEl.innerHTML = cars.map(c => {
+            const plate = c.regNumber || c.reg_number || c.plate || ((c.brand||'') + ' ' + (c.model||'')).trim();
+            return `<div data-car-id="${c.id}" class="car-row" style="padding:6px 0; display:flex; justify-content:space-between; align-items:center"><div>• ${plate}</div><div><button data-car-delete="${c.id}" class="btn-sos-danger">Удалить</button></div></div>`;
+          }).join('');
+          setTimeout(()=>attachCarHandlers(),0);
+        }
+
+      } catch (err) {
+        console.error('Error loading provider data:', err);
+        document.getElementById('employees').textContent = 'Ошибка загрузки: ' + err.message;
+        document.getElementById('cars').textContent = '';
+      }
+    }
+
+    async function loadOrders(providerId) {
+      try {
+        console.log('Loading orders for:', providerId);
+        const userId = localStorage.getItem('userId');
+        const res = await fetch('/api/provider/' + encodeURIComponent(providerId) + '/orders?userId=' + encodeURIComponent(userId));
+        console.log('Orders fetch response status:', res.status);
+        if (!res.ok) throw new Error('Не удалось загрузить заказы: ' + res.status);
+        const data = await res.json();
+        console.log('Orders data:', data);
+        if (!data.ok) throw new Error(data.error || 'Ошибка');
+        const orders = data.orders || [];
+        const ordersEl = document.getElementById('orders');
+        if (!orders || orders.length === 0) {
+          ordersEl.innerHTML = '<div style="color:#888;">Активных заказов нет</div>';
+          return;
+        }
+        ordersEl.innerHTML = orders.map(o => {
+          const sv = (() => { try { return JSON.parse(o.services || '[]').join(', ');} catch(e){return o.services||'';} })();
+          return `<div style="padding:12px;border-bottom:1px solid #f5f5f5;"><strong>${o.vehicleBrand || ''} ${o.vehicleModel || ''} ${o.regNumber ? ' — ' + o.regNumber : ''}</strong><div style="color:#666;font-size:13px;margin-top:6px;">${o.address || ''}</div><div style="color:#666;font-size:13px;margin-top:6px;">Услуги: ${sv}</div><div style="color:#999;font-size:12px;margin-top:6px;">${new Date(o.created_at).toLocaleString()}</div></div>`;
+        }).join('');
+      } catch (err) {
+        console.error('Error loading orders:', err);
+        document.getElementById('orders').textContent = 'Ошибка загрузки: ' + err.message;
+      }
+    }
+
+    function attachCarHandlers(){
+      document.querySelectorAll('[data-car-delete]').forEach(btn=>{
+        btn.onclick = async ()=>{
+          const carId = btn.getAttribute('data-car-delete');
+          if (!confirm('Удалить машину?')) return;
+          const userId = localStorage.getItem('userId');
+          await fetch('/api/provider/' + encodeURIComponent(providerIdGlobal) + '/car/' + encodeURIComponent(carId) + '?userId=' + encodeURIComponent(userId), { method: 'DELETE' });
+          loadProviderData(providerIdGlobal);
+        };
+      });
+    }
+
+    function attachEmployeeHandlers(){
+      document.querySelectorAll('[data-emp-delete]').forEach(btn=>{
+        btn.onclick = async ()=>{
+          const empId = btn.getAttribute('data-emp-delete');
+          if (!confirm('Удалить сотрудника?')) return;
+          const userId = localStorage.getItem('userId');
+          const resp = await fetch('/api/provider/' + encodeURIComponent(providerIdGlobal) + '/employee/' + encodeURIComponent(empId) + '?userId=' + encodeURIComponent(userId), { method: 'DELETE' });
+          if (resp.ok) {
+            loadProviderData(providerIdGlobal);
+          } else {
+            alert('Ошибка при удалении сотрудника');
+          }
+        };
+      });
+      // toggle edit/save behavior for employees
+      document.querySelectorAll('[data-emp-toggle]').forEach(btn=>{
+        btn.onclick = async ()=>{
+          const empId = btn.getAttribute('data-emp-toggle');
+          const block = document.querySelector('[data-emp-id="' + empId + '"]');
+          if (!block) return;
+          const langsContainer = block.querySelector('.employee-langs');
+          const phoneInput = block.querySelector('[data-emp-phone]');
+          const isEditing = block.dataset.editing === 'true';
+          if (!isEditing) {
+            // enable editing
+            block.dataset.editing = 'true';
+            btn.textContent = 'Сохранить';
+            if (phoneInput) { phoneInput.removeAttribute('readonly'); phoneInput.classList.add('editing'); }
+            if (langsContainer) { langsContainer.dataset.editable = 'true'; Array.from(langsContainer.querySelectorAll('button')).forEach(b=>{ b.style.pointerEvents='auto'; b.style.opacity=1; }); }
+          } else {
+            // collect and save updated data
+            const blocks = Array.from(document.querySelectorAll('[data-emp-id]'));
+            const newEmployees = blocks.map(b=>{
+              const id = b.getAttribute('data-emp-id');
+              const name = b.querySelector('strong')?.textContent || '';
+              const phone = b.querySelector('[data-emp-phone]')?.value || '';
+              const langs = JSON.parse(b.querySelector('.employee-langs')?.dataset.languages || '[]');
+              return { id, name, phone, languages: langs };
+            });
+            const userId = localStorage.getItem('userId');
+            await fetch('/api/provider/' + encodeURIComponent(providerIdGlobal) + '/employees', { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ userId, employees: newEmployees }) });
+            // disable editing
+            block.dataset.editing = 'false';
+            btn.textContent = 'Редактировать';
+            if (phoneInput) { phoneInput.setAttribute('readonly', 'true'); phoneInput.classList.remove('editing'); }
+            if (langsContainer) { langsContainer.dataset.editable = 'false'; Array.from(langsContainer.querySelectorAll('button')).forEach(b=>{ b.style.pointerEvents='none'; b.style.opacity=0.6; }); }
+            loadProviderData(providerIdGlobal);
+          }
+        };
+      });
+    }
+
+    // render employee language buttons (copied/adapted from Provider_Reg_6)
+    function renderEmployeeLanguages(employeeBlock) {
+      const langsContainer = employeeBlock.querySelector('.employee-langs');
+      if (!langsContainer) return;
+        if (!langsContainer.dataset.initialized) {
+        langsContainer.dataset.initialized = 'true';
+        let current = JSON.parse(langsContainer.dataset.languages || '[]');
+        const employeeLanguages = new Set(current || []);
+        langsContainer.dataset.languages = JSON.stringify(Array.from(employeeLanguages));
+        const languages = ["RUS","EST","ENG","FIN"];
+        languages.forEach(code => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'employee-lang-btn';
+          btn.textContent = code;
+          btn.dataset.lang = code;
+          btn.style.padding = '4px 10px';
+          btn.style.borderRadius = '6px';
+          btn.style.fontWeight = '500';
+          btn.style.fontSize = '11px';
+          btn.style.cursor = 'pointer';
+          btn.style.transition = 'all 0.2s ease';
+          btn.style.border = '1.5px solid #e5e7eb';
+          btn.style.color = 'var(--sos-text)';
+          btn.style.background = 'var(--sos-gray-light)';
+          // set initial state
+          if (employeeLanguages.has(code)) {
+            btn.style.border = '2px solid var(--sos-red)';
+            btn.style.color = 'var(--sos-red)';
+            btn.style.background = '#fff';
+            btn.style.fontWeight = '600';
+          }
+          // initially disable language buttons until edit
+          btn.style.pointerEvents = 'none';
+          btn.style.opacity = 0.6;
+          btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const langs = JSON.parse(langsContainer.dataset.languages || '[]');
+            const idx = langs.indexOf(code);
+            if (idx > -1) {
+              langs.splice(idx, 1);
+              btn.style.border = '1.5px solid #e5e7eb';
+              btn.style.color = 'var(--sos-text)';
+              btn.style.background = 'var(--sos-gray-light)';
+              btn.style.fontWeight = '500';
+            } else {
+              langs.push(code);
+              btn.style.border = '2px solid var(--sos-red)';
+              btn.style.color = 'var(--sos-red)';
+              btn.style.background = '#fff';
+              btn.style.fontWeight = '600';
+            }
+            langsContainer.dataset.languages = JSON.stringify(langs);
+          });
+          langsContainer.appendChild(btn);
+        });
+        // attach phone formatter to the phone input in this block
+        const phoneInput = employeeBlock.querySelector('.emp-phone');
+        if (phoneInput) attachEstPhoneFormatter(phoneInput);
+      }
+    }
+
+    // Attach Estonian phone formatter to inputs: ensure prefix +372 and a space after it
+    function attachEstPhoneFormatter(input) {
+      function normalize(val) {
+        if (!val) return '+372 ';
+        let s = val.toString();
+        // remove all except + and digits
+        s = s.replace(/[^+0-9]/g, '');
+        // ensure starts with +372
+        if (!s.startsWith('+372')) {
+          // strip leading + if present, then digits, remove leading 372 if present
+          const digits = s.replace(/[^0-9]/g, '');
+          const rest = digits.replace(/^372/, '');
+          return '+372 ' + rest;
+        }
+        if (s === '+372') return '+372 ';
+        // ensure space after prefix
+        const rest = s.slice(4).replace(/[^0-9]/g, '');
+        return '+372 ' + rest;
+      }
+      input.addEventListener('focus', () => {
+        if (!input.value || input.value.trim() === '') input.value = '+372 ';
+        setTimeout(()=> input.setSelectionRange(input.value.length, input.value.length),0);
+      });
+      input.addEventListener('input', () => {
+        const old = input.value;
+        const newVal = normalize(old);
+        input.value = newVal;
+        setTimeout(()=> input.setSelectionRange(input.value.length, input.value.length),0);
+      });
+      input.addEventListener('keydown', (e) => {
+        const prefixLen = 5; // '+372 '
+        if ((e.key === 'Backspace' || e.key === 'Delete') && input.selectionStart <= prefixLen) {
+          e.preventDefault();
+        }
+      });
+    }
+
+    // Plate input formatter: 3 digits, space, 3 letters. Enforce sequence.
+    function attachPlateFormatter(input) {
+      input.addEventListener('input', (e) => {
+        let v = input.value.toUpperCase();
+        v = v.replace(/[^0-9A-Z]/g, '');
+        const digits = (v.match(/^\d{0,3}/) || [''])[0];
+        const rest = v.slice(digits.length).replace(/[^A-Z]/g, '').slice(0,3);
+        if (digits.length < 3) {
+          input.value = digits;
+        } else {
+          input.value = digits + (rest ? ' ' + rest : ' ');
+        }
+      });
+      input.addEventListener('keydown', (e) => {
+        // prevent entering digits after space
+        const val = input.value.replace(/\s/g,'');
+        const digits = val.slice(0,3);
+        const letters = val.slice(3);
+        const caret = input.selectionStart || 0;
+        const hasSpace = input.value.indexOf(' ') !== -1;
+        if (hasSpace && letters.length >= 3 && caret > input.value.indexOf(' ')) {
+          if (e.key.length === 1 && /[A-Z0-9]/i.test(e.key)) e.preventDefault();
+        }
+      });
+    }
+
+    let providerIdGlobal = null;
+
+    (function init() {
+      const providerId = getQueryParam('providerId') || (localStorage.getItem('providerId') || localStorage.getItem('userProviderId'));
+      console.log('Init - providerId:', providerId);
+      providerIdGlobal = providerId;
+      if (!providerId) {
+        document.getElementById('employees').textContent = 'providerId не указан';
+        document.getElementById('orders').textContent = '';
+        return;
+      }
+      loadProviderData(providerId);
+      loadOrders(providerId);
+      // attach formatters
+      const carInput = document.getElementById('newCarText');
+      if (carInput) attachPlateFormatter(carInput);
+      const newEmpPhone = document.getElementById('newEmployeePhone');
+      if (newEmpPhone) attachEstPhoneFormatter(newEmpPhone);
+      // attach add handlers
+      document.getElementById('addCarBtnLocal').onclick = async ()=>{
+        const reg = document.getElementById('newCarText').value.trim();
+        if (!reg) return alert('Введите регистрационный номер');
+        const userId = localStorage.getItem('userId');
+        await fetch('/api/provider/' + encodeURIComponent(providerIdGlobal) + '/car', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ userId, regNumber: reg }) });
+        document.getElementById('newCarText').value = '';
+        loadProviderData(providerIdGlobal);
+      };
+
+      document.getElementById('addEmployeeBtnLocal').onclick = async ()=>{
+        const name = document.getElementById('newEmployeeName').value.trim();
+        const phone = document.getElementById('newEmployeePhone').value.trim();
+        if (!name) return alert('Введите имя сотрудника');
+        const userId = localStorage.getItem('userId');
+        // Add employee directly to DB
+        const resp = await fetch('/api/provider/' + encodeURIComponent(providerIdGlobal) + '/employee', { 
+          method: 'POST', 
+          headers: {'Content-Type':'application/json'}, 
+          body: JSON.stringify({ userId, name, phone, languages: [] }) 
+        });
+        if (!resp.ok) {
+          alert('Ошибка при добавлении сотрудника');
+          return;
+        }
+        document.getElementById('newEmployeeName').value = '';
+        document.getElementById('newEmployeePhone').value = '';
+        loadProviderData(providerIdGlobal);
+      };
+    })();
+  </script>
+</body>
+</html>
+>>>>>>> 749d43b93c75b07192de6f04c21877c6ff7a531e
+>>>>>>> f6dfbbf69b75ceb173df6b2e55d64e1943954ee2

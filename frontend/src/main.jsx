@@ -5,7 +5,15 @@ import App from './App';
 import './styles.css';
 
 createRoot(document.getElementById('root')).render(
+<<<<<<< HEAD
   <BrowserRouter>
     <App />
   </BrowserRouter>
+=======
+  <React.StrictMode>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </React.StrictMode>
+>>>>>>> f6dfbbf69b75ceb173df6b2e55d64e1943954ee2
 );

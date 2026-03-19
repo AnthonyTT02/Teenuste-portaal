@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> f6dfbbf69b75ceb173df6b2e55d64e1943954ee2
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -194,3 +198,204 @@
 
 </body>
 </html>
+<<<<<<< HEAD
+=======
+=======
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SOS Narva - Регистрация поставщика услуг</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="sos-page">
+
+
+<div class="sos-sidebar" id="sidebar">
+  <h4>Меню</h4>
+  <a href="Provider_Reg_1.html">Авторизация поставщика услуг</a>
+  <a href="cabinet.html">Личный кабинет</a>
+  <a href="settings.html">Настройки</a>
+  <a href="terms.html">Условия пользования</a>
+  <a href="security.html">Правила безопасности</a>
+  <a href="get-started.html">Как начать работать</a>
+  <a href="for-business.html">— для юр. лиц</a>
+  <a href="for-individuals.html">— для физ. лиц</a>
+  <a href="contacts.html">Контакты</a>
+</div>
+<div class="sos-overlay" id="overlay"></div>
+
+<div class="phone-frame">
+
+  
+  <div class="sos-header">
+    <a href="cabinet.html" class="sos-logo">SOS Narva</a>
+    <button class="sos-menu-btn" id="menuBtn">
+      <svg class="sos-menu-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h16M4 18h6"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Summary Information -->
+  <div class="sos-summary-card">
+    <!-- Company Section -->
+    <div class="sos-summary-card-section">
+      <div class="sos-summary-card-label">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
+        </svg>
+        Компания
+      </div>
+      <div class="sos-summary-card-value" id="companyHeader">Elite Car Service OÜ &nbsp; 12102527</div>
+    </div>
+
+    <div class="sos-summary-divider"></div>
+
+    <!-- Owner Section -->
+    <div class="sos-summary-card-section">
+      <div class="sos-summary-card-label">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+        </svg>
+        Владелец
+      </div>
+      <div class="sos-summary-card-value" id="ownerLine">—</div>
+      <div class="sos-summary-card-value" id="phoneLine" style="margin-top: 6px;">+—</div>
+      <div class="sos-summary-card-value" id="emailLine" style="margin-top: 6px;">—</div>
+    </div>
+
+    <div class="sos-summary-divider"></div>
+
+    <!-- Payment Section -->
+    <div class="sos-summary-card-section">
+      <div class="sos-summary-card-label">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+        </svg>
+        Платёж
+      </div>
+      <div class="sos-summary-card-value" id="cardLine">Карта ****----</div>
+    </div>
+  </div>
+
+  <!-- Agreement Section -->
+  <div class="sos-agreement-section">
+    <div class="sos-agreement-title">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      Условия использования платформы
+    </div>
+    <div class="sos-agreement-text">
+      Прочитайте и согласитесь с условиями
+      <a href="contract.html" class="sos-agreement-link" target="_blank">
+        договора подключения к платформе SOS NARVA
+      </a>
+      <br><br>
+      Подписывая, вы подтверждаете, что прочитали документ и согласны со всеми его условиями.
+    </div>
+
+    <form id="agreementForm">
+      <div class="sos-checkbox-wrapper">
+        <input type="checkbox" id="agree" required>
+        <label for="agree">
+          Я согласен с условиями договора
+        </label>
+      </div>
+
+      <button type="submit" class="btn-sos-primary" style="margin-top: 16px; width: 100%;">Подтвердить регистрацию</button>
+    </form>
+  </div>
+
+</div>
+
+<script>
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("overlay");
+  const menuBtn = document.getElementById("menuBtn");
+
+  menuBtn.onclick = () => {
+    sidebar.classList.add("active");
+    overlay.classList.add("active");
+  };
+
+  overlay.onclick = () => {
+    sidebar.classList.remove("active");
+    overlay.classList.remove("active");
+  };
+
+  
+  // Initialize provider data from sessionStorage
+  if (!window.providerData) window.providerData = {};
+  
+  // Load company data
+  try {
+    const companyData = JSON.parse(sessionStorage.getItem('providerCompany') || '{}');
+    Object.assign(window.providerData, companyData);
+  } catch (err) {
+    console.error('Error loading company data:', err);
+  }
+  
+  const company = window.providerData;
+  
+  if (company.companyName && company.regNumber) {
+    document.getElementById("companyHeader").textContent = `${company.companyName}  ${company.regNumber}`;
+  }
+
+  
+  // Load owner data
+  try {
+    const ownerData = JSON.parse(sessionStorage.getItem('providerOwner') || '{}');
+    Object.assign(window.providerData, {
+      ownerName: ownerData.ownerName,
+      ownerEmail: ownerData.email,  // Stored as "email" in sessionStorage
+      ownerPhone: ownerData.phone    // Stored as "phone" in sessionStorage
+    });
+  } catch (err) {
+    console.error('Error loading owner data:', err);
+  }
+  
+  const owner = window.providerData;
+  
+  document.getElementById("ownerLine").textContent = owner.ownerName || "—";
+  document.getElementById("phoneLine").textContent = owner.ownerPhone || "+—";
+  document.getElementById("emailLine").textContent = owner.ownerEmail || "—";
+
+  
+  // Load payment data
+  try {
+    const paymentData = JSON.parse(sessionStorage.getItem('providerPaymentSafe') || '{}');
+    Object.assign(window.providerData, { paymentInfo: paymentData });
+  } catch (err) {
+    console.error('Error loading payment data:', err);
+  }
+  
+  const payment = window.providerData.paymentInfo || {};
+  const brand = payment.brand || "Карта";
+  const last4 = payment.last4 || "----";
+  document.getElementById("cardLine").textContent = `${brand} ****${last4}`;
+
+
+  document.getElementById("agreementForm").addEventListener("submit", e => {
+    e.preventDefault();
+
+    // Save agreement confirmation to sessionStorage and window object
+    const agreement = {
+      agree: true,
+      ts: Date.now()
+    };
+    sessionStorage.setItem("providerAgreement", JSON.stringify(agreement));
+    if (!window.providerData) window.providerData = {};
+    window.providerData.agreement = agreement;
+    
+    console.log('Provider agreement saved:', window.providerData);
+    window.location.href = "Provider_Reg_6.html";
+  });
+</script>
+
+</body>
+</html>
+>>>>>>> 749d43b93c75b07192de6f04c21877c6ff7a531e
+>>>>>>> f6dfbbf69b75ceb173df6b2e55d64e1943954ee2

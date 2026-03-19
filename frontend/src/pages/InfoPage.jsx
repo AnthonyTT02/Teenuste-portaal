@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 export function InfoPage({ title, text, sections = [], actionLabel }) {
   return (
     <div style={{ padding: 20 }} className="info-page">
@@ -21,6 +22,13 @@ export function InfoPage({ title, text, sections = [], actionLabel }) {
       </div>
 
       {actionLabel ? <button className="btn-sos-primary mt-16">{actionLabel}</button> : null}
+=======
+export function InfoPage({ title, text }) {
+  return (
+    <div style={{ padding: 20 }}>
+      <h2>{title}</h2>
+      <p>{text}</p>
+>>>>>>> f6dfbbf69b75ceb173df6b2e55d64e1943954ee2
     </div>
   );
 }
