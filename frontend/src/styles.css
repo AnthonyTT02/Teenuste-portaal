@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 6f3e1231dbbf21d9e9191af2350e9486e8609650
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
 
 :root {
@@ -15,10 +19,19 @@
   --radius-md: 14px;
 }
 
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> f6dfbbf69b75ceb173df6b2e55d64e1943954ee2
+>>>>>>> 6f3e1231dbbf21d9e9191af2350e9486e8609650
 * {
   box-sizing: border-box;
 }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 6f3e1231dbbf21d9e9191af2350e9486e8609650
 html,
 body,
 #root {
@@ -30,6 +43,14 @@ body {
   font-family: 'Manrope', 'Segoe UI', sans-serif;
   color: var(--text-1);
   background: linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 100%);
+<<<<<<< HEAD
+=======
+=======
+body {
+  margin: 0;
+  font-family: Inter, Arial, sans-serif;
+>>>>>>> f6dfbbf69b75ceb173df6b2e55d64e1943954ee2
+>>>>>>> 6f3e1231dbbf21d9e9191af2350e9486e8609650
 }
 
 a {
@@ -37,6 +58,10 @@ a {
   color: inherit;
 }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 6f3e1231dbbf21d9e9191af2350e9486e8609650
 h2,
 h3 {
   margin: 0;
@@ -101,6 +126,24 @@ p {
   border-radius: var(--radius-lg);
   padding: 18px;
   box-shadow: 0 24px 60px rgba(15, 23, 42, 0.14);
+<<<<<<< HEAD
+=======
+=======
+.sos-page {
+  min-height: 100vh;
+  background: #f8f9fa;
+  padding: 16px;
+}
+
+.phone-frame {
+  max-width: 900px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 20px;
+  padding: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+>>>>>>> f6dfbbf69b75ceb173df6b2e55d64e1943954ee2
+>>>>>>> 6f3e1231dbbf21d9e9191af2350e9486e8609650
   position: relative;
   z-index: 2;
 }
@@ -109,6 +152,10 @@ p {
   display: flex;
   justify-content: space-between;
   align-items: center;
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 6f3e1231dbbf21d9e9191af2350e9486e8609650
   margin-bottom: 16px;
   padding-bottom: 12px;
   border-bottom: 1px solid var(--line);
@@ -119,10 +166,26 @@ p {
   font-weight: 800;
   font-size: 1.2rem;
   letter-spacing: -0.03em;
+<<<<<<< HEAD
+=======
+=======
+  margin-bottom: 12px;
+}
+
+.sos-logo {
+  color: #dc2626;
+  font-weight: 700;
+  font-size: 20px;
+>>>>>>> f6dfbbf69b75ceb173df6b2e55d64e1943954ee2
+>>>>>>> 6f3e1231dbbf21d9e9191af2350e9486e8609650
 }
 
 .sos-menu-btn {
   border: none;
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 6f3e1231dbbf21d9e9191af2350e9486e8609650
   background: var(--surface);
   width: 38px;
   height: 38px;
@@ -139,12 +202,28 @@ p {
 .sos-menu-icon {
   width: 20px;
   height: 20px;
+<<<<<<< HEAD
+=======
+=======
+  background: transparent;
+  cursor: pointer;
+}
+
+.sos-menu-icon {
+  width: 22px;
+  height: 22px;
+>>>>>>> f6dfbbf69b75ceb173df6b2e55d64e1943954ee2
+>>>>>>> 6f3e1231dbbf21d9e9191af2350e9486e8609650
 }
 
 .sos-sidebar {
   position: fixed;
   top: 0;
   right: -300px;
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 6f3e1231dbbf21d9e9191af2350e9486e8609650
   width: 270px;
   height: 100vh;
   background: #ffffff;
@@ -152,12 +231,28 @@ p {
   padding: 20px 16px;
   transition: right 0.22s ease;
   box-shadow: -24px 0 44px rgba(15, 23, 42, 0.22);
+<<<<<<< HEAD
+=======
+=======
+  width: 260px;
+  height: 100vh;
+  background: #fff;
+  z-index: 20;
+  padding: 16px;
+  transition: right 0.2s ease;
+  box-shadow: -2px 0 12px rgba(0, 0, 0, 0.15);
+>>>>>>> f6dfbbf69b75ceb173df6b2e55d64e1943954ee2
+>>>>>>> 6f3e1231dbbf21d9e9191af2350e9486e8609650
 }
 
 .sos-sidebar.active {
   right: 0;
 }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 6f3e1231dbbf21d9e9191af2350e9486e8609650
 .sos-sidebar h4 {
   margin: 0 0 12px 0;
   font-size: 0.95rem;
@@ -175,19 +270,42 @@ p {
 
 .sos-nav-link:hover {
   background: #f1f5f9;
+<<<<<<< HEAD
+=======
+=======
+.sos-sidebar a {
+  display: block;
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+>>>>>>> f6dfbbf69b75ceb173df6b2e55d64e1943954ee2
+>>>>>>> 6f3e1231dbbf21d9e9191af2350e9486e8609650
 }
 
 .sos-overlay {
   position: fixed;
   inset: 0;
+<<<<<<< HEAD
   background: rgba(2, 6, 23, 0.45);
   z-index: 20;
+=======
+<<<<<<< HEAD
+  background: rgba(2, 6, 23, 0.45);
+  z-index: 20;
+=======
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 10;
+>>>>>>> f6dfbbf69b75ceb173df6b2e55d64e1943954ee2
+>>>>>>> 6f3e1231dbbf21d9e9191af2350e9486e8609650
 }
 
 .btn-sos-primary,
 .btn-sos-secondary {
   border: none;
   color: #fff;
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 6f3e1231dbbf21d9e9191af2350e9486e8609650
   border-radius: 12px;
   padding: 11px 14px;
   cursor: pointer;
@@ -223,6 +341,23 @@ p {
   cursor: not-allowed;
   filter: grayscale(0.25) brightness(0.92);
   box-shadow: none;
+<<<<<<< HEAD
+=======
+=======
+  border-radius: 8px;
+  padding: 10px 12px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.btn-sos-primary {
+  background: #dc2626;
+}
+
+.btn-sos-secondary {
+  background: #00547a;
+>>>>>>> f6dfbbf69b75ceb173df6b2e55d64e1943954ee2
+>>>>>>> 6f3e1231dbbf21d9e9191af2350e9486e8609650
 }
 
 .inline-row {
@@ -230,6 +365,10 @@ p {
   gap: 8px;
 }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 6f3e1231dbbf21d9e9191af2350e9486e8609650
 .inline-row > .btn-sos-primary,
 .inline-row > .btn-sos-secondary,
 .inline-row > a.btn-sos-primary,
@@ -240,10 +379,19 @@ p {
   align-items: center;
 }
 
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> f6dfbbf69b75ceb173df6b2e55d64e1943954ee2
+>>>>>>> 6f3e1231dbbf21d9e9191af2350e9486e8609650
 .mt-12 { margin-top: 12px; }
 .mt-16 { margin-top: 16px; }
 
 .error {
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 6f3e1231dbbf21d9e9191af2350e9486e8609650
   color: #b91c1c;
   font-size: 0.86rem;
   margin-top: 10px;
@@ -290,11 +438,27 @@ p {
   gap: 6px;
   font-size: 0.93rem;
   line-height: 1.4;
+<<<<<<< HEAD
+=======
+=======
+  color: #dc2626;
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+.card {
+  background: #f8f9fa;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 12px;
+>>>>>>> f6dfbbf69b75ceb173df6b2e55d64e1943954ee2
+>>>>>>> 6f3e1231dbbf21d9e9191af2350e9486e8609650
 }
 
 .list-col {
   display: flex;
   flex-direction: column;
+<<<<<<< HEAD
   gap: 9px;
 }
 
@@ -518,6 +682,12 @@ p {
   transform: translateY(1px);
 }
 
+=======
+<<<<<<< HEAD
+  gap: 9px;
+}
+
+>>>>>>> 6f3e1231dbbf21d9e9191af2350e9486e8609650
 .input,
 textarea.input,
 select.input {
@@ -568,6 +738,7 @@ label.inline-row {
   .sos-bg {
     display: none;
   }
+<<<<<<< HEAD
 
   .auth-modal {
     max-width: 100%;
@@ -591,4 +762,17 @@ label.inline-row {
     border-radius: 13px;
     font-size: 0.95rem;
   }
+=======
+=======
+  gap: 8px;
+}
+
+.input {
+  width: 100%;
+  height: 40px;
+  padding: 8px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+>>>>>>> f6dfbbf69b75ceb173df6b2e55d64e1943954ee2
+>>>>>>> 6f3e1231dbbf21d9e9191af2350e9486e8609650
 }

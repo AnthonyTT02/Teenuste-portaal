@@ -20,6 +20,10 @@ function wrap(node) {
   return <AppLayout>{node}</AppLayout>;
 }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 6f3e1231dbbf21d9e9191af2350e9486e8609650
 const infoContent = {
   settings: {
     title: 'Настройки',
@@ -209,6 +213,11 @@ const infoContent = {
   }
 };
 
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> f6dfbbf69b75ceb173df6b2e55d64e1943954ee2
+>>>>>>> 6f3e1231dbbf21d9e9191af2350e9486e8609650
 export default function App() {
   return (
     <Routes>
@@ -229,6 +238,10 @@ export default function App() {
       <Route path="/order/5" element={wrap(<Slide5 />)} />
       <Route path="/order/6" element={wrap(<Slide6 />)} />
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 6f3e1231dbbf21d9e9191af2350e9486e8609650
       <Route path="/settings" element={wrap(<InfoPage {...infoContent.settings} />)} />
       <Route path="/terms" element={wrap(<InfoPage {...infoContent.terms} />)} />
       <Route path="/security" element={wrap(<InfoPage {...infoContent.security} />)} />
@@ -236,6 +249,18 @@ export default function App() {
       <Route path="/for-business" element={wrap(<InfoPage {...infoContent.forBusiness} />)} />
       <Route path="/for-individuals" element={wrap(<InfoPage {...infoContent.forIndividuals} />)} />
       <Route path="/contacts" element={wrap(<InfoPage {...infoContent.contacts} />)} />
+<<<<<<< HEAD
+=======
+=======
+      <Route path="/settings" element={wrap(<InfoPage title="Настройки" text="Раздел настроек перенесен в React. Здесь можно продолжить развитие переключателей и сохранение параметров через API." />)} />
+      <Route path="/terms" element={wrap(<InfoPage title="Условия пользования" text="Статическая страница условий доступна в React-версии." />)} />
+      <Route path="/security" element={wrap(<InfoPage title="Правила безопасности" text="Рекомендации безопасности перенесены в React-версию." />)} />
+      <Route path="/get-started" element={wrap(<InfoPage title="Как начать работать" text="Пошаговая инструкция доступна в React-версии." />)} />
+      <Route path="/for-business" element={wrap(<InfoPage title="Для юридических лиц" text="Информация для компаний перенесена в React-версию." />)} />
+      <Route path="/for-individuals" element={wrap(<InfoPage title="Для физических лиц" text="Информация для пользователей перенесена в React-версию." />)} />
+      <Route path="/contacts" element={wrap(<InfoPage title="Контакты" text="Контактные данные и каналы поддержки доступны в React-версии." />)} />
+>>>>>>> f6dfbbf69b75ceb173df6b2e55d64e1943954ee2
+>>>>>>> 6f3e1231dbbf21d9e9191af2350e9486e8609650
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

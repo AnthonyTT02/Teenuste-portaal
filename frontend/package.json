@@ -11,11 +11,28 @@
   "dependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+<<<<<<< HEAD
     "react-router-dom": "^6.28.0",
     "sos-narva-backend": "file:.."
+=======
+<<<<<<< HEAD
+    "react-router-dom": "^6.28.0",
+    "sos-narva-backend": "file:.."
+=======
+    "react-router-dom": "^6.28.0"
+>>>>>>> f6dfbbf69b75ceb173df6b2e55d64e1943954ee2
+>>>>>>> 6f3e1231dbbf21d9e9191af2350e9486e8609650
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.3",
     "vite": "^5.4.10"
   }
+<<<<<<< HEAD
 }
+=======
+<<<<<<< HEAD
+}
+=======
+}
+>>>>>>> f6dfbbf69b75ceb173df6b2e55d64e1943954ee2
+>>>>>>> 6f3e1231dbbf21d9e9191af2350e9486e8609650

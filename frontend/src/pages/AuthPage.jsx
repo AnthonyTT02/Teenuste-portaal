@@ -5,6 +5,7 @@ import { api } from '../api';
 export function AuthPage() {
   const nav = useNavigate();
   const [login, setLogin] = useState({ username: '', password: '' });
+<<<<<<< HEAD
   const [reg, setReg] = useState({ username: '', password: '', phone: '' });
   const [rememberMe, setRememberMe] = useState(false);
   const [loginErr, setLoginErr] = useState('');
@@ -16,10 +17,19 @@ export function AuthPage() {
   async function signIn() {
     setLoginErr('');
     setIsLoginBusy(true);
+=======
+  const [company, setCompany] = useState({ username: '', password: '' });
+  const [reg, setReg] = useState({ username: '', password: '', phone: '' });
+  const [err, setErr] = useState('');
+
+  async function userLogin() {
+    setErr('');
+>>>>>>> 6f3e1231dbbf21d9e9191af2350e9486e8609650
     try {
       const j = await api('/api/login', { method: 'POST', body: JSON.stringify(login) });
       localStorage.setItem('userId', String(j.userId));
       localStorage.setItem('username', login.username);
+<<<<<<< HEAD
       localStorage.removeItem('providerId');
       localStorage.setItem('rememberMe', rememberMe ? '1' : '0');
 
@@ -43,25 +53,52 @@ export function AuthPage() {
       }
     } finally {
       setIsLoginBusy(false);
+=======
+      nav('/cabinet');
+    } catch (e) {
+      setErr(e.payload?.error || e.message);
+    }
+  }
+
+  async function companyLogin() {
+    setErr('');
+    try {
+      const j = await api('/api/company-login', { method: 'POST', body: JSON.stringify(company) });
+      localStorage.setItem('userId', String(j.userId));
+      localStorage.setItem('providerId', String(j.providerId || ''));
+      nav('/company?providerId=' + encodeURIComponent(j.providerId));
+    } catch (e) {
+      setErr(e.payload?.error || e.message);
+>>>>>>> 6f3e1231dbbf21d9e9191af2350e9486e8609650
     }
   }
 
   async function register() {
+<<<<<<< HEAD
     setRegErr('');
     setIsRegBusy(true);
+=======
+    setErr('');
+>>>>>>> 6f3e1231dbbf21d9e9191af2350e9486e8609650
     try {
       await api('/api/register-user', { method: 'POST', body: JSON.stringify(reg) });
       alert('Аккаунт создан');
       setReg({ username: '', password: '', phone: '' });
+<<<<<<< HEAD
       setIsSignupOpen(false);
     } catch (e) {
       setRegErr(e.payload?.error || e.message);
     } finally {
       setIsRegBusy(false);
+=======
+    } catch (e) {
+      setErr(e.payload?.error || e.message);
+>>>>>>> 6f3e1231dbbf21d9e9191af2350e9486e8609650
     }
   }
 
   return (
+<<<<<<< HEAD
     <div className="auth-layout">
       <div className="auth-shell">
         <h1 className="auth-main-title">Welcome back</h1>
@@ -180,6 +217,26 @@ export function AuthPage() {
           </div>
         </div>
       ) : null}
+=======
+    <div style={{ padding: 20 }}>
+      <h3>Вход</h3>
+      <input className="input" placeholder="Имя" value={login.username} onChange={(e) => setLogin({ ...login, username: e.target.value })} />
+      <input className="input mt-12" type="password" placeholder="Пароль" value={login.password} onChange={(e) => setLogin({ ...login, password: e.target.value })} />
+      <button className="btn-sos-primary mt-12" onClick={userLogin}>Войти</button>
+
+      <h3 className="mt-16">Регистрация</h3>
+      <input className="input" placeholder="Имя" value={reg.username} onChange={(e) => setReg({ ...reg, username: e.target.value })} />
+      <input className="input mt-12" type="password" placeholder="Пароль" value={reg.password} onChange={(e) => setReg({ ...reg, password: e.target.value })} />
+      <input className="input mt-12" placeholder="Телефон" value={reg.phone} onChange={(e) => setReg({ ...reg, phone: e.target.value })} />
+      <button className="btn-sos-primary mt-12" onClick={register}>Зарегистрироваться</button>
+
+      <h3 className="mt-16">Вход компании</h3>
+      <input className="input" placeholder="Логин" value={company.username} onChange={(e) => setCompany({ ...company, username: e.target.value })} />
+      <input className="input mt-12" type="password" placeholder="Пароль" value={company.password} onChange={(e) => setCompany({ ...company, password: e.target.value })} />
+      <button className="btn-sos-primary mt-12" onClick={companyLogin}>Войти как компания</button>
+
+      {err ? <div className="error">{err}</div> : null}
+>>>>>>> 6f3e1231dbbf21d9e9191af2350e9486e8609650
     </div>
   );
 }

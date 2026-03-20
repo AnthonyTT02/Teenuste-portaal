@@ -1,3 +1,10 @@
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> f6dfbbf69b75ceb173df6b2e55d64e1943954ee2
+>>>>>>> 6f3e1231dbbf21d9e9191af2350e9486e8609650
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -42,3 +49,55 @@
 </script>
 </body>
 </html>
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+=======
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Вход — SOS Narva</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="sos-page">
+<div class="phone-frame">
+  <div class="sos-header">
+    <a href="cabinet.html" class="sos-logo">SOS Narva</a>
+  </div>
+  <div style="text-align: center; padding: 40px 20px;">
+    <h2 style="color: #e53935;">Вход</h2>
+    <form id="loginForm">
+      <input type="text" name="username" placeholder="Имя пользователя" required style="margin-bottom:10px;width:90%;"><br>
+      <input type="password" name="password" placeholder="Пароль" required style="margin-bottom:10px;width:90%;"><br>
+      <button type="submit" class="btn-sos-primary">Войти</button>
+    </form>
+    <div id="loginError" style="color:#e53935;margin-top:10px;display:none;"></div>
+  </div>
+</div>
+<script>
+  document.getElementById('loginForm').onsubmit = async function(e) {
+    e.preventDefault();
+    const username = this.username.value;
+    const password = this.password.value;
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      window.location.href = 'Slide_1.html';
+    } else {
+      document.getElementById('loginError').innerText = data.error || 'Ошибка входа';
+      document.getElementById('loginError').style.display = 'block';
+    }
+  };
+</script>
+</body>
+</html>
+>>>>>>> 749d43b93c75b07192de6f04c21877c6ff7a531e
+>>>>>>> f6dfbbf69b75ceb173df6b2e55d64e1943954ee2
+>>>>>>> 6f3e1231dbbf21d9e9191af2350e9486e8609650

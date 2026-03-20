@@ -1,3 +1,10 @@
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> f6dfbbf69b75ceb173df6b2e55d64e1943954ee2
+>>>>>>> 6f3e1231dbbf21d9e9191af2350e9486e8609650
 const pool = require('./db');
 
 async function createCompanyCarsTable() {
@@ -24,3 +31,37 @@ async function createCompanyCarsTable() {
 }
 
 createCompanyCarsTable();
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+=======
+const pool = require('./db');
+
+async function createCompanyCarsTable() {
+  try {
+    console.log('Creating company_cars table...');
+    
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS company_cars (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        provider_id INT NOT NULL,
+        brand VARCHAR(255) NOT NULL,
+        model VARCHAR(255) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (provider_id) REFERENCES providers(id) ON DELETE CASCADE
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+    `);
+    
+    console.log('✓ Table company_cars created successfully!');
+    process.exit(0);
+  } catch (err) {
+    console.error('✗ Error creating table:', err.message);
+    process.exit(1);
+  }
+}
+
+createCompanyCarsTable();
+>>>>>>> 749d43b93c75b07192de6f04c21877c6ff7a531e
+>>>>>>> f6dfbbf69b75ceb173df6b2e55d64e1943954ee2
+>>>>>>> 6f3e1231dbbf21d9e9191af2350e9486e8609650
