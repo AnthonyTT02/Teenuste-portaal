@@ -6,10 +6,7 @@
 	"main": "server.js",
 	"scripts": {
 		"start": "node server.js",
-		"seed": "node run-seed.js",
-		"frontend:dev": "npm --prefix frontend run dev",
-		"frontend:build": "npm --prefix frontend run build",
-		"start:one": "npm run frontend:build && node server.js"
+		"seed": "node run-seed.js"
 	},
 	"dependencies": {
 		"dotenv": "^16.0.3",

@@ -38,8 +38,6 @@ if (hasFrontendBuild) {
 	app.use(express.static(frontendDistPath));
 }
 
-app.use(express.static(path.join(__dirname)));
-
 function hashPassword(password) {
 	return crypto.createHash('sha256').update(String(password || '')).digest('hex');
 }
