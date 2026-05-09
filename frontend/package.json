@@ -1,38 +1,26 @@
 {
-  "name": "sos-narva-frontend",
+  "name": "frontend",
   "private": true,
-  "version": "1.0.0",
+  "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
   "dependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-<<<<<<< HEAD
-    "react-router-dom": "^6.28.0",
-    "sos-narva-backend": "file:.."
-=======
-<<<<<<< HEAD
-    "react-router-dom": "^6.28.0",
-    "sos-narva-backend": "file:.."
-=======
-    "react-router-dom": "^6.28.0"
->>>>>>> f6dfbbf69b75ceb173df6b2e55d64e1943954ee2
->>>>>>> 6f3e1231dbbf21d9e9191af2350e9486e8609650
+    "@react-oauth/google": "^0.13.5",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^7.14.2"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.3.3",
-    "vite": "^5.4.10"
+    "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.19",
+    "concurrently": "^9.2.1",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.4",
+    "vite": "^5.2.0"
   }
-<<<<<<< HEAD
 }
-=======
-<<<<<<< HEAD
-}
-=======
-}
->>>>>>> f6dfbbf69b75ceb173df6b2e55d64e1943954ee2
->>>>>>> 6f3e1231dbbf21d9e9191af2350e9486e8609650

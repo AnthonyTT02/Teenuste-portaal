@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  background-color: #f8f9fc;
+  font-family: 'Inter', sans-serif;
+  color: #111827;
+}
+
+/* Custom smoother inputs based on design */
+input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(91, 108, 249, 0.2);
+}

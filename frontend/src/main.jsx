@@ -1,25 +1,21 @@
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import React from 'react';
-import { createRoot } from 'react-dom/client';
+import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
-import App from './App';
-import './styles.css';
+import App from './App.jsx';
+import { SidebarProvider } from './context/SidebarContext';
+import './index.css';
 
-createRoot(document.getElementById('root')).render(
-<<<<<<< HEAD
-  <BrowserRouter>
-    <App />
-  </BrowserRouter>
-=======
-<<<<<<< HEAD
-  <BrowserRouter>
-    <App />
-  </BrowserRouter>
-=======
+const GOOGLE_CLIENT_ID = '32910920723-oi72keskjbos419jb2a9t0asss37eit0.apps.googleusercontent.com';
+
+ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+      <BrowserRouter>
+        <SidebarProvider>
+          <App />
+        </SidebarProvider>
+      </BrowserRouter>
+    </GoogleOAuthProvider>
   </React.StrictMode>
->>>>>>> f6dfbbf69b75ceb173df6b2e55d64e1943954ee2
->>>>>>> 6f3e1231dbbf21d9e9191af2350e9486e8609650
 );
