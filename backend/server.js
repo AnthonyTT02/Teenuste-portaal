@@ -35,6 +35,28 @@ function hashPassword(password) {
 function generateToken() {
   return crypto.randomBytes(32).toString('hex');
 }
+async function isUserPhoneTaken(phone, excludeUserId) {
+  try {
+    if (!phone) return false;
+    const q = excludeUserId ? 'SELECT id FROM users WHERE phone = ? AND id != ?' : 'SELECT id FROM users WHERE phone = ?';
+    const params = excludeUserId ? [phone, excludeUserId] : [phone];
+    const [rows] = await pool.query(q, params);
+    return rows && rows.length > 0;
+  } catch (err) {
+    console.error('Phone check error:', err.message);
+    return false;
+  }
+}
+async function isEmployeePhoneTaken(providerId, phone) {
+  try {
+    if (!phone) return false;
+    const [rows] = await pool.query('SELECT id FROM company_employees WHERE provider_id = ? AND phone = ?', [providerId, phone]);
+    return rows && rows.length > 0;
+  } catch (err) {
+    console.error('Employee phone check error:', err.message);
+    return false;
+  }
+}
 async function verifyCompanyAccess(userId, providerId) {
   try {
     const [rows] = await pool.query(
@@ -72,6 +94,9 @@ app.post('/api/register-user', async (req, res) => {
     }
     if (password.length < 3) {
       return res.status(400).json({ ok: false, error: 'Пароль должен быть минимум 3 символа' });
+    }
+    if (await isUserPhoneTaken(phone)) {
+      return res.status(400).json({ ok: false, error: 'Этот номер телефона уже используется' });
     }
     const hashed = hashPassword(password);
     const [result] = await pool.query(
@@ -268,6 +293,9 @@ app.post('/admin/users', ensureAdmin, async (req,res)=>{
     const {username,password,role,phone,provider_id} = req.body;
     if(!username||!password) return res.status(400).json({ok:false,error:'username/password required'});
     const hashed = hashPassword(password);
+    if (phone && await isUserPhoneTaken(phone)) {
+      return res.status(400).json({ ok: false, error: 'Этот номер телефона уже используется' });
+    }
     const [result]= await pool.query('INSERT INTO users (username,password,role,phone,provider_id) VALUES (?,?,?,?,?)',[username,hashed,role||'user',phone||null,provider_id||null]);
     res.json({ok:true,userId:result.insertId});
   } catch(err){res.status(500).json({ok:false,error:err.message});}
@@ -298,6 +326,9 @@ app.get('/admin/employees', ensureAdmin, async (req,res)=>{
 });
 app.post('/admin/employees', ensureAdmin, async (req,res)=>{
   try{const {provider_id,name,phone,languages,is_online} = req.body;
+    if (phone && await isEmployeePhoneTaken(provider_id, phone)) {
+      return res.status(400).json({ ok: false, error: 'Этот номер телефона уже привязан к другому сотруднику' });
+    }
     const [r]=await pool.query('INSERT INTO company_employees (provider_id,name,phone,languages,is_online) VALUES (?,?,?,?,?)',[provider_id,name,phone,JSON.stringify(languages||[]), is_online?1:0]);
     res.json({ok:true,employeeId:r.insertId});
   }catch(err){res.status(500).json({ok:false,error:err.message});}
@@ -604,6 +635,10 @@ app.post('/api/provider/:id/employee', async (req, res) => {
     if (!name || !phone) {
       return res.status(400).json({ ok: false, error: 'name and phone required' });
     }
+    
+    if (await isEmployeePhoneTaken(id, phone)) {
+      return res.status(400).json({ ok: false, error: 'Этот номер телефона уже привязан к другому сотруднику' });
+    }
     const [result] = await pool.query(
       'INSERT INTO company_employees (provider_id, name, phone, languages, is_online) VALUES (?, ?, ?, ?, true)',
       [id, name, phone, languages ? JSON.stringify(languages) : null]
@@ -709,6 +744,10 @@ app.put('/api/user/:id', async (req, res) => {
       values.push(username);
     }
     if (phone) {
+      
+      if (await isUserPhoneTaken(phone, id)) {
+        return res.status(400).json({ ok: false, error: 'Этот номер телефона уже используется' });
+      }
       updates.push('phone = ?');
       values.push(phone);
     }
@@ -968,6 +1007,10 @@ app.post('/api/register-provider-full', async (req, res) => {
         if (emp && emp.name && emp.phone) {
           console.log(`Inserting employee: "${emp.name}"`);
           try {
+            if (await isEmployeePhoneTaken(providerId, emp.phone)) {
+              console.error(`✗ Duplicate employee phone detected for provider ${providerId}: ${emp.phone}`);
+              return res.status(400).json({ ok: false, error: `Номер телефона сотрудника ${emp.phone} уже используется` });
+            }
             await pool.query(
               'INSERT INTO company_employees (provider_id, name, phone, languages) VALUES (?, ?, ?, ?)',
               [providerId, emp.name, emp.phone, emp.languages ? JSON.stringify(emp.languages) : null]
@@ -1010,6 +1053,10 @@ app.post('/api/register-provider-full', async (req, res) => {
     if (companyLogin && companyPassword) {
       try {
         const hashedCompanyPass = hashPassword(companyPassword);
+        if (companyPhone && await isUserPhoneTaken(companyPhone)) {
+          console.error('Company phone already used:', companyPhone);
+          return res.status(400).json({ ok: false, error: 'Этот номер телефона уже используется' });
+        }
         await pool.query(
           'INSERT INTO users (username, password, phone, role, provider_id) VALUES (?, ?, ?, ?, ?)',
           [companyLogin, hashedCompanyPass, companyPhone || null, 'company', providerId]
