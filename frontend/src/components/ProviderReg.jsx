@@ -18,12 +18,14 @@ export default function ProviderReg() {
   const [success, setSuccess] = useState(false);
   const [accountEmail, setAccountEmail] = useState('');
   const [accountPhone, setAccountPhone] = useState(userPhone);
+  const [photoPreview, setPhotoPreview] = useState('');
   const [formData, setFormData] = useState({
     government_name: '',
     government_surname: '',
     isikukood: '',
     bank_account: '',
     email: '',
+    photo: null,
   });
 
   useEffect(() => {
@@ -47,6 +49,23 @@ export default function ProviderReg() {
       value = value.toUpperCase().replace(/\s/g, '').slice(0, 20);
     }
     setFormData(p => ({ ...p, [name]: value }));
+  };
+
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        setError('Photo size must be less than 5MB');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const base64 = event.target.result;
+        setPhotoPreview(base64);
+        setFormData(p => ({ ...p, photo: base64 }));
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const toggleService = (id) => {
@@ -140,28 +159,51 @@ export default function ProviderReg() {
             {/* Step 2: Personal Details */}
             {step === 2 && (
               <div className="space-y-4">
+                {/* Photo Upload */}
+                <div>
+                  <label className="block text-xs font-bold tracking-wide mb-2 text-gray-700">Profile Photo</label>
+                  <div className="flex items-end gap-4">
+                    <div className="flex-1">
+                      <label htmlFor="photo-input" className="w-full flex items-center justify-center p-4 border-2 border-dashed border-gray-200/60 hover:border-brand/40 rounded-2xl bg-gray-50/50 hover:bg-gray-50 cursor-pointer transition-all">
+                        <div className="text-center">
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="mx-auto text-gray-400 mb-1">
+                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>
+                          </svg>
+                          <p className="text-xs font-semibold text-gray-600">Click to upload photo (max 5MB)</p>
+                        </div>
+                      </label>
+                      <input id="photo-input" type="file" accept="image/*" onChange={handlePhotoChange} className="hidden" />
+                    </div>
+                    {photoPreview && (
+                      <div className="w-20 h-20 rounded-2xl overflow-hidden border border-gray-200/60 flex-shrink-0">
+                        <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
+                      </div>
+                    )}
+                  </div>
+                </div>
+
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-bold tracking-wide mb-1.5 text-gray-700">First Name *</label>
+                    <label className="block text-xs font-bold tracking-wide mb-1.5 text-gray-700">First Name</label>
                     <input name="government_name" value={formData.government_name} onChange={handleInput}
                       className="w-full px-4 py-3 rounded-2xl bg-gray-50/50 border border-gray-200/60 focus:border-brand/40 focus:ring-[4px] focus:ring-brand/15 transition-all outline-none text-sm"
-                      placeholder="John" />
+                      placeholder="Artjom" />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold tracking-wide mb-1.5 text-gray-700">Last Name *</label>
+                    <label className="block text-xs font-bold tracking-wide mb-1.5 text-gray-700">Last Name</label>
                     <input name="government_surname" value={formData.government_surname} onChange={handleInput}
                       className="w-full px-4 py-3 rounded-2xl bg-gray-50/50 border border-gray-200/60 focus:border-brand/40 focus:ring-[4px] focus:ring-brand/15 transition-all outline-none text-sm"
-                      placeholder="Doe" />
+                      placeholder="Slavyantsev" />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold tracking-wide mb-1.5 text-gray-700">Isikukood *</label>
+                  <label className="block text-xs font-bold tracking-wide mb-1.5 text-gray-700">Isikukood</label>
                   <input name="isikukood" value={formData.isikukood} onChange={handleInput}
                     className="w-full px-4 py-3 rounded-2xl bg-gray-50/50 border border-gray-200/60 focus:border-brand/40 focus:ring-[4px] focus:ring-brand/15 transition-all outline-none text-sm"
                     placeholder="38001010000" />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold tracking-wide mb-1.5 text-gray-700">Bank Account (IBAN) *</label>
+                  <label className="block text-xs font-bold tracking-wide mb-1.5 text-gray-700">Bank Account (IBAN)</label>
                   <input name="bank_account" value={formData.bank_account} onChange={handleInput}
                     className="w-full px-4 py-3 rounded-2xl bg-gray-50/50 border border-gray-200/60 focus:border-brand/40 focus:ring-[4px] focus:ring-brand/15 transition-all outline-none text-sm"
                     placeholder="EE382200221020145685" />
@@ -183,6 +225,13 @@ export default function ProviderReg() {
             {/* Step 3: Review */}
             {step === 3 && (
               <div className="bg-gray-50 rounded-2xl p-5 space-y-3">
+                {photoPreview && (
+                  <div className="flex justify-center mb-4">
+                    <div className="w-32 h-32 rounded-2xl overflow-hidden border-2 border-gray-200 shadow-sm">
+                      <img src={photoPreview} alt="Profile" className="w-full h-full object-cover" />
+                    </div>
+                  </div>
+                )}
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div><p className="text-xs text-gray-400 uppercase mb-0.5">Name</p><p className="font-bold text-gray-800">{formData.government_name} {formData.government_surname}</p></div>
                   <div><p className="text-xs text-gray-400 uppercase mb-0.5">Isikukood</p><p className="font-bold text-gray-800">{formData.isikukood}</p></div>

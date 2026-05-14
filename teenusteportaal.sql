@@ -125,6 +125,7 @@ CREATE TABLE `worker_applications` (
   `bank_account` varchar(191) NOT NULL,
   `email` varchar(191) NOT NULL,
   `services` varchar(191) NOT NULL,
+  `photo` longblob DEFAULT NULL,
   `status` varchar(191) NOT NULL DEFAULT 'pending',
   `created_at` datetime(3) NOT NULL DEFAULT current_timestamp(3)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

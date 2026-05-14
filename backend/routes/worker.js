@@ -13,7 +13,7 @@ router.get('/api/worker/application-status/:userId', async (req, res) => {
 // Apply to be a worker
 router.post('/api/worker/apply', async (req, res) => {
   try {
-    const { userId, government_name, government_surname, isikukood, bank_account, email, services } = req.body;
+    const { userId, government_name, government_surname, isikukood, bank_account, email, services, photo } = req.body;
     if (!userId || !government_name || !government_surname || !isikukood || !bank_account || !email) {
       return res.status(400).json({ ok: false, error: 'All fields are required' });
     }
@@ -23,9 +23,9 @@ router.post('/api/worker/apply', async (req, res) => {
     const [apps] = await db.query('SELECT id FROM worker_applications WHERE user_id = ? AND status = ?', [userId, 'pending']);
     if (apps.length > 0) return res.status(400).json({ ok: false, error: 'You already have a pending application' });
     const [result] = await db.query(
-      `INSERT INTO worker_applications (user_id, government_name, government_surname, isikukood, bank_account, email, services, status)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-      [userId, government_name, government_surname, isikukood, bank_account, email, JSON.stringify(services), 'pending']
+      `INSERT INTO worker_applications (user_id, government_name, government_surname, isikukood, bank_account, email, services, photo, status)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [userId, government_name, government_surname, isikukood, bank_account, email, JSON.stringify(services), photo || null, 'pending']
     );
     res.json({ ok: true, applicationId: result.insertId });
   } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
