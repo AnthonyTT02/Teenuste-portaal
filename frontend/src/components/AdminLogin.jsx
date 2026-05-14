@@ -1,11 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../api';
-import { useSidebar } from '../context/SidebarContext';
 
 function AdminLogin() {
   const navigate = useNavigate();
-  const { openSidebar } = useSidebar();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -31,14 +29,6 @@ function AdminLogin() {
   return (
     <div className="w-full max-w-md animate-fade-in-up">
       <div className="backdrop-blur-xl bg-white/60 border border-white/40 shadow-2xl rounded-[2rem] p-10 relative overflow-hidden">
-        {/* Меню кнопка */}
-        <button 
-          onClick={openSidebar}
-          className="absolute top-6 right-6 p-2 rounded-full bg-white/40 hover:bg-white/80 transition-colors text-gray-500 shadow-sm border border-white/50"
-        >
-          <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-        </button>
-
         {/* Декоративный блик внутри карточки */}
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#4f46e5] to-transparent opacity-50"></div>
         

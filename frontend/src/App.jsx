@@ -2,6 +2,7 @@ import React from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import Login from './components/Login';
 import Register from './components/Register';
+import ForgotPassword from './components/ForgotPassword';
 import Cabinet from './components/Cabinet';
 import Sidebar from './components/Sidebar';
 import Settings from './components/Settings';
@@ -15,8 +16,9 @@ import ProviderReg from './components/ProviderReg';
 import RequestHelp from './components/RequestHelp';
 import AdminLogin from './components/AdminLogin';
 import Admin from './components/Admin';
-import Company from './components/Company';
-import Dispatcher from './components/Dispatcher';
+import Moderator from './components/Moderator';
+import SupportLogin from './components/SupportLogin';
+import Support from './components/Support';
 import Provider from './components/Provider';
 import VerifyEmail from './components/VerifyEmail';
 
@@ -32,6 +34,7 @@ export default function App() {
       <div className="z-10 w-full flex justify-center animate-fade-in-up">
         <Routes>
           <Route path="/" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/register" element={<Register />} />
           <Route path="/cabinet" element={<Cabinet />} />
           <Route path="/settings" element={<Settings />} />
@@ -43,10 +46,12 @@ export default function App() {
           <Route path="/for-individuals" element={<ForIndividuals />} />
           <Route path="/provider-reg" element={<ProviderReg />} />
           <Route path="/request-help" element={<RequestHelp />} />
+          <Route path="/request-assistance" element={<RequestHelp />} />
           <Route path="/admin-login" element={<AdminLogin />} />
           <Route path="/admin" element={<Admin />} />
-          <Route path="/company" element={<Company />} />
-          <Route path="/dispatcher" element={<Dispatcher />} />
+          <Route path="/moderator" element={<Moderator />} />
+          <Route path="/support-login" element={<SupportLogin />} />
+          <Route path="/support" element={<Support />} />
           <Route path="/provider" element={<Provider />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="*" element={<Navigate to="/" replace />} />

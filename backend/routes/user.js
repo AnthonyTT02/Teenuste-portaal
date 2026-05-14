@@ -1,0 +1,59 @@
+const express = require('express');
+const router = express.Router();
+const db = require('../db');
+const { isUserPhoneTaken } = require('../utils');
+
+// Get user profile
+router.get('/api/user/:id', async (req, res) => {
+  try {
+    const [users] = await db.query('SELECT id, username, phone, email, role, status, is_worker, worker_online, government_name, government_surname, language FROM users WHERE id = ?', [req.params.id]);
+    if (users.length === 0) return res.status(404).json({ ok: false, error: 'Not found' });
+    res.json({ ok: true, user: users[0] });
+  } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
+});
+
+// Update user profile
+router.put('/api/user/:id', async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const { username, phone } = req.body;
+    if (!username && !phone) return res.status(400).json({ ok: false, error: 'At least one field is required' });
+    if (phone && await isUserPhoneTaken(phone, id)) return res.status(400).json({ ok: false, error: 'Этот номер телефона уже используется' });
+    
+    let updates = [];
+    let params = [];
+    if (username) { updates.push('username = ?'); params.push(username); }
+    if (phone) { updates.push('phone = ?'); params.push(phone); }
+    if (updates.length > 0) {
+      params.push(id);
+      try {
+        const [result] = await db.query(`UPDATE users SET ${updates.join(', ')} WHERE id = ?`, params);
+        if (result.affectedRows === 0) return res.status(404).json({ ok: false, error: 'User not found' });
+      } catch (err) {
+        if (err.code === 'ER_DUP_ENTRY') return res.status(400).json({ ok: false, error: 'Username already taken' });
+        throw err;
+      }
+    }
+    res.json({ ok: true, message: 'Profile updated successfully' });
+  } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
+});
+
+// Update user language
+router.put('/api/user/:id/language', async (req, res) => {
+  try {
+    await db.query('UPDATE users SET language = ? WHERE id = ?', [req.body.language, req.params.id]);
+    res.json({ ok: true });
+  } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
+});
+
+// Check username availability
+router.get('/api/check-username', async (req, res) => {
+  try {
+    const username = (req.query.username || '').trim();
+    if (!username) return res.json({ ok: false, available: false, error: 'username required' });
+    const [users] = await db.query('SELECT id FROM users WHERE username = ?', [username]);
+    res.json({ ok: true, available: users.length === 0 });
+  } catch (e) { res.status(500).json({ ok: false, available: false, error: e.message }); }
+});
+
+module.exports = router;

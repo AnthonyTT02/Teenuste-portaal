@@ -1,63 +1,215 @@
-import React, { useState } from 'react';
-import { useSidebar } from '../context/SidebarContext';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { MapContainer, TileLayer, Marker } from 'react-leaflet';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import { api } from '../api';
+
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+});
 
 function Provider() {
-  const [status, setStatus] = useState('offline');
-  const { openSidebar } = useSidebar();
+  const navigate = useNavigate();
+  const userId = localStorage.getItem('userId');
+  const [worker, setWorker] = useState(null);
+  const [workerServices, setWorkerServices] = useState([]);
+  const [isOnline, setIsOnline] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [toggling, setToggling] = useState(false);
+  const [activeOrders, setActiveOrders] = useState([]);
+  const [showServicesModal, setShowServicesModal] = useState(false);
+  const [allServices, setAllServices] = useState([]);
+  const [selectedServiceIds, setSelectedServiceIds] = useState([]);
+  const [savingServices, setSavingServices] = useState(false);
+
+  useEffect(() => {
+    if (!userId) { navigate('/'); return; }
+    fetchWorkerData();
+    api('/api/services').then(r => setAllServices(r.services || [])).catch(() => {});
+  }, [userId]);
+
+  const fetchWorkerData = async () => {
+    try {
+      setLoading(true);
+      const res = await api(`/api/worker/${userId}`);
+      setWorker(res.user);
+      setWorkerServices(res.services || []);
+      setSelectedServiceIds((res.services || []).map(s => s.id));
+      setIsOnline(res.user.worker_online === 1);
+      const ordersRes = await api(`/api/user/${userId}/orders/active`);
+      setActiveOrders((ordersRes.orders || []).filter(o => o.worker_user_id === Number(userId)));
+    } catch (e) { console.error(e); }
+    setLoading(false);
+  };
+
+  const toggleOnline = async () => {
+    setToggling(true);
+    try {
+      const newState = !isOnline;
+      await api('/api/worker/online', { method: 'PATCH', body: JSON.stringify({ userId: Number(userId), isOnline: newState }) });
+      setIsOnline(newState);
+    } catch (e) { console.error(e); }
+    setToggling(false);
+  };
+
+  const toggleServiceId = (id) => {
+    setSelectedServiceIds(prev => prev.includes(id) ? prev.filter(s => s !== id) : [...prev, id]);
+  };
+
+  const saveServices = async () => {
+    setSavingServices(true);
+    try {
+      await api(`/api/worker/${userId}/services`, { method: 'PUT', body: JSON.stringify({ serviceIds: selectedServiceIds }) });
+      await fetchWorkerData();
+      setShowServicesModal(false);
+    } catch (e) { console.error(e); }
+    setSavingServices(false);
+  };
+
+  const handleSignOut = () => { localStorage.clear(); navigate('/'); };
+
+  if (loading) {
+    return (
+      <div className="w-full max-w-lg mt-8 flex items-center justify-center py-16">
+        <p className="text-gray-400">Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-lg animate-fade-in-up mt-8 relative">
-      <button 
-        onClick={openSidebar}
-        className="absolute -top-4 -right-4 p-3 rounded-full bg-white shadow-xl hover:bg-gray-50 transition-colors text-gray-600 border border-gray-100 z-50"
-      >
-        <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-      </button>
-
-      <div className="backdrop-blur-xl bg-white/60 border border-white/40 shadow-2xl rounded-[2rem] p-6 text-center">
-        
-        {/* Status Toggle Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div className="text-left">
-            <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Provider Hub</h1>
-            <p className="text-sm font-medium text-gray-500">John Master</p>
-          </div>
-          <div className="flex items-center gap-3 bg-white/50 px-4 py-2 rounded-xl shadow-inner border border-white">
-            <span className={`w-3 h-3 rounded-full ${status === 'online' ? 'bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.6)]' : 'bg-gray-400'}`}></span>
-            <span className="font-bold text-gray-700">{status === 'online' ? 'Online' : 'Offline'}</span>
-            <div 
-              onClick={() => setStatus(status === 'online' ? 'offline' : 'online')}
-              className={`w-12 h-6 rounded-full p-1 cursor-pointer transition-colors duration-300 flex items-center ${status === 'online' ? 'bg-green-500' : 'bg-gray-300'}`}
-            >
-              <div className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-300 ${status === 'online' ? 'translate-x-6' : 'translate-x-0'}`}></div>
+      {/* Services Modal */}
+      {showServicesModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl p-8 shadow-2xl max-w-sm w-full mx-4 animate-fade-in-up">
+            <h2 className="text-xl font-extrabold text-gray-900 mb-4">Manage My Services</h2>
+            <div className="space-y-2 mb-6">
+              {allServices.map(s => (
+                <button key={s.id} type="button" onClick={() => toggleServiceId(s.id)}
+                  className={`w-full flex items-center p-3 border rounded-xl transition-all text-left ${selectedServiceIds.includes(s.id) ? 'bg-brand/5 border-brand/40' : 'bg-gray-50 border-gray-200 hover:bg-white'}`}>
+                  <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 mr-3 ${selectedServiceIds.includes(s.id) ? 'bg-brand border-brand' : 'border-gray-300'}`}>
+                    {selectedServiceIds.includes(s.id) && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>}
+                  </div>
+                  <p className="font-semibold text-gray-800 text-sm">{s.name}</p>
+                </button>
+              ))}
+            </div>
+            <div className="flex gap-3">
+              <button onClick={() => setShowServicesModal(false)} className="flex-1 py-3 bg-gray-100 text-gray-700 font-bold rounded-2xl">Cancel</button>
+              <button onClick={saveServices} disabled={savingServices} className="flex-1 py-3 bg-brand text-white font-bold rounded-2xl disabled:opacity-50">
+                {savingServices ? 'Saving...' : 'Save'}
+              </button>
             </div>
           </div>
         </div>
+      )}
 
-        {/* Current / Incoming Order (Demo) */}
-        {status === 'online' ? (
-          <div className="bg-gradient-to-br from-white to-gray-50 border border-white shadow-lg rounded-3xl p-6 relative overflow-hidden animate-pulse-slow">
-            <div className="absolute top-0 right-0 w-24 h-24 bg-yellow-400/10 rounded-full filter blur-xl"></div>
-            <h2 className="text-lg font-bold text-gray-800 mb-1">New Order Nearby!</h2>
-            <p className="text-sm text-gray-500 mb-6">Battery Jump Start • 2.5 km away</p>
-            
-            <div className="space-y-3">
-              <button className="w-full bg-[#4f46e5] text-white font-bold py-4 rounded-2xl shadow-lg hover:shadow-xl hover:bg-[#4338ca] hover:-translate-y-0.5 transition-all">
-                Accept Job
-              </button>
-              <button className="w-full bg-white text-gray-700 font-bold py-4 rounded-2xl shadow-sm border border-gray-200 hover:bg-gray-50 transition-colors">
-                Decline
-              </button>
+      <div className="backdrop-blur-xl bg-white/60 border border-white/40 shadow-2xl rounded-[2rem] p-6">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-6">
+          <div>
+            <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Worker Hub</h1>
+            <p className="text-sm font-medium text-gray-500">
+              {worker?.government_name} {worker?.government_surname || worker?.username}
+            </p>
+          </div>
+          <button onClick={handleSignOut} className="px-4 py-2 text-sm bg-gray-50 hover:bg-red-50 text-gray-500 hover:text-red-500 rounded-xl font-bold border border-gray-200 transition-colors">
+            Sign Out
+          </button>
+        </div>
+
+        {/* Online Toggle */}
+        <div className="flex items-center justify-between bg-white/60 border border-white rounded-2xl p-4 mb-6 shadow-inner">
+          <div className="flex items-center gap-3">
+            <span className={`w-3 h-3 rounded-full transition-all duration-300 ${isOnline ? 'bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.6)]' : 'bg-gray-400'}`} />
+            <div>
+              <p className="font-bold text-gray-700">{isOnline ? 'Online' : 'Offline'}</p>
+              <p className="text-xs text-gray-400">{isOnline ? 'Receiving orders' : 'Not receiving orders'}</p>
             </div>
           </div>
+          <button
+            onClick={toggleOnline}
+            disabled={toggling}
+            className={`w-14 h-7 rounded-full p-1 cursor-pointer transition-colors duration-300 flex items-center disabled:opacity-60 ${isOnline ? 'bg-green-500' : 'bg-gray-300'}`}
+          >
+            <div className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform duration-300 ${isOnline ? 'translate-x-7' : 'translate-x-0'}`} />
+          </button>
+        </div>
+
+        {/* My Services */}
+        <div className="mb-6">
+          <div className="flex justify-between items-center mb-2">
+            <h3 className="text-sm font-bold text-gray-500 uppercase">My Services</h3>
+            <button onClick={() => setShowServicesModal(true)} className="text-xs font-bold text-brand hover:underline">
+              + Manage Services
+            </button>
+          </div>
+          {workerServices.length > 0 ? (
+            <div className="flex flex-wrap gap-2">
+              {workerServices.map(s => (
+                <span key={s.id} className="px-3 py-1 bg-brand/10 text-brand rounded-full text-xs font-semibold">{s.name}</span>
+              ))}
+            </div>
+          ) : (
+            <p className="text-xs text-gray-400">No services added yet. Click "Manage Services" to add some.</p>
+          )}
+        </div>
+
+        {/* Status area */}
+        {isOnline ? (
+          <div>
+            {activeOrders.length > 0 ? (
+              <div className="space-y-4">
+                <h3 className="font-bold text-gray-700 mb-2">Active Orders</h3>
+                {activeOrders.map(o => {
+                  const hasLocation = o.lat && o.lng;
+                  return (
+                    <div key={o.id} className="bg-gradient-to-br from-white to-gray-50 border border-white shadow-lg rounded-3xl overflow-hidden">
+                      <div className="p-5">
+                        <h4 className="font-bold text-gray-800 mb-1">Order #{o.id}</h4>
+                        <p className="text-sm text-gray-500 mb-1">{o.vehicleBrand} {o.vehicleModel} — {o.regNumber}</p>
+                        <p className="text-sm text-gray-500 mb-1">Address: {o.address}</p>
+                        {o.price && <p className="text-sm font-bold text-brand">€{Number(o.price).toFixed(2)} · {o.paymentType}</p>}
+                      </div>
+                      {hasLocation && (
+                        <div className="h-48 w-full">
+                          <MapContainer center={[o.lat, o.lng]} zoom={15} style={{ height: '100%', width: '100%' }} key={`${o.id}-${o.lat}-${o.lng}`}>
+                            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="© OpenStreetMap" />
+                            <Marker position={[o.lat, o.lng]} />
+                          </MapContainer>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="bg-gradient-to-br from-white to-gray-50 border border-white shadow-lg rounded-3xl p-6 text-center relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-green-400/10 rounded-full filter blur-xl" />
+                <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-3">
+                  <div className="w-4 h-4 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.6)]" />
+                </div>
+                <h2 className="text-lg font-bold text-gray-800 mb-1">Waiting for orders</h2>
+                <p className="text-sm text-gray-400">You'll receive orders that match your services</p>
+              </div>
+            )}
+          </div>
         ) : (
-          <div className="py-12 px-6 bg-white/40 rounded-3xl border border-white border-dashed text-gray-400">
-            <svg className="w-16 h-16 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
-            <p className="font-medium">You are currently offline.</p>
-            <p className="text-sm">Go online to start receiving orders.</p>
+          <div className="py-10 px-6 bg-white/40 rounded-3xl border border-white border-dashed text-gray-400 text-center">
+            <svg className="w-14 h-14 mx-auto mb-3 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+            <p className="font-semibold">You are currently offline.</p>
+            <p className="text-sm mt-1">Toggle the switch above to start receiving orders.</p>
           </div>
         )}
 
+        {/* Back to Cabinet */}
+        <button onClick={() => navigate('/cabinet')} className="w-full mt-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-2xl transition-colors text-sm">
+          ← Back to Cabinet
+        </button>
       </div>
     </div>
   );

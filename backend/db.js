@@ -1,16 +1,18 @@
 const mysql = require('mysql2/promise');
 require('dotenv').config();
 
+// Parse DATABASE_URL: mysql://user:pass@host:port/dbname
+const url = new URL(process.env.DATABASE_URL);
+
 const pool = mysql.createPool({
-  host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'teenuste_portaal',
+  host: url.hostname,
+  port: Number(url.port) || 3306,
+  user: url.username,
+  password: url.password,
+  database: url.pathname.replace('/', ''),
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0,
-  multipleStatements: true,
-  timezone: 'Z'
+  charset: 'utf8mb4'
 });
 
 module.exports = pool;

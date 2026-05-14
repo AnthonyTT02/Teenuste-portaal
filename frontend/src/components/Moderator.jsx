@@ -1,0 +1,114 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { api } from '../api';
+import LanguageSwitcher from './LanguageSwitcher';
+
+function Moderator() {
+  const navigate = useNavigate();
+  const [applications, setApplications] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [services, setServices] = useState([]);
+
+  useEffect(() => { fetchAll(); }, []);
+
+  const fetchAll = async () => {
+    try {
+      setLoading(true);
+      const [appsRes, svcRes] = await Promise.all([
+        api('/api/moderator/pending-applications'),
+        api('/api/services')
+      ]);
+      setApplications(appsRes.applications || []);
+      setServices(svcRes.services || []);
+    } catch (err) {
+      setError(err.message || 'Failed to load applications');
+    } finally { setLoading(false); }
+  };
+
+  const handleApprove = async (id) => {
+    try {
+      await api(`/api/moderator/approve-application/${id}`, { method: 'POST', body: JSON.stringify({ approve: true }) });
+      setApplications(prev => prev.filter(a => a.id !== id));
+    } catch { setError('Failed to approve application'); }
+  };
+
+  const handleReject = async (id) => {
+    try {
+      await api(`/api/moderator/approve-application/${id}`, { method: 'POST', body: JSON.stringify({ approve: false }) });
+      setApplications(prev => prev.filter(a => a.id !== id));
+    } catch { setError('Failed to reject application'); }
+  };
+
+  const handleSignOut = () => {
+    localStorage.clear();
+    navigate('/');
+  };
+
+  return (
+    <div className="w-full max-w-5xl animate-fade-in-up">
+      <div className="backdrop-blur-xl bg-white/60 border border-white/40 shadow-2xl rounded-[2rem] p-10 mt-8 relative">
+
+        <div className="flex justify-between items-center mb-10">
+          <div>
+            <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#4f46e5] to-[#3b82f6] mb-2 tracking-tight">Moderator Panel</h1>
+            <p className="text-gray-500 font-medium">Review and approve worker applications</p>
+          </div>
+          <div className="flex gap-3 items-center">
+            <LanguageSwitcher />
+            <button onClick={handleSignOut} className="px-5 py-2.5 rounded-xl bg-gray-50 hover:bg-red-50 text-gray-600 hover:text-red-500 font-bold text-sm transition-colors border border-gray-200/60 hover:border-red-200">
+              Sign Out
+            </button>
+          </div>
+        </div>
+
+        {error && <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm font-semibold">{error}</div>}
+
+        {loading ? (
+          <div className="text-center py-12 text-gray-400">Loading applications...</div>
+        ) : applications.length === 0 ? (
+          <div className="text-center py-16">
+            <p className="text-gray-500 text-lg font-medium">No pending worker applications</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {applications.map(app => (
+              <div key={app.id} className="bg-white/60 border border-white/80 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-800">{app.government_name} {app.government_surname}</h3>
+                    <p className="text-sm text-gray-500">@{app.user?.username} · {app.user?.phone}</p>
+                  </div>
+                  <span className="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-xs font-bold">Pending</span>
+                </div>
+
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4 text-sm">
+                  <div><p className="text-xs text-gray-500 uppercase mb-1">Isikukood</p><p className="font-semibold text-gray-800">{app.isikukood}</p></div>
+                  <div><p className="text-xs text-gray-500 uppercase mb-1">Bank Account</p><p className="font-semibold text-gray-800">{app.bank_account}</p></div>
+                  <div><p className="text-xs text-gray-500 uppercase mb-1">Email</p><p className="font-semibold text-gray-800">{app.email}</p></div>
+                  <div className="col-span-2 md:col-span-3">
+                    <p className="text-xs text-gray-500 uppercase mb-1">Services</p>
+                    <div className="flex flex-wrap gap-2">
+                      {(Array.isArray(app.services) ? app.services : []).map(sid => {
+                        const svc = services.find(s => s.id === Number(sid));
+                        return svc ? <span key={sid} className="px-2 py-0.5 bg-brand/10 text-brand rounded-full text-xs font-semibold">{svc.name}</span> : null;
+                      })}
+                    </div>
+                  </div>
+                  <div><p className="text-xs text-gray-500 uppercase mb-1">Applied</p><p className="font-semibold text-gray-800">{new Date(app.created_at).toLocaleDateString()}</p></div>
+                </div>
+
+                <div className="flex gap-3">
+                  <button onClick={() => handleApprove(app.id)} className="flex-1 px-4 py-2.5 bg-green-500 hover:bg-green-600 text-white font-bold rounded-xl transition-colors">Approve</button>
+                  <button onClick={() => handleReject(app.id)} className="flex-1 px-4 py-2.5 bg-red-500 hover:bg-red-600 text-white font-bold rounded-xl transition-colors">Reject</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default Moderator;
