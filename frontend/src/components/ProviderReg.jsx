@@ -123,11 +123,14 @@ export default function ProviderReg() {
                 <div className="space-y-2">
                   {services.map(s => (
                     <button key={s.id} type="button" onClick={() => toggleService(s.id)}
-                      className={`w-full flex items-center p-4 border rounded-2xl transition-all text-left ${selectedServices.includes(s.id) ? 'bg-brand/5 border-brand/40 shadow-sm' : 'bg-gray-50/50 border-gray-200/60 hover:bg-white'}`}>
-                      <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-colors ${selectedServices.includes(s.id) ? 'bg-brand border-brand' : 'border-gray-300'}`}>
-                        {selectedServices.includes(s.id) && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>}
+                      className={`w-full flex items-center justify-between p-4 border rounded-2xl transition-all text-left ${selectedServices.includes(s.id) ? 'bg-brand/5 border-brand/40 shadow-sm' : 'bg-gray-50/50 border-gray-200/60 hover:bg-white'}`}>
+                      <div className="flex items-center">
+                        <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-colors ${selectedServices.includes(s.id) ? 'bg-brand border-brand' : 'border-gray-300'}`}>
+                          {selectedServices.includes(s.id) && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>}
+                        </div>
+                        <p className="ml-3 font-semibold text-gray-800">{s.name}</p>
                       </div>
-                      <p className="ml-3 font-semibold text-gray-800">{s.name}</p>
+                      <p className="font-semibold text-brand">€{(s.price || 0).toFixed(2)}</p> 
                     </button>
                   ))}
                 </div>
