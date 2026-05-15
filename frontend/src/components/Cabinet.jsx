@@ -167,10 +167,11 @@ export default function Cabinet() {
       )}
 
       <div className="relative z-10">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-black tracking-tighter text-[#111827]">
-            Teenuste<span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-light">Portaal</span>
-          </h1>
+        <div className="flex justify-between items-center mb-4">
+          <div>
+            <h1 className="text-3xl font-extrabold text-[#111827] tracking-tight">{t('greeting', { name: user?.username || '' })}</h1>
+            <p className="text-sm text-gray-500 mt-1">{t('cabinet')}</p>
+          </div>
           <div className="flex gap-2 items-center">
             <LanguageSwitcher />
             <button onClick={handleSignOut} className="px-4 py-2 rounded-xl bg-gray-50 hover:bg-red-50 text-gray-600 hover:text-red-500 font-bold text-[13px] transition-colors border border-gray-200/60">{t('sign_out')}</button>
@@ -180,7 +181,68 @@ export default function Cabinet() {
           </div>
         </div>
 
-        <h2 className="text-3xl font-extrabold text-[#111827] mb-6 tracking-tight">{t('cabinet')}</h2>
+        {/* Compact column: Favorites -> Payment -> Profile (matching reference geometry) */}
+        <div className="space-y-4 mb-6">
+          {/* Favorites */}
+          <div className="bg-white/60 border border-gray-100 rounded-3xl p-5 shadow-sm">
+            <div className="flex justify-between items-start">
+              <div>
+                <h3 className="font-semibold text-gray-900">{t('favorites')}</h3>
+                <p className="text-sm text-gray-500 mt-2 whitespace-pre-line">{t('empty_favorites')}</p>
+              </div>
+              <div className="flex items-start">
+                <button className="ml-3 px-3 py-2 rounded-xl bg-gray-100 text-gray-700 text-sm font-semibold">+</button>
+              </div>
+            </div>
+          </div>
+
+          {/* Payment Method */}
+          <div className="bg-white/60 border border-gray-100 rounded-3xl p-5 shadow-sm">
+            <div className="flex justify-between items-center mb-3">
+              <h3 className="font-semibold text-gray-900">{t('payment_method')}</h3>
+              <button onClick={() => navigate('/settings')} className="text-sm text-brand font-semibold">{t('edit')}</button>
+            </div>
+            <p className="text-sm text-gray-500 mb-3">{t('bolt_balance')}: <span className="font-bold text-gray-800">0,00 €</span></p>
+            <div className="flex flex-col gap-2">
+              <button className="text-left px-3 py-2 rounded-xl bg-gray-100 text-gray-700">+ {t('add_payment_method')}</button>
+            </div>
+          </div>
+
+          {/* Profile card simplified to match reference */}
+          <div className="bg-white/60 border border-gray-100 rounded-3xl p-5 shadow-sm">
+            <div className="flex justify-between items-center mb-3">
+              <h3 className="font-semibold text-gray-900">{t('profile')}</h3>
+              <button onClick={() => navigate('/settings')} className="text-sm text-brand font-semibold">{t('edit')}</button>
+            </div>
+            <div className="space-y-3">
+              <div className="flex justify-between items-center">
+                <div>
+                  <p className="text-xs text-gray-400 uppercase">{t('username')}</p>
+                  <p className="font-medium text-gray-700">{user?.username}</p>
+                </div>
+                <button onClick={() => navigate('/settings')} className="text-sm text-brand font-semibold">{t('edit')}</button>
+              </div>
+              {user?.phone && (
+                <div className="flex justify-between items-center">
+                  <div>
+                    <p className="text-xs text-gray-400 uppercase">{t('phone')}</p>
+                    <p className="font-medium text-gray-700">{user.phone}</p>
+                  </div>
+                  <button onClick={() => navigate('/settings')} className="text-sm text-brand font-semibold">{t('edit')}</button>
+                </div>
+              )}
+              {user?.email && (
+                <div className="flex justify-between items-center">
+                  <div>
+                    <p className="text-xs text-gray-400 uppercase">{t('email')}</p>
+                    <p className="font-medium text-gray-700">{user.email}</p>
+                  </div>
+                  <button onClick={() => navigate('/settings')} className="text-sm text-brand font-semibold">{t('edit')}</button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
 
         {loading ? (
           <div className="text-center py-12 text-gray-400">{t('loading')}</div>
