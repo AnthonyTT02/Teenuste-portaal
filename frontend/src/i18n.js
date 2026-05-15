@@ -89,6 +89,8 @@ const resources = {
       "empty_favorites": "Empty favorites list\nMark favorite providers and they will appear here",
       "payment_method": "Payment method",
       "add_payment_method": "Add payment method",
+      "view_transactions": "View transactions",
+      "transactions": "Transactions",
       "bolt_balance": "My balance",
       "profile": "Profile",
       "edit": "Edit"
@@ -180,6 +182,8 @@ const resources = {
       "empty_favorites": "Пустой список избранных\nОтмечайте сердечком любимых поставщиков, и они появятся здесь",
       "payment_method": "Способ оплаты",
       "add_payment_method": "Добавить способ оплаты",
+      "view_transactions": "Просмотреть операции",
+      "transactions": "Операции",
       "bolt_balance": "Мой баланс",
       "profile": "Профиль",
       "edit": "Изменить"
@@ -271,6 +275,8 @@ const resources = {
       "empty_favorites": "Tühi lemmikute nimekiri\nMärgi lemmikpakkujad ja nad ilmuvad siia",
       "payment_method": "Makseviis",
       "add_payment_method": "Lisa makseviis",
+      "view_transactions": "Vaata tehinguid",
+      "transactions": "Tehingud",
       "bolt_balance": "Minu saldo",
       "profile": "Profiil",
       "edit": "Muuda"
