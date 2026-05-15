@@ -99,6 +99,8 @@ CREATE TABLE `users` (
   `email_verify_code` varchar(191) DEFAULT NULL,
   `email_verify_expires` datetime(3) DEFAULT NULL,
   `profile_photo` longtext DEFAULT NULL,
+  `worker_lat` double DEFAULT NULL,
+  `worker_lng` double DEFAULT NULL,
   `language` varchar(191) NOT NULL DEFAULT 'en'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -106,10 +108,10 @@ CREATE TABLE `users` (
 -- Дамп данных таблицы `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `password`, `phone`, `email`, `created_at`, `role`, `status`, `is_worker`, `worker_online`, `government_name`, `government_surname`, `email_verified`, `email_verify_code`, `email_verify_expires`, `profile_photo`, `language`) VALUES
-(1, 'admin', '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b', '', NULL, '0000-00-00 00:00:00.000', 'admin', 'user', 0, 0, NULL, NULL, 0, NULL, NULL, NULL, 'ru'),
-(2, 'support', '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b', '', NULL, '0000-00-00 00:00:00.000', 'user', 'support', 0, 0, NULL, NULL, 0, NULL, NULL, NULL, 'et'),
-(3, 'moderator', '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b', '', NULL, '0000-00-00 00:00:00.000', 'user', 'moderator', 0, 0, NULL, NULL, 0, NULL, NULL, NULL, 'en');
+INSERT INTO `users` (`id`, `username`, `password`, `phone`, `email`, `created_at`, `role`, `status`, `is_worker`, `worker_online`, `government_name`, `government_surname`, `email_verified`, `email_verify_code`, `email_verify_expires`, `profile_photo`, `worker_lat`, `worker_lng`, `language`) VALUES
+(1, 'admin', '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b', '', NULL, '0000-00-00 00:00:00.000', 'admin', 'user', 0, 0, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 'ru'),
+(2, 'support', '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b', '', NULL, '0000-00-00 00:00:00.000', 'user', 'support', 0, 0, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 'et'),
+(3, 'moderator', '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b', '', NULL, '0000-00-00 00:00:00.000', 'user', 'moderator', 0, 0, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 'en');
 
 -- --------------------------------------------------------
 

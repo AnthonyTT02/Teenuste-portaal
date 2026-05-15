@@ -57,6 +57,9 @@ function Provider() {
       setLoading(true);
       const res = await api(`/api/worker/${userId}`);
       setWorker(res.user);
+      if (Number.isFinite(Number(res.user.worker_lat)) && Number.isFinite(Number(res.user.worker_lng))) {
+        setWorkerLocation([Number(res.user.worker_lat), Number(res.user.worker_lng)]);
+      }
       setWorkerServices(res.services || []);
       setSelectedServiceIds((res.services || []).map(s => s.id));
       setIsOnline(res.user.worker_online === 1);
@@ -66,22 +69,22 @@ function Provider() {
     setLoading(false);
   };
 
-  const resolveWorkerLocation = () => new Promise((resolve) => {
+  const resolveWorkerLocation = (showStatus = true) => new Promise((resolve) => {
     if (!navigator.geolocation) {
-      setLocationStatus('Location unavailable, showing Narva.');
+      if (showStatus) setLocationStatus('Location unavailable, showing Narva.');
       resolve(NARVA_LOCATION);
       return;
     }
 
-    setLocationStatus('Finding your location...');
+    if (showStatus) setLocationStatus('Finding your location...');
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const nextLocation = [position.coords.latitude, position.coords.longitude];
-        setLocationStatus('Location found.');
+        if (showStatus) setLocationStatus('Location found.');
         resolve(nextLocation);
       },
       () => {
-        setLocationStatus('Location unavailable, showing Narva.');
+        if (showStatus) setLocationStatus('Location unavailable, showing Narva.');
         resolve(NARVA_LOCATION);
       },
       { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 }
@@ -92,17 +95,42 @@ function Provider() {
     setToggling(true);
     try {
       const newState = !isOnline;
+      let nextLocation = workerLocation;
       if (newState) {
-        const nextLocation = await resolveWorkerLocation();
+        nextLocation = await resolveWorkerLocation();
         setWorkerLocation(nextLocation);
       } else {
         setLocationStatus('');
       }
-      await api('/api/worker/online', { method: 'PATCH', body: JSON.stringify({ userId: Number(userId), isOnline: newState }) });
+      await api('/api/worker/online', {
+        method: 'PATCH',
+        body: JSON.stringify({ userId: Number(userId), isOnline: newState, lat: nextLocation[0], lng: nextLocation[1] })
+      });
       setIsOnline(newState);
     } catch (e) { console.error(e); }
     setToggling(false);
   };
+
+  useEffect(() => {
+    if (!isOnline || !userId) return undefined;
+
+    const saveWorkerLocation = async () => {
+      try {
+        const nextLocation = await resolveWorkerLocation(false);
+        setWorkerLocation(nextLocation);
+        await api('/api/worker/location', {
+          method: 'PATCH',
+          body: JSON.stringify({ userId: Number(userId), lat: nextLocation[0], lng: nextLocation[1] })
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+    saveWorkerLocation();
+    const intervalId = setInterval(saveWorkerLocation, 5000);
+    return () => clearInterval(intervalId);
+  }, [isOnline, userId]);
 
   const toggleServiceId = (id) => {
     setSelectedServiceIds(prev => prev.includes(id) ? prev.filter(s => s !== id) : [...prev, id]);

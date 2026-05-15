@@ -39,9 +39,32 @@ router.post('/api/worker/apply', async (req, res) => {
 // Set worker online status
 router.patch('/api/worker/online', async (req, res) => {
   try {
-    const { userId, isOnline } = req.body;
+    const { userId, isOnline, lat, lng } = req.body;
     if (!userId || typeof isOnline !== 'boolean') return res.status(400).json({ ok: false, error: 'userId and isOnline required' });
-    await db.query('UPDATE users SET worker_online = ? WHERE id = ?', [isOnline ? 1 : 0, userId]);
+    const workerLat = Number(lat);
+    const workerLng = Number(lng);
+
+    if (Number.isFinite(workerLat) && Number.isFinite(workerLng)) {
+      await db.query('UPDATE users SET worker_online = ?, worker_lat = ?, worker_lng = ? WHERE id = ?', [isOnline ? 1 : 0, workerLat, workerLng, userId]);
+    } else {
+      await db.query('UPDATE users SET worker_online = ? WHERE id = ?', [isOnline ? 1 : 0, userId]);
+    }
+    res.json({ ok: true });
+  } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
+});
+
+// Update worker location while online
+router.patch('/api/worker/location', async (req, res) => {
+  try {
+    const { userId, lat, lng } = req.body;
+    const workerLat = Number(lat);
+    const workerLng = Number(lng);
+
+    if (!userId || !Number.isFinite(workerLat) || !Number.isFinite(workerLng)) {
+      return res.status(400).json({ ok: false, error: 'userId, lat and lng required' });
+    }
+
+    await db.query('UPDATE users SET worker_lat = ?, worker_lng = ? WHERE id = ? AND worker_online = 1', [workerLat, workerLng, userId]);
     res.json({ ok: true });
   } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
 });
@@ -65,14 +88,14 @@ router.put('/api/worker/:userId/services', async (req, res) => {
 router.get('/api/workers/for-service/:serviceId', async (req, res) => {
   try {
     const [workers] = await db.query(`
-      SELECT u.id, u.government_name, u.government_surname, u.phone, s.price
+      SELECT u.id, u.government_name, u.government_surname, u.phone, u.worker_lat, u.worker_lng, s.price
       FROM worker_services ws
       JOIN users u ON ws.user_id = u.id
       JOIN services s ON ws.service_id = s.id
       WHERE ws.service_id = ? AND u.is_worker = 1 AND u.worker_online = 1
     `, [req.params.serviceId]);
     const formatted = workers.map(w => ({
-      id: w.id, name: w.government_name, surname: w.government_surname, phone: w.phone, price: w.price, eta: Math.floor(Math.random() * 20) + 10
+      id: w.id, name: w.government_name, surname: w.government_surname, phone: w.phone, lat: w.worker_lat, lng: w.worker_lng, price: w.price, eta: Math.floor(Math.random() * 20) + 10
     }));
     res.json({ ok: true, workers: formatted });
   } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
@@ -81,7 +104,7 @@ router.get('/api/workers/for-service/:serviceId', async (req, res) => {
 // Get worker details
 router.get('/api/worker/:userId', async (req, res) => {
   try {
-    const [users] = await db.query('SELECT id, username, phone, email, government_name, government_surname, profile_photo, is_worker, worker_online, status, role FROM users WHERE id = ?', [req.params.userId]);
+    const [users] = await db.query('SELECT id, username, phone, email, government_name, government_surname, profile_photo, worker_lat, worker_lng, is_worker, worker_online, status, role FROM users WHERE id = ?', [req.params.userId]);
     if (users.length === 0) return res.status(404).json({ ok: false, error: 'Not found' });
     
     const [services] = await db.query(`
