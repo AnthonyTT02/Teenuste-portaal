@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from './LanguageSwitcher';
 
 function Admin() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const userId = localStorage.getItem('userId');
   const authHeaders = { 'Content-Type': 'application/json', 'x-user-id': userId || '' };
@@ -71,9 +73,9 @@ function Admin() {
   };
 
   const statCards = [
-    { label: 'Total Users', value: stats.totalUsers, color: 'from-blue-500/10 to-blue-500/5 text-blue-600' },
-    { label: 'Active Workers', value: stats.activeWorkers, color: 'from-green-500/10 to-green-500/5 text-green-600' },
-    { label: 'Total Orders', value: stats.totalOrders, color: 'from-purple-500/10 to-purple-500/5 text-purple-600' },
+    { label: t('total_users', 'Total Users'), value: stats.totalUsers, color: 'from-blue-500/10 to-blue-500/5 text-blue-600' },
+    { label: t('active_workers', 'Active Workers'), value: stats.activeWorkers, color: 'from-green-500/10 to-green-500/5 text-green-600' },
+    { label: t('total_orders', 'Total Orders'), value: stats.totalOrders, color: 'from-purple-500/10 to-purple-500/5 text-purple-600' },
   ];
 
   return (
@@ -82,13 +84,13 @@ function Admin() {
 
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-4xl font-extrabold text-gray-900 mb-1">Admin Dashboard</h1>
-            <p className="text-gray-500">Real-time platform management</p>
+            <h1 className="text-4xl font-extrabold text-gray-900 mb-1">{t('admin_panel', 'Admin Dashboard')}</h1>
+            <p className="text-gray-500">{t('admin_subtitle', 'Real-time platform management')}</p>
           </div>
           <div className="flex gap-3 items-center">
             <LanguageSwitcher />
             <button onClick={handleSignOut} className="px-5 py-2.5 rounded-xl bg-gray-50 hover:bg-red-50 text-gray-600 hover:text-red-500 font-bold text-sm transition-colors border border-gray-200/60 hover:border-red-200">
-              Sign Out
+              {t('sign_out', 'Sign Out')}
             </button>
           </div>
         </div>
@@ -107,9 +109,9 @@ function Admin() {
 
         {/* Tabs */}
         <div className="flex gap-2 mb-6">
-          {['users', 'services'].map(t => (
-            <button key={t} onClick={() => setActiveTab(t)} className={`px-5 py-2 rounded-xl font-bold text-sm transition-colors capitalize ${activeTab === t ? 'bg-brand text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
-              {t} ({t === 'users' ? users.length : services.length})
+          {['users', 'services'].map(tKey => (
+            <button key={tKey} onClick={() => setActiveTab(tKey)} className={`px-5 py-2 rounded-xl font-bold text-sm transition-colors capitalize ${activeTab === tKey ? 'bg-brand text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
+              {t(tKey, tKey)} ({tKey === 'users' ? users.length : services.length})
             </button>
           ))}
         </div>

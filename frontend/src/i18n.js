@@ -5,6 +5,13 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 const resources = {
   en: {
     translation: {
+      "admin_panel": "Admin Dashboard",
+      "admin_subtitle": "Real-time platform management",
+      "total_users": "Total Users",
+      "active_workers": "Active Workers",
+      "total_orders": "Total Orders",
+      "users": "Users",
+      "services": "Services",
       "cabinet": "Cabinet",
       "sign_out": "Sign Out",
       "loading": "Loading...",
@@ -57,6 +64,13 @@ const resources = {
   },
   ru: {
     translation: {
+      "admin_panel": "Панель администратора",
+      "admin_subtitle": "Управление платформой в реальном времени",
+      "total_users": "Всего пользователей",
+      "active_workers": "Активные работники",
+      "total_orders": "Всего заказов",
+      "users": "Пользователи",
+      "services": "Услуги",
       "cabinet": "Кабинет",
       "sign_out": "Выйти",
       "loading": "Загрузка...",
@@ -109,6 +123,13 @@ const resources = {
   },
   et: {
     translation: {
+      "admin_panel": "Administraatori paneel",
+      "admin_subtitle": "Platvormi reaalajas haldamine",
+      "total_users": "Kasutajaid kokku",
+      "active_workers": "Aktiivsed töötajad",
+      "total_orders": "Tellimusi kokku",
+      "users": "Kasutajad",
+      "services": "Teenused",
       "cabinet": "Kabinet",
       "sign_out": "Logi välja",
       "loading": "Laadimine...",
