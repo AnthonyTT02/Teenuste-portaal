@@ -204,7 +204,7 @@ export default function Cabinet() {
             </div>
             <p className="text-sm text-gray-500 mb-3">{t('bolt_balance')}: <span className="font-bold text-gray-800">0,00 €</span></p>
             <div className="flex flex-col gap-2">
-              <button className="text-left px-3 py-2 rounded-xl bg-gray-100 text-gray-700">+ {t('add_payment_method')}</button>
+              <button onClick={() => navigate('/payment-methods')} className="text-left px-3 py-2 rounded-xl bg-gray-100 text-gray-700">+ {t('add_payment_method')}</button>
             </div>
           </div>
 
