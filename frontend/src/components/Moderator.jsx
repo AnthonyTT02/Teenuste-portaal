@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { api } from '../api';
 import LanguageSwitcher from './LanguageSwitcher';
 
 function Moderator() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -22,7 +24,7 @@ function Moderator() {
       setApplications(appsRes.applications || []);
       setServices(svcRes.services || []);
     } catch (err) {
-      setError(err.message || 'Failed to load applications');
+      setError(err.message || t('load_apps_failed', 'Failed to load applications'));
     } finally { setLoading(false); }
   };
 
@@ -30,14 +32,14 @@ function Moderator() {
     try {
       await api(`/api/moderator/approve-application/${id}`, { method: 'POST', body: JSON.stringify({ approve: true }) });
       setApplications(prev => prev.filter(a => a.id !== id));
-    } catch { setError('Failed to approve application'); }
+    } catch { setError(t('approve_failed', 'Failed to approve application')); }
   };
 
   const handleReject = async (id) => {
     try {
       await api(`/api/moderator/approve-application/${id}`, { method: 'POST', body: JSON.stringify({ approve: false }) });
       setApplications(prev => prev.filter(a => a.id !== id));
-    } catch { setError('Failed to reject application'); }
+    } catch { setError(t('reject_failed', 'Failed to reject application')); }
   };
 
   const handleSignOut = () => {
@@ -51,13 +53,13 @@ function Moderator() {
 
         <div className="flex justify-between items-center mb-10">
           <div>
-            <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#4f46e5] to-[#3b82f6] mb-2 tracking-tight">Moderator Panel</h1>
-            <p className="text-gray-500 font-medium">Review and approve worker applications</p>
+            <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#4f46e5] to-[#3b82f6] mb-2 tracking-tight">{t('moderator_panel', 'Moderator Panel')}</h1>
+            <p className="text-gray-500 font-medium">{t('moderator_subtitle', 'Review and approve worker applications')}</p>
           </div>
           <div className="flex gap-3 items-center">
             <LanguageSwitcher />
             <button onClick={handleSignOut} className="px-5 py-2.5 rounded-xl bg-gray-50 hover:bg-red-50 text-gray-600 hover:text-red-500 font-bold text-sm transition-colors border border-gray-200/60 hover:border-red-200">
-              Sign Out
+              {t('sign_out', 'Sign Out')}
             </button>
           </div>
         </div>
@@ -65,10 +67,10 @@ function Moderator() {
         {error && <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm font-semibold">{error}</div>}
 
         {loading ? (
-          <div className="text-center py-12 text-gray-400">Loading applications...</div>
+          <div className="text-center py-12 text-gray-400">{t('loading_apps', 'Loading applications...')}</div>
         ) : applications.length === 0 ? (
           <div className="text-center py-16">
-            <p className="text-gray-500 text-lg font-medium">No pending worker applications</p>
+            <p className="text-gray-500 text-lg font-medium">{t('no_pending_apps', 'No pending worker applications')}</p>
           </div>
         ) : (
           <div className="space-y-4">
