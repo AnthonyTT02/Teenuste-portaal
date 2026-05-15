@@ -266,8 +266,11 @@ function Provider() {
 
                 <div className="bg-gradient-to-br from-white to-gray-50 border border-white shadow-lg rounded-3xl p-6 text-center relative overflow-hidden">
                   <div className="absolute top-0 right-0 w-24 h-24 bg-green-400/10 rounded-full filter blur-xl" />
-                  <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-3">
-                    <div className="w-4 h-4 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.6)]" />
+                  <div className="worker-radar mx-auto mb-3" aria-hidden="true">
+                    <span className="worker-radar-pulse worker-radar-pulse-one" />
+                    <span className="worker-radar-pulse worker-radar-pulse-two" />
+                    <span className="worker-radar-sweep" />
+                    <span className="worker-radar-core" />
                   </div>
                   <h2 className="text-lg font-bold text-gray-800 mb-1">Waiting for orders</h2>
                   <p className="text-sm text-gray-400">You'll receive orders that match your services</p>
