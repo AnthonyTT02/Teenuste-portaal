@@ -265,7 +265,7 @@ function Provider() {
                       </div>
                       {hasLocation && (
                         <div className="h-48 w-full">
-                          <MapContainer center={[o.lat, o.lng]} zoom={15} style={{ height: '100%', width: '100%' }} key={`${o.id}-${o.lat}-${o.lng}`}>
+                          <MapContainer center={[o.lat, o.lng]} zoom={15} zoomControl={false} style={{ height: '100%', width: '100%' }} key={`${o.id}-${o.lat}-${o.lng}`}>
                             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="© OpenStreetMap" />
                             <Marker position={[o.lat, o.lng]} />
                           </MapContainer>
@@ -279,7 +279,7 @@ function Provider() {
               <div className="space-y-4">
                 <div className="bg-white/70 border border-white shadow-lg rounded-3xl overflow-hidden">
                   <div className="h-56 w-full">
-                    <MapContainer center={ESTONIA_CENTER} zoom={7} style={{ height: '100%', width: '100%' }}>
+                    <MapContainer center={ESTONIA_CENTER} zoom={7} zoomControl={false} style={{ height: '100%', width: '100%' }}>
                       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="© OpenStreetMap" />
                       <WorkerLocationAnimator position={workerLocation} />
                       <Marker position={workerLocation} />
