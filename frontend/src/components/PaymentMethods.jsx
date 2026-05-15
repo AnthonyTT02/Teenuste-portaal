@@ -72,7 +72,7 @@ export default function PaymentMethods(){
   ];
 
   return (
-    <div className="w-full max-w-md bg-white/80 backdrop-blur-xl border border-white/40 rounded-[2.5rem] shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05),0_0_80px_rgba(91,108,249,0.08)] p-8 overflow-hidden relative transition-all duration-500 hover:shadow-[0_30px_60px_-15px_rgba(91,108,249,0.15)] group">
+    <div className="w-full max-w-2xl bg-white/80 backdrop-blur-xl border border-white/40 rounded-[2.5rem] shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05),0_0_80px_rgba(91,108,249,0.08)] p-8 overflow-hidden relative transition-all duration-500 hover:shadow-[0_30px_60px_-15px_rgba(91,108,249,0.15)] group">
 
       <div className="absolute inset-0 bg-gradient-to-br from-white/60 to-transparent pointer-events-none opacity-50 rounded-[2.5rem]"></div>
       <div className="relative z-10">
@@ -92,22 +92,24 @@ export default function PaymentMethods(){
           <button onClick={() => setShowTx(true)} className="text-sm text-brand font-semibold mt-2 inline-block">{t('view_transactions', 'View transactions')}</button>
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-4">
           {methods.map(opt => (
-            <div key={opt.id} className="flex items-center justify-between p-4 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-              <div className="flex items-center gap-4">
+            <div key={opt.id} className="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-3 p-4 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex items-center gap-4 w-full sm:w-auto">
                 <div className="w-12 h-12 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center text-lg font-bold text-gray-700">{opt.label[0]}</div>
-                <div>
+                <div className="flex flex-col">
                   <div className="text-sm font-semibold text-gray-900">{opt.label}</div>
                   <div className="text-xs text-gray-400">{new Date(opt.createdAt).toLocaleDateString()}</div>
                 </div>
               </div>
-              <div className="flex items-center gap-4">
-                <label className={`w-5 h-5 rounded-full border ${defaultId===opt.id ? 'border-brand flex items-center justify-center' : 'border-gray-300'} `}>
-                  <input type="radio" name="payment" checked={defaultId===opt.id} onChange={() => handleSelect(opt.id)} className="hidden" />
-                  {defaultId===opt.id && <span className="w-3 h-3 bg-brand rounded-full" />}
-                </label>
-                <button onClick={() => handleRemove(opt.id)} className="text-sm text-red-500">Remove</button>
+
+              <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
+                <button onClick={() => handleSelect(opt.id)} aria-pressed={defaultId===opt.id} className={`flex items-center gap-2 px-3 py-2 rounded-full border ${defaultId===opt.id ? 'border-brand bg-brand/10' : 'border-gray-200 bg-white'} text-sm`}> 
+                  <span className={`w-3 h-3 rounded-full ${defaultId===opt.id ? 'bg-brand' : 'bg-gray-300'}`}></span>
+                  <span className="text-sm text-gray-700">{defaultId===opt.id ? 'Default' : 'Use'}</span>
+                </button>
+
+                <button onClick={() => handleRemove(opt.id)} className="text-sm text-red-500 hover:underline">Remove</button>
               </div>
             </div>
           ))}
