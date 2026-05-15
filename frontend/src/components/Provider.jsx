@@ -13,14 +13,14 @@ L.Icon.Default.mergeOptions({
 });
 
 const NARVA_LOCATION = [59.3797, 28.1791];
-const ESTONIA_CENTER = [58.75, 25.2];
+const CENTER = [0, 0];
 
 function WorkerLocationAnimator({ position }) {
   const map = useMap();
 
   useEffect(() => {
     if (!position) return;
-    map.setView(ESTONIA_CENTER, 7, { animate: true });
+    map.setView(CENTER, 7, { animate: true });
     const timer = setTimeout(() => {
       map.flyTo(position, 15, { animate: true, duration: 2.2 });
     }, 450);
@@ -279,7 +279,7 @@ function Provider() {
               <div className="space-y-4">
                 <div className="bg-white/70 border border-white shadow-lg rounded-3xl overflow-hidden">
                   <div className="h-56 w-full">
-                    <MapContainer center={ESTONIA_CENTER} zoom={7} zoomControl={false} style={{ height: '100%', width: '100%' }}>
+                    <MapContainer center={CENTER} zoom={7} zoomControl={false} style={{ height: '100%', width: '100%' }}>
                       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="© OpenStreetMap" />
                       <WorkerLocationAnimator position={workerLocation} />
                       <Marker position={workerLocation} />
