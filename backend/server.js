@@ -1,6 +1,5 @@
 const express = require('express');
 const path = require('path');
-const db = require('./db');
 require('dotenv').config();
 const session = require('express-session');
 const nodemailer = require('nodemailer');
@@ -8,31 +7,13 @@ const nodemailer = require('nodemailer');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Ensure default admin
-(async () => {
-  try {
-    const { hashPassword } = require('./utils');
-    const [rows] = await db.query('SELECT id FROM users WHERE username = ? AND role = ?', ['admin', 'admin']);
-    if (rows.length === 0) {
-      await db.query('INSERT INTO users (username, password, role, phone) VALUES (?, ?, ?, ?)', ['admin', '123', 'admin', '']);
-      console.log('Default admin created');
-    }
-  } catch (e) { console.error('ensureDefaultAdmin:', e.message); }
-})();
-
 // Middleware
 app.use(session({ secret: process.env.SESSION_SECRET || 'change_this', resave: false, saveUninitialized: false }));
-app.use(express.json({ limit: '2mb' }));
+app.use(express.json({ limit: '8mb' }));
 app.use(express.static(path.join(__dirname)));
 
 const transporter = nodemailer.createTransport({
   service: 'gmail', auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASSWORD }
-});
-
-// DB test
-app.get('/db-test', async (req, res) => {
-  try { await db.query('SELECT 1'); res.json({ ok: true }); }
-  catch (e) { res.status(500).json({ ok: false, error: e.message }); }
 });
 
 // Import external routes
@@ -57,8 +38,9 @@ app.use(supportRoutes);
 
 // Global error handler
 app.use((err, req, res, next) => {
-  if (err instanceof SyntaxError && err.status === 400 && 'body' in err) return res.status(400).json({ ok: false, error: '������������ JSON' });
-  res.status(500).json({ ok: false, error: err.message || '������ �������' });
+  if (err.type === 'entity.too.large') return res.status(413).json({ ok: false, error: 'Request body is too large' });
+  if (err instanceof SyntaxError && err.status === 400 && 'body' in err) return res.status(400).json({ ok: false, error: 'Invalid JSON' });
+  res.status(500).json({ ok: false, error: err.message || 'Server error' });
 });
 
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));

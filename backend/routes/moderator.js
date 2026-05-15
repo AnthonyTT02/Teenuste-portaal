@@ -6,15 +6,15 @@ const db = require('../db');
 router.get('/api/moderator/pending-applications', async (req, res) => {
   try {
     const [apps] = await db.query(`
-      SELECT a.*, u.username, u.phone
+      SELECT a.*, u.username, u.phone, u.profile_photo
       FROM worker_applications a
       JOIN users u ON a.user_id = u.id
       WHERE a.status = 'pending'
       ORDER BY a.created_at DESC
     `);
     const formatted = apps.map(a => {
-      const { username, phone, ...appData } = a;
-      return { ...appData, services: JSON.parse(appData.services || '[]'), user: { id: appData.user_id, username, phone } };
+      const { username, phone, profile_photo, ...appData } = a;
+      return { ...appData, services: JSON.parse(appData.services || '[]'), user: { id: appData.user_id, username, phone, profile_photo } };
     });
     res.json({ ok: true, applications: formatted });
   } catch (e) { res.status(500).json({ ok: false, error: e.message }); }

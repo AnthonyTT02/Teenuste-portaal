@@ -6,9 +6,32 @@ const { isUserPhoneTaken } = require('../utils');
 // Get user profile
 router.get('/api/user/:id', async (req, res) => {
   try {
-    const [users] = await db.query('SELECT id, username, phone, email, role, status, is_worker, worker_online, government_name, government_surname, language FROM users WHERE id = ?', [req.params.id]);
+    const [users] = await db.query('SELECT id, username, phone, email, role, status, is_worker, worker_online, government_name, government_surname, language, profile_photo FROM users WHERE id = ?', [req.params.id]);
     if (users.length === 0) return res.status(404).json({ ok: false, error: 'Not found' });
     res.json({ ok: true, user: users[0] });
+  } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
+});
+
+// Update user profile photo
+router.put('/api/user/:id/photo', async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const { photo } = req.body;
+
+    if (!photo || typeof photo !== 'string') {
+      return res.status(400).json({ ok: false, error: 'Photo is required' });
+    }
+    if (!photo.startsWith('data:image/')) {
+      return res.status(400).json({ ok: false, error: 'Photo must be an image' });
+    }
+    if (photo.length > 7 * 1024 * 1024) {
+      return res.status(400).json({ ok: false, error: 'Photo is too large' });
+    }
+
+    const [result] = await db.query('UPDATE users SET profile_photo = ? WHERE id = ?', [photo, id]);
+    if (result.affectedRows === 0) return res.status(404).json({ ok: false, error: 'User not found' });
+
+    res.json({ ok: true, photo });
   } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
 });
 

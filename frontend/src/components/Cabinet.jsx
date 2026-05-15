@@ -25,6 +25,10 @@ export default function Cabinet() {
   const [services, setServices] = useState([]);
   const [tab, setTab] = useState('active');
   const [hasPendingApp, setHasPendingApp] = useState(false);
+  const [photoUploading, setPhotoUploading] = useState(false);
+  const [photoError, setPhotoError] = useState('');
+  const profilePhoto = user?.profile_photo;
+  const profileStatus = user?.status || userStatus || 'user';
 
   useEffect(() => {
     if (!userId) { navigate('/'); return; }
@@ -63,6 +67,40 @@ export default function Cabinet() {
   };
 
   const handleSignOut = () => { localStorage.clear(); navigate('/'); };
+
+  const handlePhotoChange = async (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+
+    setPhotoError('');
+    if (!file.type.startsWith('image/')) {
+      setPhotoError('Please select an image file.');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setPhotoError('Photo size must be less than 5MB.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      const photo = event.target.result;
+      setPhotoUploading(true);
+      try {
+        await api(`/api/user/${userId}/photo`, {
+          method: 'PUT',
+          body: JSON.stringify({ photo })
+        });
+        setUser(prev => ({ ...prev, profile_photo: photo }));
+      } catch (err) {
+        setPhotoError(err.payload?.error || err.message || 'Photo upload failed.');
+      } finally {
+        setPhotoUploading(false);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
 
   const completeOrder = async (orderId) => {
     await api(`/api/order/${orderId}/complete`, { method: 'POST' });
@@ -151,14 +189,21 @@ export default function Cabinet() {
             {/* Profile Card */}
             <div className="bg-white/60 border border-gray-100 rounded-3xl p-5 mb-4 shadow-sm">
               <div className="flex items-center gap-4 mb-3">
-                <div className="w-12 h-12 rounded-2xl bg-brand/10 text-brand flex items-center justify-center text-xl font-bold">
-                  {(user?.username || '?')[0].toUpperCase()}
-                </div>
+                <label className="relative w-12 h-12 rounded-2xl overflow-hidden bg-brand/10 border border-gray-100 text-brand flex items-center justify-center text-xl font-bold cursor-pointer transition-all hover:ring-4 hover:ring-brand/15">
+                  {profilePhoto ? (
+                    <img src={profilePhoto} alt={user?.username || 'Profile'} className="w-full h-full object-cover" />
+                  ) : (
+                    <span>{(user?.username || '?')[0].toUpperCase()}</span>
+                  )}
+                  {photoUploading && <div className="absolute inset-0 bg-white/70 flex items-center justify-center text-[10px] font-bold text-brand">...</div>}
+                  <input type="file" accept="image/*" onChange={handlePhotoChange} className="hidden" disabled={photoUploading} />
+                </label>
                 <div>
                   <h3 className="font-bold text-gray-900 text-[17px]">{user?.username}</h3>
-                  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-brand/10 text-brand capitalize">{userStatus || 'user'}</span>
+                  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-brand/10 text-brand capitalize">{profileStatus}</span>
                 </div>
               </div>
+              {photoError && <p className="mb-3 text-xs font-semibold text-red-500">{photoError}</p>}
               <div className="grid grid-cols-2 gap-2 text-sm">
                 {user?.phone && <div><p className="text-xs text-gray-400 uppercase">Phone</p><p className="font-medium text-gray-700">{user.phone}</p></div>}
                 {user?.email && <div><p className="text-xs text-gray-400 uppercase">Email</p><p className="font-medium text-gray-700">{user.email}</p></div>}

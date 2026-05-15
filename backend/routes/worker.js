@@ -13,19 +13,24 @@ router.get('/api/worker/application-status/:userId', async (req, res) => {
 // Apply to be a worker
 router.post('/api/worker/apply', async (req, res) => {
   try {
-    const { userId, government_name, government_surname, isikukood, bank_account, email, services, photo } = req.body;
+    const { userId, government_name, government_surname, isikukood, bank_account, email, services } = req.body;
     if (!userId || !government_name || !government_surname || !isikukood || !bank_account || !email) {
       return res.status(400).json({ ok: false, error: 'All fields are required' });
     }
     if (!services || !Array.isArray(services) || services.length === 0) {
       return res.status(400).json({ ok: false, error: 'Select at least one service' });
     }
+    const [users] = await db.query('SELECT profile_photo FROM users WHERE id = ?', [userId]);
+    if (users.length === 0) return res.status(404).json({ ok: false, error: 'User not found' });
+    if (!users[0].profile_photo) {
+      return res.status(400).json({ ok: false, error: 'Profile photo is required' });
+    }
     const [apps] = await db.query('SELECT id FROM worker_applications WHERE user_id = ? AND status = ?', [userId, 'pending']);
     if (apps.length > 0) return res.status(400).json({ ok: false, error: 'You already have a pending application' });
     const [result] = await db.query(
-      `INSERT INTO worker_applications (user_id, government_name, government_surname, isikukood, bank_account, email, services, photo, status)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [userId, government_name, government_surname, isikukood, bank_account, email, JSON.stringify(services), photo || null, 'pending']
+      `INSERT INTO worker_applications (user_id, government_name, government_surname, isikukood, bank_account, email, services, status)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [userId, government_name, government_surname, isikukood, bank_account, email, JSON.stringify(services), 'pending']
     );
     res.json({ ok: true, applicationId: result.insertId });
   } catch (e) { res.status(500).json({ ok: false, error: e.message }); }

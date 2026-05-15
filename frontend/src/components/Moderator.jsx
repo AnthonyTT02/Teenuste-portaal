@@ -75,9 +75,18 @@ function Moderator() {
             {applications.map(app => (
               <div key={app.id} className="bg-white/60 border border-white/80 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
                 <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <h3 className="text-xl font-bold text-gray-800">{app.government_name} {app.government_surname}</h3>
-                    <p className="text-sm text-gray-500">@{app.user?.username} · {app.user?.phone}</p>
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-2xl overflow-hidden bg-brand/10 border border-gray-100 text-brand flex items-center justify-center text-xl font-bold flex-shrink-0">
+                      {app.user?.profile_photo ? (
+                        <img src={app.user.profile_photo} alt={app.user?.username || 'Profile'} className="w-full h-full object-cover" />
+                      ) : (
+                        <span>{(app.user?.username || '?')[0].toUpperCase()}</span>
+                      )}
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-gray-800">{app.government_name} {app.government_surname}</h3>
+                      <p className="text-sm text-gray-500">@{app.user?.username} · {app.user?.phone}</p>
+                    </div>
                   </div>
                   <span className="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-xs font-bold">Pending</span>
                 </div>
