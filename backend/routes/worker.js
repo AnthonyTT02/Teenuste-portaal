@@ -81,7 +81,7 @@ router.get('/api/workers/for-service/:serviceId', async (req, res) => {
 // Get worker details
 router.get('/api/worker/:userId', async (req, res) => {
   try {
-    const [users] = await db.query('SELECT id, username, phone, email, government_name, government_surname, is_worker, worker_online, status, role FROM users WHERE id = ?', [req.params.userId]);
+    const [users] = await db.query('SELECT id, username, phone, email, government_name, government_surname, profile_photo, is_worker, worker_online, status, role FROM users WHERE id = ?', [req.params.userId]);
     if (users.length === 0) return res.status(404).json({ ok: false, error: 'Not found' });
     
     const [services] = await db.query(`

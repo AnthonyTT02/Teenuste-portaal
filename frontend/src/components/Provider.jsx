@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MapContainer, TileLayer, Marker } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { api } from '../api';
@@ -11,6 +11,24 @@ L.Icon.Default.mergeOptions({
   iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
   shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 });
+
+const NARVA_LOCATION = [59.3797, 28.1791];
+const ESTONIA_CENTER = [58.75, 25.2];
+
+function WorkerLocationAnimator({ position }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!position) return;
+    map.setView(ESTONIA_CENTER, 7, { animate: true });
+    const timer = setTimeout(() => {
+      map.flyTo(position, 15, { animate: true, duration: 2.2 });
+    }, 450);
+    return () => clearTimeout(timer);
+  }, [map, position]);
+
+  return null;
+}
 
 function Provider() {
   const navigate = useNavigate();
@@ -25,6 +43,8 @@ function Provider() {
   const [allServices, setAllServices] = useState([]);
   const [selectedServiceIds, setSelectedServiceIds] = useState([]);
   const [savingServices, setSavingServices] = useState(false);
+  const [workerLocation, setWorkerLocation] = useState(NARVA_LOCATION);
+  const [locationStatus, setLocationStatus] = useState('');
 
   useEffect(() => {
     if (!userId) { navigate('/'); return; }
@@ -46,10 +66,38 @@ function Provider() {
     setLoading(false);
   };
 
+  const resolveWorkerLocation = () => new Promise((resolve) => {
+    if (!navigator.geolocation) {
+      setLocationStatus('Location unavailable, showing Narva.');
+      resolve(NARVA_LOCATION);
+      return;
+    }
+
+    setLocationStatus('Finding your location...');
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const nextLocation = [position.coords.latitude, position.coords.longitude];
+        setLocationStatus('Location found.');
+        resolve(nextLocation);
+      },
+      () => {
+        setLocationStatus('Location unavailable, showing Narva.');
+        resolve(NARVA_LOCATION);
+      },
+      { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 }
+    );
+  });
+
   const toggleOnline = async () => {
     setToggling(true);
     try {
       const newState = !isOnline;
+      if (newState) {
+        const nextLocation = await resolveWorkerLocation();
+        setWorkerLocation(nextLocation);
+      } else {
+        setLocationStatus('');
+      }
       await api('/api/worker/online', { method: 'PATCH', body: JSON.stringify({ userId: Number(userId), isOnline: newState }) });
       setIsOnline(newState);
     } catch (e) { console.error(e); }
@@ -90,11 +138,14 @@ function Provider() {
             <div className="space-y-2 mb-6">
               {allServices.map(s => (
                 <button key={s.id} type="button" onClick={() => toggleServiceId(s.id)}
-                  className={`w-full flex items-center p-3 border rounded-xl transition-all text-left ${selectedServiceIds.includes(s.id) ? 'bg-brand/5 border-brand/40' : 'bg-gray-50 border-gray-200 hover:bg-white'}`}>
-                  <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 mr-3 ${selectedServiceIds.includes(s.id) ? 'bg-brand border-brand' : 'border-gray-300'}`}>
-                    {selectedServiceIds.includes(s.id) && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>}
+                  className={`w-full flex items-center justify-between gap-3 p-3 border rounded-xl transition-all text-left ${selectedServiceIds.includes(s.id) ? 'bg-brand/5 border-brand/40' : 'bg-gray-50 border-gray-200 hover:bg-white'}`}>
+                  <div className="flex items-center min-w-0">
+                    <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 mr-3 ${selectedServiceIds.includes(s.id) ? 'bg-brand border-brand' : 'border-gray-300'}`}>
+                      {selectedServiceIds.includes(s.id) && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>}
+                    </div>
+                    <p className="font-semibold text-gray-800 text-sm truncate">{s.name}</p>
                   </div>
-                  <p className="font-semibold text-gray-800 text-sm">{s.name}</p>
+                  <span className="px-2.5 py-1 bg-brand/10 text-brand rounded-full text-xs font-semibold flex-shrink-0">€{Number(s.price || 0).toFixed(2)}</span>
                 </button>
               ))}
             </div>
@@ -110,12 +161,21 @@ function Provider() {
 
       <div className="backdrop-blur-xl bg-white/60 border border-white/40 shadow-2xl rounded-[2rem] p-6">
         {/* Header */}
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Worker Hub</h1>
-            <p className="text-sm font-medium text-gray-500">
-              {worker?.government_name} {worker?.government_surname || worker?.username}
-            </p>
+        <div className="flex justify-between items-center mb-6 gap-4">
+          <div className="flex items-center gap-4 min-w-0">
+            <div className="w-14 h-14 rounded-2xl overflow-hidden bg-brand/10 border border-white text-brand flex items-center justify-center text-xl font-bold shadow-sm flex-shrink-0">
+              {worker?.profile_photo ? (
+                <img src={worker.profile_photo} alt={worker?.username || 'Worker'} className="w-full h-full object-cover" />
+              ) : (
+                <span>{(worker?.username || '?')[0].toUpperCase()}</span>
+              )}
+            </div>
+            <div className="min-w-0">
+              <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Worker Hub</h1>
+              <p className="text-sm font-medium text-gray-500 truncate">
+                {worker?.government_name} {worker?.government_surname || worker?.username}
+              </p>
+            </div>
           </div>
           <button onClick={handleSignOut} className="px-4 py-2 text-sm bg-gray-50 hover:bg-red-50 text-gray-500 hover:text-red-500 rounded-xl font-bold border border-gray-200 transition-colors">
             Sign Out
@@ -151,7 +211,7 @@ function Provider() {
           {workerServices.length > 0 ? (
             <div className="flex flex-wrap gap-2">
               {workerServices.map(s => (
-                <span key={s.id} className="px-3 py-1 bg-brand/10 text-brand rounded-full text-xs font-semibold">{s.name}</span>
+                <span key={s.id} className="px-3 py-1 bg-brand/10 text-brand rounded-full text-xs font-semibold">{s.name} · €{Number(s.price || 0).toFixed(2)}</span>
               ))}
             </div>
           ) : (
@@ -188,13 +248,30 @@ function Provider() {
                 })}
               </div>
             ) : (
-              <div className="bg-gradient-to-br from-white to-gray-50 border border-white shadow-lg rounded-3xl p-6 text-center relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-green-400/10 rounded-full filter blur-xl" />
-                <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-3">
-                  <div className="w-4 h-4 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.6)]" />
+              <div className="space-y-4">
+                <div className="bg-white/70 border border-white shadow-lg rounded-3xl overflow-hidden">
+                  <div className="h-56 w-full">
+                    <MapContainer center={ESTONIA_CENTER} zoom={7} style={{ height: '100%', width: '100%' }}>
+                      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="© OpenStreetMap" />
+                      <WorkerLocationAnimator position={workerLocation} />
+                      <Marker position={workerLocation} />
+                    </MapContainer>
+                  </div>
+                  {locationStatus && (
+                    <div className="px-4 py-2 bg-white/90 border-t border-gray-100 text-xs font-semibold text-gray-500">
+                      {locationStatus}
+                    </div>
+                  )}
                 </div>
-                <h2 className="text-lg font-bold text-gray-800 mb-1">Waiting for orders</h2>
-                <p className="text-sm text-gray-400">You'll receive orders that match your services</p>
+
+                <div className="bg-gradient-to-br from-white to-gray-50 border border-white shadow-lg rounded-3xl p-6 text-center relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-green-400/10 rounded-full filter blur-xl" />
+                  <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-3">
+                    <div className="w-4 h-4 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.6)]" />
+                  </div>
+                  <h2 className="text-lg font-bold text-gray-800 mb-1">Waiting for orders</h2>
+                  <p className="text-sm text-gray-400">You'll receive orders that match your services</p>
+                </div>
               </div>
             )}
           </div>
