@@ -22,7 +22,7 @@ export default function GetStarted() {
           </button>
         </div>
 
-        <h2 className="text-3xl font-extrabold text-[#111827] mb-6 tracking-tight">How to Start</h2>
+        <h2 className="text-3xl font-extrabold text-[#111827] mb-6 tracking-tight">How to Become a Worker</h2>
         
         <div className="grid grid-cols-1 gap-4">
           {[1, 2, 3].map(step => (
@@ -30,7 +30,11 @@ export default function GetStarted() {
               <div className="w-10 h-10 rounded-xl bg-brand text-white font-bold flex items-center justify-center shrink-0">{step}</div>
               <div>
                 <h3 className="font-bold text-gray-900">Step {step}</h3>
-                <p className="text-sm text-gray-500">Complete the prompt for this step to advance further in using the platform.</p>
+                <p className="text-sm text-gray-500">
+                  {step === 1 && "Make your account"}
+                  {step === 2 && "Make an application through a 'Become a worker' button"}
+                  {step === 3 && "Go to Worker Dashboard and youre free to go!"}
+                </p>
               </div>
             </div>
           ))}
