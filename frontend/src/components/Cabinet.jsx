@@ -167,12 +167,15 @@ export default function Cabinet() {
       )}
 
       <div className="relative z-10">
-        <div className="flex justify-between items-center mb-4">
-          <div>
+        <div className="flex justify-between items-start mb-4">
+          <div className="pt-3">
+            <h1 className="text-2xl font-black tracking-tighter text-[#111827] mt-2 mb-1">
+              Teenuste<span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-light">Portaal</span>
+            </h1>
             <h1 className="text-3xl font-extrabold text-[#111827] tracking-tight">{t('greeting', { name: user?.username || '' })}</h1>
             <p className="text-sm text-gray-500 mt-1">{t('cabinet')}</p>
           </div>
-          <div className="flex gap-2 items-center">
+          <div className="flex gap-2 items-center pt-2">
             <LanguageSwitcher />
             <button onClick={handleSignOut} className="px-4 py-2 rounded-xl bg-gray-50 hover:bg-red-50 text-gray-600 hover:text-red-500 font-bold text-[13px] transition-colors border border-gray-200/60">{t('sign_out')}</button>
             <button onClick={openSidebar} className="p-2.5 rounded-full bg-brand/10 hover:bg-brand/20 transition-all text-brand border border-transparent">
