@@ -5,6 +5,7 @@ import { MapContainer, Marker, TileLayer, useMapEvents } from 'react-leaflet';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../api';
 import { useSidebar } from '../context/SidebarContext';
+import carBrandModels from '../utils/car_brands_models.json';
 
 // Fix leaflet default icon
 delete L.Icon.Default.prototype._getIconUrl;
@@ -30,7 +31,7 @@ export default function RequestHelp() {
   const [selectedService, setSelectedService] = useState(null);
   const [location, setLocation] = useState(null);
   const [address, setAddress] = useState('');
-  const [vehicle, setVehicle] = useState({ brand: '', plate: '' });
+  const [vehicle, setVehicle] = useState({ brand: '', model: '', plate: '' });
   const [note, setNote] = useState('');
   const [payment, setPayment] = useState('cash');
   const [agreedToStorage, setAgreedToStorage] = useState(false);
@@ -120,8 +121,9 @@ export default function RequestHelp() {
         body: JSON.stringify({
           userId: userId ? Number(userId) : null,
           services: [selectedService.id],
-          vehicleBrand: vehicle.brand,
-          regNumber: vehicle.plate,
+              vehicleBrand: vehicle.brand,
+              vehicleModel: vehicle.model,
+              regNumber: vehicle.plate,
           address,
           lat: location?.lat,
           lng: location?.lng,
@@ -218,9 +220,23 @@ export default function RequestHelp() {
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="block text-xs font-bold text-gray-700 mb-1.5">Vehicle Brand *</label>
-                <input value={vehicle.brand} onChange={e => setVehicle(p => ({ ...p, brand: e.target.value }))}
+                <input list="car-brands" value={vehicle.brand} onChange={e => setVehicle(p => ({ ...p, brand: e.target.value, model: '' }))}
                   className="w-full px-4 py-3 rounded-2xl bg-gray-50/50 border border-gray-200/60 focus:border-brand/40 focus:ring-[4px] focus:ring-brand/15 transition-all outline-none text-sm"
                   placeholder="Toyota, BMW..." />
+                <datalist id="car-brands">
+                  {Object.keys(carBrandModels).map((b) => (
+                    <option key={b} value={b} />
+                  ))}
+                </datalist>
+                <div className="mt-2">
+                  <label className="block text-xs font-bold text-gray-700 mb-1.5">Vehicle Model</label>
+                  <input list="car-models" value={vehicle.model} onChange={e => setVehicle(p => ({ ...p, model: e.target.value }))}
+                    className="w-full px-4 py-3 rounded-2xl bg-gray-50/50 border border-gray-200/60 focus:border-brand/40 focus:ring-[4px] focus:ring-brand/15 transition-all outline-none text-sm"
+                    placeholder="Model or type" />
+                  <datalist id="car-models">
+                    {(carBrandModels[vehicle.brand] || []).map(m => <option key={m} value={m} />)}
+                  </datalist>
+                </div>
               </div>
               <div>
                 <label className="block text-xs font-bold text-gray-700 mb-1.5">Reg. Number *</label>
