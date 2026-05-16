@@ -10,6 +10,10 @@ export default function Settings() {
   const navigate = useNavigate();
   const userId = localStorage.getItem('userId');
   const [user, setUser] = useState(null);
+  const [editingUsername, setEditingUsername] = useState(false);
+  const [usernameDraft, setUsernameDraft] = useState('');
+  const [usernameSaving, setUsernameSaving] = useState(false);
+  const [usernameError, setUsernameError] = useState('');
 
   useEffect(() => {
     if (!userId) { navigate('/'); return; }
@@ -19,6 +23,53 @@ export default function Settings() {
   }, [userId]);
 
   const handleSignOut = () => { localStorage.clear(); navigate('/'); };
+
+  const startUsernameEdit = () => {
+    setUsernameDraft(user?.username || '');
+    setUsernameError('');
+    setEditingUsername(true);
+  };
+
+  const cancelUsernameEdit = () => {
+    setUsernameDraft(user?.username || '');
+    setUsernameError('');
+    setEditingUsername(false);
+  };
+
+  const saveUsername = async (e) => {
+    e.preventDefault();
+    const nextUsername = usernameDraft.trim();
+
+    if (!nextUsername) {
+      setUsernameError(t('username_required', { defaultValue: 'Username is required' }));
+      return;
+    }
+
+    if (nextUsername === user?.username) {
+      setEditingUsername(false);
+      setUsernameError('');
+      return;
+    }
+
+    setUsernameSaving(true);
+    setUsernameError('');
+
+    try {
+      const res = await api(`/api/user/${userId}`, {
+        method: 'PUT',
+        body: JSON.stringify({ username: nextUsername })
+      });
+      setUser(res.user || { ...user, username: nextUsername });
+      setEditingUsername(false);
+    } catch (err) {
+      const message = err.payload?.error || err.message || 'Failed to update username';
+      setUsernameError(message === 'Username already taken'
+        ? t('username_taken', { defaultValue: 'Username already taken' })
+        : message);
+    } finally {
+      setUsernameSaving(false);
+    }
+  };
 
   return (
     <div className="w-full max-w-2xl bg-white/80 backdrop-blur-xl border border-white/40 rounded-[2.5rem] shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05),0_0_80px_rgba(91,108,249,0.08)] p-8 md:p-12 overflow-hidden relative transition-all duration-500 hover:shadow-[0_30px_60px_-15px_rgba(91,108,249,0.15)] group animate-fade-in-up">
@@ -76,15 +127,65 @@ export default function Settings() {
           <div className="bg-white/60 border border-gray-100 rounded-3xl p-5 shadow-sm">
             <div className="flex justify-between items-center mb-3">
               <h3 className="font-semibold text-gray-900">{t('profile')}</h3>
-              <button className="text-sm text-brand font-semibold">{t('edit')}</button>
             </div>
             <div className="space-y-3">
-              <div className="flex justify-between items-center">
-                <div>
-                  <p className="text-xs text-gray-400 uppercase">{t('username')}</p>
-                  <p className="font-medium text-gray-700">{user?.username}</p>
-                </div>
-                <button className="text-sm text-brand font-semibold">{t('edit')}</button>
+              <div>
+                {editingUsername ? (
+                  <form onSubmit={saveUsername} className="space-y-3">
+                    <div>
+                      <label className="text-xs text-gray-400 uppercase font-semibold" htmlFor="settings-username">
+                        {t('username')}
+                      </label>
+                      <input
+                        id="settings-username"
+                        type="text"
+                        value={usernameDraft}
+                        onChange={(e) => {
+                          setUsernameDraft(e.target.value);
+                          setUsernameError('');
+                        }}
+                        className="mt-1 w-full px-3 py-2 rounded-xl bg-white border border-gray-200 text-sm font-medium text-gray-800 outline-none focus:border-brand focus:ring-4 focus:ring-brand/10"
+                        autoComplete="username"
+                        disabled={usernameSaving}
+                        autoFocus
+                      />
+                    </div>
+                    {usernameError && (
+                      <p className="text-xs font-semibold text-red-500">{usernameError}</p>
+                    )}
+                    <div className="flex gap-2">
+                      <button
+                        type="submit"
+                        disabled={usernameSaving}
+                        className="px-4 py-2 rounded-xl bg-brand text-white text-sm font-bold disabled:opacity-60"
+                      >
+                        {usernameSaving ? t('saving', { defaultValue: 'Saving...' }) : t('save')}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={cancelUsernameEdit}
+                        disabled={usernameSaving}
+                        className="px-4 py-2 rounded-xl bg-gray-100 text-gray-700 text-sm font-bold disabled:opacity-60"
+                      >
+                        {t('cancel', { defaultValue: 'Cancel' })}
+                      </button>
+                    </div>
+                  </form>
+                ) : (
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <p className="text-xs text-gray-400 uppercase">{t('username')}</p>
+                      <p className="font-medium text-gray-700">{user?.username}</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={startUsernameEdit}
+                      className="text-sm text-brand font-semibold"
+                    >
+                      {t('edit')}
+                    </button>
+                  </div>
+                )}
               </div>
               {user?.phone && (
                 <div className="flex justify-between items-center">

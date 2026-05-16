@@ -40,24 +40,46 @@ router.put('/api/user/:id', async (req, res) => {
   try {
     const id = Number(req.params.id);
     const { username, phone } = req.body;
-    if (!username && !phone) return res.status(400).json({ ok: false, error: 'At least one field is required' });
-    if (phone && await isUserPhoneTaken(phone, id)) return res.status(400).json({ ok: false, error: 'Этот номер телефона уже используется' });
-    
-    let updates = [];
-    let params = [];
-    if (username) { updates.push('username = ?'); params.push(username); }
-    if (phone) { updates.push('phone = ?'); params.push(phone); }
-    if (updates.length > 0) {
-      params.push(id);
-      try {
-        const [result] = await db.query(`UPDATE users SET ${updates.join(', ')} WHERE id = ?`, params);
-        if (result.affectedRows === 0) return res.status(404).json({ ok: false, error: 'User not found' });
-      } catch (err) {
-        if (err.code === 'ER_DUP_ENTRY') return res.status(400).json({ ok: false, error: 'Username already taken' });
-        throw err;
-      }
+    const hasUsername = username !== undefined;
+    const hasPhone = phone !== undefined;
+    if (!hasUsername && !hasPhone) return res.status(400).json({ ok: false, error: 'At least one field is required' });
+
+    let nextUsername = username;
+    let nextPhone = phone;
+
+    if (hasUsername) {
+      if (typeof username !== 'string') return res.status(400).json({ ok: false, error: 'Username must be a string' });
+      nextUsername = username.trim();
+      if (!nextUsername) return res.status(400).json({ ok: false, error: 'Username is required' });
+
+      const [existingUsers] = await db.query('SELECT id FROM users WHERE username = ? AND id != ?', [nextUsername, id]);
+      if (existingUsers.length > 0) return res.status(400).json({ ok: false, error: 'Username already taken' });
     }
-    res.json({ ok: true, message: 'Profile updated successfully' });
+
+    if (hasPhone) {
+      nextPhone = phone || '';
+      if (nextPhone && await isUserPhoneTaken(nextPhone, id)) return res.status(400).json({ ok: false, error: 'Phone already taken' });
+    }
+
+    try {
+      let result;
+
+      if (hasUsername && hasPhone) {
+        [result] = await db.query('UPDATE users SET username = ?, phone = ? WHERE id = ?', [nextUsername, nextPhone, id]);
+      } else if (hasUsername) {
+        [result] = await db.query('UPDATE users SET username = ? WHERE id = ?', [nextUsername, id]);
+      } else {
+        [result] = await db.query('UPDATE users SET phone = ? WHERE id = ?', [nextPhone, id]);
+      }
+
+      if (result.affectedRows === 0) return res.status(404).json({ ok: false, error: 'User not found' });
+    } catch (err) {
+      if (err.code === 'ER_DUP_ENTRY') return res.status(400).json({ ok: false, error: 'Username already taken' });
+      throw err;
+    }
+
+    const [users] = await db.query('SELECT id, username, phone, email, role, status, is_worker, worker_online, government_name, government_surname, language, profile_photo FROM users WHERE id = ?', [id]);
+    res.json({ ok: true, message: 'Profile updated successfully', user: users[0] });
   } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
 });
 
