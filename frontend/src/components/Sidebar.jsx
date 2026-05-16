@@ -15,7 +15,6 @@ export default function Sidebar() {
     { name: t('terms'), path: '/terms' },
     { name: t('security'), path: '/security' },
     { name: t('get_started'), path: '/get-started' },
-    { name: t('for_business'), path: '/for-business' },
     { name: t('for_individuals'), path: '/for-individuals' },
     { name: t('contacts'), path: '/contacts' },
   ];

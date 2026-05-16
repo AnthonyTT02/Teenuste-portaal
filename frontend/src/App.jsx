@@ -10,7 +10,6 @@ import Contacts from './components/Contacts';
 import Terms from './components/Terms';
 import Security from './components/Security';
 import GetStarted from './components/GetStarted';
-import ForBusiness from './components/ForBusiness';
 import ForIndividuals from './components/ForIndividuals';
 import ProviderReg from './components/ProviderReg';
 import RequestHelp from './components/RequestHelp';
@@ -43,7 +42,6 @@ export default function App() {
           <Route path="/terms" element={<Terms />} />
           <Route path="/security" element={<Security />} />
           <Route path="/get-started" element={<GetStarted />} />
-          <Route path="/for-business" element={<ForBusiness />} />
           <Route path="/for-individuals" element={<ForIndividuals />} />
           <Route path="/provider-reg" element={<ProviderReg />} />
           <Route path="/request-help" element={<RequestHelp />} />
