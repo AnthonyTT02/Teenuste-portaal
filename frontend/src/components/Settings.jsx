@@ -119,22 +119,7 @@ export default function Settings() {
               </label>
             </div>
           </div>
-
-          <div className="bg-white/60 border border-gray-100 rounded-3xl p-6 shadow-sm hover:shadow-md transition-shadow">
-            <div className="flex justify-between items-center">
-              <div>
-                <h3 className="font-bold text-gray-900 text-[17px] mb-1">Language</h3>
-                <p className="text-sm text-gray-500 font-medium">Select your preferred language</p>
-              </div>
-              <select className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-brand focus:border-brand block p-2.5 outline-none">
-                <option value="en">English</option>
-                <option value="ru">Русский</option>
-                <option value="et">Eesti</option>
-              </select>
-            </div>
-          </div>
         </div>
-
       </div>
     </div>
   );
