@@ -37,6 +37,7 @@ CREATE TABLE `orders` (
   `lat` double DEFAULT NULL,
   `lng` double DEFAULT NULL,
   `paymentType` varchar(191) DEFAULT NULL,
+  `note` varchar(191) DEFAULT NULL,
   `created_at` datetime(3) NOT NULL DEFAULT current_timestamp(3),
   `completed_at` datetime(3) DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,

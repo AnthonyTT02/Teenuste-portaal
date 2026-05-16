@@ -31,6 +31,7 @@ export default function RequestHelp() {
   const [location, setLocation] = useState(null);
   const [address, setAddress] = useState('');
   const [vehicle, setVehicle] = useState({ brand: '', plate: '' });
+  const [note, setNote] = useState('');
   const [payment, setPayment] = useState('cash');
   const [agreedToStorage, setAgreedToStorage] = useState(false);
   const [cardData, setCardData] = useState({ number: '', expiry: '', cvv: '', name: '' });
@@ -128,6 +129,7 @@ export default function RequestHelp() {
           worker_user_id: selectedWorker.id,
           status: 'active',
           price: selectedWorker.price,
+          note: note ? String(note).slice(0, 50) : null,
           worker_name: `${selectedWorker.name || ''} ${selectedWorker.surname || ''}`.trim(),
           worker_phone: selectedWorker.phone || null
         })
@@ -226,6 +228,13 @@ export default function RequestHelp() {
                   className="w-full px-4 py-3 rounded-2xl bg-gray-50/50 border border-gray-200/60 focus:border-brand/40 focus:ring-[4px] focus:ring-brand/15 transition-all outline-none text-sm"
                   placeholder="123 ABC" maxLength={10} />
               </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-gray-700 mb-1.5">Note for worker (max 50 characters)</label>
+              <input value={note} onChange={e => setNote(e.target.value.slice(0, 50))}
+                className="w-full px-4 py-3 rounded-2xl bg-gray-50/50 border border-gray-200/60 focus:border-brand/40 focus:ring-[4px] focus:ring-brand/15 transition-all outline-none text-sm"
+                placeholder="Short note for the worker" maxLength={50} />
             </div>
 
             <div className="flex gap-3 pt-2">

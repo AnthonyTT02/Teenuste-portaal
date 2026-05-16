@@ -5,11 +5,11 @@ const db = require('../db');
 // Create a new order
 router.post('/api/order', async (req, res) => {
   try {
-    const { vehicleBrand, vehicleModel, regNumber, services, address, lat, lng, paymentType, userId, worker_user_id, status } = req.body || {};
+    const { vehicleBrand, vehicleModel, regNumber, services, address, lat, lng, paymentType, userId, worker_user_id, status, price, note } = req.body || {};
     const [result] = await db.query(
-      `INSERT INTO orders (vehicleBrand, vehicleModel, regNumber, services, address, lat, lng, paymentType, user_id, worker_user_id, status)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [vehicleBrand || null, vehicleModel || null, regNumber || null, JSON.stringify(services || []), address || null, lat || null, lng || null, paymentType || null, userId || null, worker_user_id || null, status || 'active']
+      `INSERT INTO orders (vehicleBrand, vehicleModel, regNumber, services, address, lat, lng, paymentType, user_id, worker_user_id, status, note, price)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [vehicleBrand || null, vehicleModel || null, regNumber || null, JSON.stringify(services || []), address || null, lat || null, lng || null, paymentType || null, userId || null, worker_user_id || null, status || 'active', note || null, price || null]
     );
     res.json({ ok: true, orderId: result.insertId });
   } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
