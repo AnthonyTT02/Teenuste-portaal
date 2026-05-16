@@ -207,7 +207,7 @@ export default function RequestHelp() {
                 </button>
               </div>
               <div className="rounded-2xl overflow-hidden border border-gray-200 h-52 mb-2">
-                <MapContainer center={centerMap} zoom={13} style={{ height: '100%', width: '100%' }} key={centerMap.join(',')}>
+                <MapContainer center={centerMap} zoom={13} zoomControl={false} style={{ height: '100%', width: '100%' }} key={centerMap.join(',')}>
                   <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution='© OpenStreetMap' />
                   <MapClickHandler onLocationSelect={handleMapClick} />
                   {location && <Marker position={[location.lat, location.lng]} />}
