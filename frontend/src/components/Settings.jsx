@@ -202,7 +202,6 @@ export default function Settings() {
                     <p className="text-xs text-gray-400 uppercase">{t('email')}</p>
                     <p className="font-medium text-gray-700">{user.email}</p>
                   </div>
-                  <button className="text-sm text-brand font-semibold">{t('edit')}</button>
                 </div>
               )}
             </div>
