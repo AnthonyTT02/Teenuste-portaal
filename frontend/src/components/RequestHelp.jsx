@@ -217,14 +217,14 @@ export default function RequestHelp() {
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1.5">Vehicle Brand</label>
+                <label className="block text-xs font-bold text-gray-700 mb-1.5">Vehicle Brand *</label>
                 <input value={vehicle.brand} onChange={e => setVehicle(p => ({ ...p, brand: e.target.value }))}
                   className="w-full px-4 py-3 rounded-2xl bg-gray-50/50 border border-gray-200/60 focus:border-brand/40 focus:ring-[4px] focus:ring-brand/15 transition-all outline-none text-sm"
                   placeholder="Toyota, BMW..." />
               </div>
               <div>
                 <label className="block text-xs font-bold text-gray-700 mb-1.5">Reg. Number *</label>
-                <input value={vehicle.plate} onChange={e => setVehicle(p => ({ ...p, plate: e.target.value.toUpperCase() }))}
+                <input value={vehicle.plate} onChange={e => setVehicle(p => ({ ...p, plate: e.target.value.replace(/[^a-zA-Z0-9\s]/g, '').toUpperCase() }))}
                   className="w-full px-4 py-3 rounded-2xl bg-gray-50/50 border border-gray-200/60 focus:border-brand/40 focus:ring-[4px] focus:ring-brand/15 transition-all outline-none text-sm"
                   placeholder="123 ABC" maxLength={10} />
               </div>
