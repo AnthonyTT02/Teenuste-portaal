@@ -183,6 +183,7 @@ export default function RequestHelp() {
                   </div>
                   <p className="font-semibold text-gray-800">{s.name}</p>
                 </div>
+                <p className="font-bold text-brand">€{Number(s.price).toFixed(2)}</p>
               </button>
             ))}
             <button onClick={() => goToStep(2)} className="w-full mt-4 py-4 bg-brand text-white font-bold rounded-2xl shadow-[0_8px_20px_rgba(91,108,249,0.25)] hover:shadow-[0_15px_30px_rgba(91,108,249,0.4)] transform hover:-translate-y-1 transition-all">
