@@ -116,7 +116,6 @@ export default function Settings() {
           <div className="bg-white/60 border border-gray-100 rounded-3xl p-5 shadow-sm">
             <div className="flex justify-between items-center mb-3">
               <h3 className="font-semibold text-gray-900">{t('payment_method')}</h3>
-              <button onClick={() => navigate('/payment-methods')} className="text-sm text-brand font-semibold">{t('edit')}</button>
             </div>
             <p className="text-sm text-gray-500 mb-3">{t('bolt_balance')}: <span className="font-bold text-gray-800">0,00 EUR</span></p>
             <div className="flex flex-col gap-2">
