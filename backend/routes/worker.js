@@ -87,6 +87,15 @@ router.put('/api/worker/:userId/services', async (req, res) => {
 // Get online workers for a specific service
 router.get('/api/workers/for-service/:serviceId', async (req, res) => {
   try {
+    const [[stats]] = await db.query(`
+      SELECT
+        COUNT(DISTINCT ws.user_id) AS total,
+        COUNT(DISTINCT CASE WHEN u.worker_online = 1 THEN ws.user_id END) AS online
+      FROM worker_services ws
+      JOIN users u ON ws.user_id = u.id
+      WHERE ws.service_id = ? AND u.is_worker = 1
+    `, [req.params.serviceId]);
+
     const [workers] = await db.query(`
       SELECT u.id, u.government_name, u.government_surname, u.phone, u.worker_lat, u.worker_lng, s.price
       FROM worker_services ws
@@ -97,7 +106,14 @@ router.get('/api/workers/for-service/:serviceId', async (req, res) => {
     const formatted = workers.map(w => ({
       id: w.id, name: w.government_name, surname: w.government_surname, phone: w.phone, lat: w.worker_lat, lng: w.worker_lng, price: w.price, eta: Math.floor(Math.random() * 20) + 10
     }));
-    res.json({ ok: true, workers: formatted });
+    res.json({
+      ok: true,
+      workers: formatted,
+      workerStats: {
+        total: Number(stats?.total || 0),
+        online: Number(stats?.online || 0)
+      }
+    });
   } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
 });
 
