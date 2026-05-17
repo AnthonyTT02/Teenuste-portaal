@@ -20,7 +20,7 @@ function MapClickHandler({ onLocationSelect }) {
   return null;
 }
 
-// Steps: 1=Service, 2=Location&Vehicle, 3=Payment, 3.5=Card details, 4=Choose Worker, 5=Confirm
+// Steps: 1=Service, 2=Location&Vehicle, 3=Payment, 3.5=Card details, 4=Send Request, 5=Confirm
 export default function RequestHelp() {
   const { openSidebar } = useSidebar();
   const navigate = useNavigate();
@@ -153,7 +153,7 @@ export default function RequestHelp() {
 
   const centerMap = location ? [location.lat, location.lng] : [59.377, 28.186];
   const totalSteps = payment === 'card' ? 5 : 4;
-  const displayStep = step === 3.5 ? 'Payment Details' : step <= 4 ? ['Service', 'Location & Vehicle', 'Payment Method', 'Choose Worker'][step - 1] : 'Done';
+  const displayStep = step === 3.5 ? 'Payment Details' : step <= 4 ? ['Service', 'Location & Vehicle', 'Payment Method', 'Send Request'][step - 1] : 'Done';
   const progressStep = step === 3.5 ? 3 : step;
 
   return (
@@ -305,7 +305,7 @@ export default function RequestHelp() {
                 if (payment === 'card') { setStep(3.5); }
                 else { goToStep(4); }
               }} className={`flex-1 py-3 font-bold rounded-2xl transition-colors ${payment === 'card' && !agreedToStorage ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-brand text-white hover:bg-brand-dark'}`}>
-                {payment === 'card' ? 'Enter Card Details →' : 'Find Worker →'}
+                {payment === 'card' ? 'Enter Card Details →' : 'Send Request →'}
               </button>
             </div>
           </div>
@@ -356,13 +356,13 @@ export default function RequestHelp() {
             <div className="flex gap-3 pt-2">
               <button onClick={() => setStep(3)} className="flex-1 py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold rounded-2xl transition-colors">Back</button>
               <button onClick={handleCardContinue} className="flex-1 py-3 bg-brand text-white font-bold rounded-2xl hover:bg-brand-dark transition-colors">
-                Pay & Find Worker →
+                Pay & Send Request →
               </button>
             </div>
           </div>
         )}
 
-        {/* STEP 4: Choose Worker */}
+        {/* STEP 4: Send Request */}
         {step === 4 && (
           <div>
             <h3 className="text-sm font-bold text-gray-500 uppercase mb-4">Available Workers</h3>
