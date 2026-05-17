@@ -37,6 +37,7 @@ export default function RequestHelp() {
   const [agreedToStorage, setAgreedToStorage] = useState(false);
   const [cardData, setCardData] = useState({ number: '', expiry: '', cvv: '', name: '' });
   const [workers, setWorkers] = useState([]);
+  const [workerStats, setWorkerStats] = useState({ total: 0, online: 0 });
   const [selectedWorker, setSelectedWorker] = useState(null);
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -80,8 +81,16 @@ export default function RequestHelp() {
     setLoading(true);
     try {
       const res = await api(`/api/workers/for-service/${selectedService.id}`);
-      setWorkers(res.workers || []);
-    } catch { setWorkers([]); }
+      const nextWorkers = res.workers || [];
+      setWorkers(nextWorkers);
+      setWorkerStats({
+        total: Number(res.workerStats?.total ?? nextWorkers.length),
+        online: Number(res.workerStats?.online ?? nextWorkers.length)
+      });
+    } catch {
+      setWorkers([]);
+      setWorkerStats({ total: 0, online: 0 });
+    }
     setLoading(false);
   };
 
@@ -357,6 +366,16 @@ export default function RequestHelp() {
         {step === 4 && (
           <div>
             <h3 className="text-sm font-bold text-gray-500 uppercase mb-4">Available Workers</h3>
+            <div className="grid grid-cols-2 gap-2 mb-4">
+              <div className="rounded-2xl bg-gray-50/70 border border-gray-200/60 px-4 py-3">
+                <p className="text-2xl font-extrabold text-gray-900">{workerStats.total}</p>
+                <p className="text-xs font-semibold text-gray-400">Workers with this service</p>
+              </div>
+              <div className="rounded-2xl bg-green-50 border border-green-100 px-4 py-3">
+                <p className="text-2xl font-extrabold text-green-600">{workerStats.online}</p>
+                <p className="text-xs font-semibold text-green-600/70">Online now</p>
+              </div>
+            </div>
             {loading ? (
               <div className="text-center py-12 text-gray-400">Finding available workers...</div>
             ) : workers.length === 0 ? (
