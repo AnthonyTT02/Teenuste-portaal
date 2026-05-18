@@ -169,7 +169,7 @@ function Admin() {
                           <input value={editingService.name} onChange={e => setEditingService(p => ({ ...p, name: e.target.value }))} className="flex-1 px-3 py-1.5 border border-gray-200 rounded-lg text-sm outline-none focus:border-brand" />
                           <input value={editingService.price} onChange={e => setEditingService(p => ({ ...p, price: e.target.value }))} type="number" className="w-24 px-3 py-1.5 border border-gray-200 rounded-lg text-sm outline-none focus:border-brand" />
                           <button onClick={() => updateService(s.id)} className="px-4 py-1.5 bg-green-500 text-white font-bold rounded-lg text-sm">{t('save', 'Save')}</button>
-                          <button onClick={() => setEditingService(null)} className="px-4 py-1.5 bg-gray-100 text-gray-600 font-bold rounded-lg text-sm">Cancel</button>
+                          <button onClick={() => setEditingService(null)} className="px-4 py-1.5 bg-gray-100 text-gray-600 font-bold rounded-lg text-sm">{t('cancel', 'Cancel')}</button>
                         </>
                       ) : (
                         <>
