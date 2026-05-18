@@ -165,8 +165,8 @@ export default function Cabinet() {
   if (!userId) return null;
 
   return (
-    <div className="w-full max-w-2xl bg-white/80 backdrop-blur-xl border border-white/40 rounded-[2.5rem] shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05),0_0_80px_rgba(91,108,249,0.08)] p-8 overflow-hidden relative animate-fade-in-up">
-      <div className="absolute inset-0 bg-gradient-to-br from-white/60 to-transparent pointer-events-none opacity-50 rounded-[2.5rem]" />
+    <div className="w-full max-w-2xl bg-white/80 backdrop-blur-xl border border-white/40 rounded-[2rem] sm:rounded-[2.5rem] shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05),0_0_80px_rgba(91,108,249,0.08)] p-5 sm:p-8 overflow-hidden relative animate-fade-in-up">
+      <div className="absolute inset-0 bg-gradient-to-br from-white/60 to-transparent pointer-events-none opacity-50 rounded-[2rem] sm:rounded-[2.5rem]" />
 
       {showWorkerPopup && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
@@ -200,31 +200,30 @@ export default function Cabinet() {
       )}
 
       <div className="relative z-10">
-        <div className="flex justify-between items-start mb-4">
-          <div className="pt-3">
-            <h1 className="text-2xl font-black tracking-tighter text-[#111827] mt-2 mb-1">
+        <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start mb-5">
+          <div className="min-w-0">
+            <h1 className="text-[22px] sm:text-2xl font-black tracking-tighter text-[#111827] mt-1 mb-1 break-words leading-tight">
               Teenuste<span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-light">Portaal</span>
             </h1>
-            <h1 className="text-3xl font-extrabold text-[#111827] tracking-tight">{t('greeting', { name: user?.username || '' })}</h1>
+            <h1 className="text-[28px] sm:text-3xl font-extrabold text-[#111827] tracking-tight leading-tight break-words">{t('greeting', { name: user?.username || '' })}</h1>
             <p className="text-sm text-gray-500 mt-1">{t('cabinet')}</p>
           </div>
-          <div className="flex gap-2 items-center pt-2">
-            <LanguageSwitcher />
-            <button onClick={handleSignOut} className="px-4 py-2 rounded-xl bg-gray-50 hover:bg-red-50 text-gray-600 hover:text-red-500 font-bold text-[13px] transition-colors border border-gray-200/60">{t('sign_out')}</button>
-            <button onClick={openSidebar} className="p-2.5 rounded-full bg-brand/10 hover:bg-brand/20 transition-all text-brand border border-transparent">
+          <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:justify-end">
+            <LanguageSwitcher className="shrink-0" />
+            <button onClick={handleSignOut} className="ml-auto sm:ml-0 shrink-0 px-3 sm:px-4 py-2 rounded-xl bg-gray-50 hover:bg-red-50 text-gray-600 hover:text-red-500 font-bold text-[12px] sm:text-[13px] whitespace-nowrap transition-colors border border-gray-200/60">{t('sign_out')}</button>
+            <button onClick={openSidebar} className="shrink-0 p-2.5 rounded-full bg-brand/10 hover:bg-brand/20 transition-all text-brand border border-transparent" aria-label="Open menu">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
             </button>
           </div>
-        </div>
         </div>
         {loading ? (
           <div className="text-center py-12 text-gray-400">{t('loading')}</div>
         ) : (
           <>
             {/* Profile Card */}
-            <div className="bg-white/60 border border-gray-100 rounded-3xl p-5 mb-4 shadow-sm">
+            <div className="bg-white/60 border border-gray-100 rounded-[1.75rem] sm:rounded-3xl p-4 sm:p-5 mb-4 shadow-sm">
               <div className="flex items-center gap-4 mb-3">
-                <label className="relative w-12 h-12 rounded-2xl overflow-hidden bg-brand/10 border border-gray-100 text-brand flex items-center justify-center text-xl font-bold cursor-pointer transition-all hover:ring-4 hover:ring-brand/15">
+                <label className="relative shrink-0 w-12 h-12 rounded-2xl overflow-hidden bg-brand/10 border border-gray-100 text-brand flex items-center justify-center text-xl font-bold cursor-pointer transition-all hover:ring-4 hover:ring-brand/15">
                   {profilePhoto ? (
                     <img src={profilePhoto} alt={user?.username || 'Profile'} className="w-full h-full object-cover" />
                   ) : (
@@ -233,22 +232,22 @@ export default function Cabinet() {
                   {photoUploading && <div className="absolute inset-0 bg-white/70 flex items-center justify-center text-[10px] font-bold text-brand">...</div>}
                   <input type="file" accept="image/*" onChange={handlePhotoChange} className="hidden" disabled={photoUploading} />
                 </label>
-                <div>
-                  <h3 className="font-bold text-gray-900 text-[17px]">{user?.username}</h3>
+                <div className="min-w-0">
+                  <h3 className="font-bold text-gray-900 text-[17px] truncate">{user?.username}</h3>
                   <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-brand/10 text-brand capitalize">{profileStatus}</span>
                 </div>
               </div>
               {photoError && <p className="mb-3 text-xs font-semibold text-red-500">{photoError}</p>}
-              <div className="grid grid-cols-2 gap-2 text-sm">
-                {user?.phone && <div><p className="text-xs text-gray-400 uppercase">Phone</p><p className="font-medium text-gray-700">{user.phone}</p></div>}
-                {user?.email && <div><p className="text-xs text-gray-400 uppercase">Email</p><p className="font-medium text-gray-700">{user.email}</p></div>}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                {user?.phone && <div className="min-w-0"><p className="text-xs text-gray-400 uppercase">Phone</p><p className="font-medium text-gray-700 break-words">{user.phone}</p></div>}
+                {user?.email && <div className="min-w-0"><p className="text-xs text-gray-400 uppercase">Email</p><p className="font-medium text-gray-700 break-all">{user.email}</p></div>}
               </div>
             </div>
 
             {/* Tabs */}
-            <div className="flex gap-2 mb-4">
+            <div className="grid grid-cols-2 gap-2 mb-4">
               {['active', 'history'].map(tabKey => (
-                <button key={tabKey} onClick={() => setTab(tabKey)} className={`flex-1 py-2 rounded-xl font-bold text-sm transition-colors ${tab === tabKey ? 'bg-brand text-white shadow' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
+                <button key={tabKey} onClick={() => setTab(tabKey)} className={`min-h-[40px] px-2 py-2 rounded-xl font-bold text-[13px] sm:text-sm leading-tight transition-colors ${tab === tabKey ? 'bg-brand text-white shadow' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
                   {tabKey === 'active' ? `${t('active_orders')} (${activeOrders.length})` : `${t('history')} (${completedOrders.length})`}
                 </button>
               ))}
@@ -261,12 +260,12 @@ export default function Cabinet() {
                   <p className="text-sm text-gray-400 text-center py-6">No active orders.</p>
                 ) : activeOrders.map(o => (
                   <div key={o.id} className="bg-white/70 border border-gray-100 rounded-2xl p-4 shadow-sm">
-                    <div className="flex justify-between items-start mb-2">
-                      <div>
-                        <p className="font-bold text-gray-800">{o.vehicleBrand} {o.vehicleModel}</p>
+                    <div className="flex flex-wrap justify-between items-start gap-2 mb-2">
+                      <div className="min-w-0">
+                        <p className="font-bold text-gray-800 break-words">{o.vehicleBrand} {o.vehicleModel}</p>
                         <p className="text-xs text-gray-500">{getServiceNames(o.services)}</p>
                       </div>
-                      <span className="px-2 py-1 bg-amber-100 text-amber-700 text-xs font-bold rounded-full capitalize">{o.status}</span>
+                      <span className="shrink-0 px-2 py-1 bg-amber-100 text-amber-700 text-xs font-bold rounded-full capitalize">{o.status}</span>
                     </div>
                     {o.worker_user && <p className="text-sm text-gray-600 mb-1">Worker: {o.worker_user.government_name} {o.worker_user.government_surname}</p>}
                     {(o.worker_phone || o.worker_user?.phone) && <p className="text-xs text-gray-500 mb-1">Worker Phone: {o.worker_phone || o.worker_user?.phone}</p>}
@@ -291,12 +290,12 @@ export default function Cabinet() {
                   const alreadySubmitted = ticketSentOrders.has(o.id);
                   return (
                     <div key={o.id} className="bg-white/70 border border-gray-100 rounded-2xl p-4 shadow-sm">
-                      <div className="flex justify-between items-start mb-2">
-                        <div>
-                          <p className="font-bold text-gray-800">{o.vehicleBrand} {o.vehicleModel}</p>
+                      <div className="flex flex-wrap justify-between items-start gap-2 mb-2">
+                        <div className="min-w-0">
+                          <p className="font-bold text-gray-800 break-words">{o.vehicleBrand} {o.vehicleModel}</p>
                           <p className="text-xs text-gray-500">{getServiceNames(o.services)}</p>
                         </div>
-                        <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">Completed</span>
+                        <span className="shrink-0 px-2 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">Completed</span>
                       </div>
                       <p className="text-xs text-gray-400 mb-1">{new Date(o.completed_at).toLocaleDateString()}</p>
                       {o.price && <p className="text-sm font-bold text-brand mb-1">Price: €{Number(o.price).toFixed(2)}</p>}
@@ -328,7 +327,7 @@ export default function Cabinet() {
                 {t('go_to_work')}
               </button>
             ) : hasPendingApp ? (
-              <div className="w-full py-3 mt-3 border-2 border-amber-300 bg-amber-50 text-amber-700 font-bold rounded-2xl text-sm text-center">
+              <div className="w-full py-3 mt-3 border-2 border-grey-300 bg-grey-50 text-grey-700 font-bold rounded-2xl text-sm text-center">
                 {t('app_pending')}
               </div>
             ) : (
@@ -339,5 +338,6 @@ export default function Cabinet() {
           </>
         )}
       </div>
+    </div>
   );
 }

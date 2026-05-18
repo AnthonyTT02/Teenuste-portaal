@@ -25,7 +25,7 @@ import PaymentMethods from './components/PaymentMethods';
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#f8f9fc] via-[#f3f5fa] to-[#e4e9fc] flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-[#f8f9fc] via-[#f3f5fa] to-[#e4e9fc] flex items-center justify-center p-4 relative overflow-x-hidden">
       <Sidebar />
 
       <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-brand/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse-slow pointer-events-none"></div>

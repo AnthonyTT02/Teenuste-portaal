@@ -40,16 +40,16 @@ function Support() {
 
   return (
     <div className="w-full max-w-5xl animate-fade-in-up">
-      <div className="backdrop-blur-xl bg-white/60 border border-white/40 shadow-2xl rounded-[2rem] p-10 mt-8 relative">
+      <div className="backdrop-blur-xl bg-white/60 border border-white/40 shadow-2xl rounded-[2rem] p-5 sm:p-8 mt-4 sm:mt-8 relative overflow-hidden">
 
-        <div className="flex justify-between items-center mb-8">
-            <div>
-              <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#4f46e5] to-[#3b82f6] mb-2 tracking-tight">{t('support_dashboard', 'Support Dashboard')}</h1>
-              <p className="text-gray-500 font-medium">{openTickets.length} {t('open', 'open')} · {resolvedTickets.length} {t('resolved', 'resolved')}</p>
+        <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start mb-8">
+          <div className="min-w-0">
+            <h1 className="text-[36px] sm:text-4xl leading-tight font-extrabold text-gray-900 mb-1 break-words">{t('support_dashboard', 'Support Dashboard')}</h1>
+            <p className="text-gray-500 leading-relaxed">{openTickets.length} {t('open', 'open')} - {resolvedTickets.length} {t('resolved', 'resolved')}</p>
             </div>
-          <div className="flex gap-3 items-center">
-            <LanguageSwitcher />
-            <button onClick={handleSignOut} className="px-5 py-2.5 rounded-xl bg-gray-50 hover:bg-red-50 text-gray-600 hover:text-red-500 font-bold text-sm transition-colors border border-gray-200/60 hover:border-red-200">
+          <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:justify-end">
+            <LanguageSwitcher className="shrink-0" />
+            <button onClick={handleSignOut} className="ml-auto sm:ml-0 shrink-0 px-4 sm:px-5 py-2.5 rounded-xl bg-gray-50 hover:bg-red-50 text-gray-600 hover:text-red-500 font-bold text-sm transition-colors border border-gray-200/60 hover:border-red-200">
               {t('sign_out', 'Sign Out')}
             </button>
           </div>
@@ -58,9 +58,9 @@ function Support() {
         {error && <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm font-semibold">{error}</div>}
 
         {/* Tabs */}
-        <div className="flex gap-2 mb-6">
+        <div className="grid grid-cols-2 gap-2 mb-6 sm:flex">
           {['open', 'resolved'].map(key => (
-            <button key={key} onClick={() => setTab(key)} className={`px-5 py-2 rounded-xl font-bold text-sm transition-colors capitalize ${tab === key ? 'bg-brand text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
+            <button key={key} onClick={() => setTab(key)} className={`px-3 sm:px-5 py-2 rounded-xl font-bold text-sm transition-colors capitalize leading-tight ${tab === key ? 'bg-brand text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
               {t(key, key)} ({key === 'open' ? openTickets.length : resolvedTickets.length})
             </button>
           ))}
@@ -75,24 +75,24 @@ function Support() {
         ) : (
           <div className="space-y-3">
             {displayTickets.map(ticket => (
-              <div key={ticket.id} className="bg-white/70 border border-white/60 rounded-2xl p-5 shadow-sm">
-                <div className="flex justify-between items-start mb-3">
-                  <div>
-                    <h3 className="font-bold text-gray-800">{t('ticket', 'Ticket')} #{ticket.id}</h3>
-                    <p className="text-sm text-gray-500">{t('worker', 'Worker')}: <span className="font-semibold text-gray-700">{ticket.order?.worker_user ? `${ticket.order.worker_user.government_name} ${ticket.order.worker_user.government_surname}` : t('not_assigned', 'Not assigned')}</span> · {t('ticket', 'Ticket')} #{ticket.order_id}</p>
-                    {ticket.user?.phone && <p className="text-xs text-gray-400">{t('customer_phone', 'Customer Phone')}: {ticket.user.phone}</p>}
+              <div key={ticket.id} className="bg-white/70 border border-white/60 rounded-2xl p-4 sm:p-5 shadow-sm">
+                <div className="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-start mb-3">
+                  <div className="min-w-0">
+                    <h3 className="font-bold text-gray-800 break-words">{t('ticket', 'Ticket')} #{ticket.id}</h3>
+                    <p className="text-sm text-gray-500 break-words">{t('worker', 'Worker')}: <span className="font-semibold text-gray-700">{ticket.order?.worker_user ? `${ticket.order.worker_user.government_name} ${ticket.order.worker_user.government_surname}` : t('not_assigned', 'Not assigned')}</span> - {t('ticket', 'Ticket')} #{ticket.order_id}</p>
+                    {ticket.user?.phone && <p className="text-xs text-gray-400 break-words">{t('customer_phone', 'Customer Phone')}: {ticket.user.phone}</p>}
                   </div>
-                  <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${ticket.status === 'open' ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700'}`}>
+                  <span className={`self-start shrink-0 px-2 py-0.5 rounded-full text-xs font-bold ${ticket.status === 'open' ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700'}`}>
                     {t(ticket.status, ticket.status)}
                   </span>
                 </div>
                 <div className="bg-gray-50 rounded-xl p-4 mb-3">
-                  <p className="text-sm text-gray-700">{ticket.message}</p>
+                  <p className="text-sm text-gray-700 break-words">{ticket.message}</p>
                 </div>
-                <div className="flex justify-between items-center">
-                  <p className="text-xs text-gray-400">{new Date(ticket.created_at).toLocaleString()}</p>
+                <div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center">
+                  <p className="text-xs text-gray-400 break-words">{new Date(ticket.created_at).toLocaleString()}</p>
                   {ticket.status === 'open' && (
-                    <button onClick={() => resolveTicket(ticket.id)} className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-bold rounded-xl text-sm transition-colors">
+                    <button onClick={() => resolveTicket(ticket.id)} className="w-full sm:w-auto px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-bold rounded-xl text-sm transition-colors">
                       {t('resolve', 'Resolve')}
                     </button>
                   )}

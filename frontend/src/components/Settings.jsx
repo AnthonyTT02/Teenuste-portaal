@@ -22,8 +22,6 @@ export default function Settings() {
       .catch(err => console.error(err));
   }, [userId]);
 
-  const handleSignOut = () => { localStorage.clear(); navigate('/'); };
-
   const startUsernameEdit = () => {
     setUsernameDraft(user?.username || '');
     setUsernameError('');
@@ -81,7 +79,6 @@ export default function Settings() {
             Teenuste<span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-light">Portaal</span>
           </h1>
           <div className="flex gap-2">
-            <button onClick={handleSignOut} className="px-4 py-2 rounded-xl bg-gray-50 hover:bg-red-50 text-gray-600 hover:text-red-500 font-bold text-[13px] transition-colors border border-gray-200/60">{t('sign_out')}</button>
             <button
               type="button"
               onClick={openSidebar}
