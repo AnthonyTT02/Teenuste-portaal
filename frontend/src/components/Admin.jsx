@@ -175,7 +175,7 @@ function Admin() {
                         <>
                           <p className="flex-1 font-semibold text-gray-800">{s.name}</p>
                           <p className="font-bold text-brand">€{Number(s.price).toFixed(2)}</p>
-                          <button onClick={() => setEditingService({ id: s.id, name: s.name, price: s.price })} className="px-4 py-1.5 bg-gray-100 text-gray-600 font-semibold rounded-lg text-sm hover:bg-gray-200">Edit</button>
+                          <button onClick={() => setEditingService({ id: s.id, name: s.name, price: s.price })} className="px-4 py-1.5 bg-gray-100 text-gray-600 font-semibold rounded-lg text-sm hover:bg-gray-200">{t('edit', 'Edit')}</button>
                           <button onClick={() => deleteService(s.id)} className="px-4 py-1.5 bg-red-50 text-red-500 font-semibold rounded-lg text-sm hover:bg-red-100">Delete</button>
                         </>
                       )}
