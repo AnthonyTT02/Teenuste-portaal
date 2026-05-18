@@ -166,7 +166,7 @@ export default function Register() {
         ) : (
           <form onSubmit={handleVerify} className="space-y-6">
             <div className="bg-brand/5 border border-brand/20 rounded-2xl p-4 text-center">
-              <p className="text-sm text-gray-600">Code sent to <strong>{email}</strong></p>
+              <p className="text-sm text-gray-600">{t('code_sent_to')} <strong>{email}</strong></p>
               <p className="text-xs text-gray-400 mt-1">Valid for 10 minutes</p>
             </div>
             <div className="group/input relative">
