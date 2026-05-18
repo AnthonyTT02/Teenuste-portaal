@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../api';
 import { useSidebar } from '../context/SidebarContext';
+import LanguageSwitcher from './LanguageSwitcher';
 
 export default function ForgotPassword() {
   const [username, setUsername] = useState('');
@@ -75,6 +76,7 @@ export default function ForgotPassword() {
           <h1 className="text-2xl font-black tracking-tighter text-[#111827]">
             Teenuste<span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-light">Portaal</span>
           </h1>
+          <LanguageSwitcher />
         </div>
 
         <div className="animate-float" style={{ animationDuration: '8s' }}>
