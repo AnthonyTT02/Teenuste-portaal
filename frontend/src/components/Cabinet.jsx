@@ -12,8 +12,16 @@ export default function Cabinet() {
   const userId = localStorage.getItem('userId');
   const userStatus = localStorage.getItem('userStatus');
   const isWorkerLocal = userStatus === 'worker' || localStorage.getItem('userRole') === 'worker' || localStorage.getItem('is_worker') === '1';
+  const storedUser = {
+    id: userId ? Number(userId) : null,
+    username: localStorage.getItem('username') || '',
+    email: localStorage.getItem('userEmail') || '',
+    phone: localStorage.getItem('userPhone') || '',
+    status: userStatus || 'user',
+    is_worker: localStorage.getItem('is_worker') === '1' ? 1 : 0
+  };
 
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(storedUser);
   const [activeOrders, setActiveOrders] = useState([]);
   const [completedOrders, setCompletedOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -40,20 +48,37 @@ export default function Cabinet() {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [userRes, svcRes, activeRes, completedRes, appRes] = await Promise.all([
+      const [userRes, svcRes, activeRes, completedRes, appRes] = await Promise.allSettled([
         api(`/api/user/${userId}`),
         api('/api/services'),
         api(`/api/user/${userId}/orders/active`),
         api(`/api/user/${userId}/orders/completed`),
         api(`/api/worker/application-status/${userId}`)
       ]);
-      setUser(userRes.user);
-      setServices(svcRes.services || []);
-      setActiveOrders(activeRes.orders || []);
-      setCompletedOrders(completedRes.orders || []);
-      setHasPendingApp(appRes.hasPending || false);
+
+      [userRes, svcRes, activeRes, completedRes, appRes].forEach(result => {
+        if (result.status === 'rejected') console.error(result.reason);
+      });
+
+      if (userRes.status === 'fulfilled' && userRes.value.user) {
+        const nextUser = userRes.value.user;
+        setUser(nextUser);
+        if (nextUser.username) localStorage.setItem('username', nextUser.username);
+        if (nextUser.email) localStorage.setItem('userEmail', nextUser.email);
+        if (nextUser.phone) localStorage.setItem('userPhone', nextUser.phone);
+        if (nextUser.status) {
+          localStorage.setItem('userStatus', nextUser.status);
+          localStorage.setItem('userRole', nextUser.status);
+        }
+        localStorage.setItem('is_worker', nextUser.is_worker ? '1' : '0');
+      }
+
+      setServices(svcRes.status === 'fulfilled' ? (svcRes.value.services || []) : []);
+      setActiveOrders(activeRes.status === 'fulfilled' ? (activeRes.value.orders || []) : []);
+      setCompletedOrders(completedRes.status === 'fulfilled' ? (completedRes.value.orders || []) : []);
+      setHasPendingApp(appRes.status === 'fulfilled' ? (appRes.value.hasPending || false) : false);
       // Pre-check which orders already have tickets
-      const completedOrdersData = completedRes.orders || [];
+      const completedOrdersData = completedRes.status === 'fulfilled' ? (completedRes.value.orders || []) : [];
       const sentSet = new Set();
       await Promise.all(completedOrdersData.map(async (o) => {
         try {

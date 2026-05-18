@@ -25,19 +25,22 @@ export default function Login() {
         body: JSON.stringify({ username: username.trim(), password })
       });
 
+      const status = result.status || result.role || 'user';
       localStorage.setItem('userId', String(result.userId || ''));
-      localStorage.setItem('username', username.trim());
-      localStorage.setItem('userRole', result.role || 'user');
-      localStorage.setItem('userStatus', result.status || result.role || 'user');
+      localStorage.setItem('username', result.username || username.trim());
+      localStorage.setItem('userRole', status);
+      localStorage.setItem('userStatus', status);
+      localStorage.setItem('is_worker', result.is_worker ? '1' : '0');
       if (result.phone) localStorage.setItem('userPhone', result.phone);
-      if (result.is_worker) localStorage.setItem('is_worker', '1');
+      else localStorage.removeItem('userPhone');
+      if (result.email) localStorage.setItem('userEmail', result.email);
+      else localStorage.removeItem('userEmail');
       if (result.language) {
         i18n.changeLanguage(result.language);
         localStorage.setItem('i18nextLng', result.language);
       }
 
       // Navigation based on user status
-      const status = result.status || 'user';
       if (status === 'admin') {
         navigate('/admin');
       } else if (status === 'moderator') {

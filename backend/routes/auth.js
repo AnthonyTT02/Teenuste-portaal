@@ -7,6 +7,32 @@ const { Resend } = require('resend');
 // Initialize Resend
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+const allowedStatuses = new Set(['user', 'admin', 'moderator', 'support', 'worker']);
+
+function normalizeUserStatus(user) {
+  const status = String(user?.status || '').toLowerCase();
+  const role = String(user?.role || '').toLowerCase();
+  if (allowedStatuses.has(status) && status !== 'user') return status;
+  if (allowedStatuses.has(role) && role !== 'user') return role;
+  if (Number(user?.is_worker) === 1) return 'worker';
+  return 'user';
+}
+
+function buildLoginPayload(user) {
+  const status = normalizeUserStatus(user);
+  return {
+    ok: true,
+    userId: user.id,
+    username: user.username || '',
+    email: user.email || '',
+    status,
+    role: status,
+    phone: user.phone || '',
+    is_worker: user.is_worker || 0,
+    language: user.language || 'en'
+  };
+}
+
 // Send verification code for registration
 router.post('/api/register-user/send-code', async (req, res) => {
   try {
@@ -72,7 +98,7 @@ router.post('/api/login', async (req, res) => {
     const [users] = await db.query('SELECT * FROM users WHERE username = ? AND password = ?', [username, hashPassword(password)]);
     if (users.length === 0) return res.status(401).json({ ok: false, error: 'Неправильное имя пользователя или пароль' });
     const user = users[0];
-    res.json({ ok: true, userId: user.id, status: user.status || 'user', phone: user.phone || '', is_worker: user.is_worker || 0, language: user.language || 'en' });
+    res.json(buildLoginPayload(user));
   } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
 });
 
@@ -81,10 +107,11 @@ router.post('/api/admin-login', async (req, res) => {
   try {
     const { username, password } = req.body;
     if (!username || !password) return res.status(400).json({ ok: false, error: 'Username and password required' });
-    const [users] = await db.query('SELECT * FROM users WHERE username = ? AND password = ? AND status = ?', [username, hashPassword(password), 'admin']);
+    const [users] = await db.query('SELECT * FROM users WHERE username = ? AND password = ?', [username, hashPassword(password)]);
     if (users.length === 0) return res.status(401).json({ ok: false, error: 'Invalid credentials or not an admin' });
     const user = users[0];
-    res.json({ ok: true, userId: user.id });
+    if (normalizeUserStatus(user) !== 'admin') return res.status(401).json({ ok: false, error: 'Invalid credentials or not an admin' });
+    res.json(buildLoginPayload(user));
   } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
 });
 
@@ -93,10 +120,11 @@ router.post('/api/support-login', async (req, res) => {
   try {
     const { username, password } = req.body;
     if (!username || !password) return res.status(400).json({ ok: false, error: 'Username and password required' });
-    const [users] = await db.query('SELECT * FROM users WHERE username = ? AND password = ? AND status = ?', [username, hashPassword(password), 'support']);
+    const [users] = await db.query('SELECT * FROM users WHERE username = ? AND password = ?', [username, hashPassword(password)]);
     if (users.length === 0) return res.status(401).json({ ok: false, error: 'Invalid credentials or not support staff' });
     const user = users[0];
-    res.json({ ok: true, userId: user.id });
+    if (normalizeUserStatus(user) !== 'support') return res.status(401).json({ ok: false, error: 'Invalid credentials or not support staff' });
+    res.json(buildLoginPayload(user));
   } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
 });
 
@@ -105,10 +133,11 @@ router.post('/api/moderator-login', async (req, res) => {
   try {
     const { username, password } = req.body;
     if (!username || !password) return res.status(400).json({ ok: false, error: 'Username and password required' });
-    const [users] = await db.query('SELECT * FROM users WHERE username = ? AND password = ? AND status = ?', [username, hashPassword(password), 'moderator']);
+    const [users] = await db.query('SELECT * FROM users WHERE username = ? AND password = ?', [username, hashPassword(password)]);
     if (users.length === 0) return res.status(401).json({ ok: false, error: 'Invalid credentials or not a moderator' });
     const user = users[0];
-    res.json({ ok: true, userId: user.id });
+    if (normalizeUserStatus(user) !== 'moderator') return res.status(401).json({ ok: false, error: 'Invalid credentials or not a moderator' });
+    res.json(buildLoginPayload(user));
   } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
 });
 

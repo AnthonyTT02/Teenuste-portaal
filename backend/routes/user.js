@@ -3,12 +3,41 @@ const router = express.Router();
 const db = require('../db');
 const { isUserPhoneTaken } = require('../utils');
 
+const ALLOWED_USER_STATUSES = new Set(['user', 'admin', 'moderator', 'support', 'worker']);
+
+function getEffectiveStatus(user) {
+  const status = String(user?.status || '').toLowerCase();
+  const role = String(user?.role || '').toLowerCase();
+  if (ALLOWED_USER_STATUSES.has(status) && status !== 'user') return status;
+  if (ALLOWED_USER_STATUSES.has(role) && role !== 'user') return role;
+  if (Number(user?.is_worker) === 1) return 'worker';
+  return 'user';
+}
+
+function toPublicUser(user) {
+  const status = getEffectiveStatus(user);
+  return {
+    id: user.id,
+    username: user.username,
+    phone: user.phone,
+    email: user.email,
+    role: status,
+    status,
+    is_worker: user.is_worker,
+    worker_online: user.worker_online,
+    government_name: user.government_name,
+    government_surname: user.government_surname,
+    language: user.language,
+    profile_photo: user.profile_photo
+  };
+}
+
 // Get user profile
 router.get('/api/user/:id', async (req, res) => {
   try {
-    const [users] = await db.query('SELECT id, username, phone, email, role, status, is_worker, worker_online, government_name, government_surname, language, profile_photo FROM users WHERE id = ?', [req.params.id]);
+    const [users] = await db.query('SELECT * FROM users WHERE id = ?', [req.params.id]);
     if (users.length === 0) return res.status(404).json({ ok: false, error: 'Not found' });
-    res.json({ ok: true, user: users[0] });
+    res.json({ ok: true, user: toPublicUser(users[0]) });
   } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
 });
 
@@ -78,8 +107,8 @@ router.put('/api/user/:id', async (req, res) => {
       throw err;
     }
 
-    const [users] = await db.query('SELECT id, username, phone, email, role, status, is_worker, worker_online, government_name, government_surname, language, profile_photo FROM users WHERE id = ?', [id]);
-    res.json({ ok: true, message: 'Profile updated successfully', user: users[0] });
+    const [users] = await db.query('SELECT * FROM users WHERE id = ?', [id]);
+    res.json({ ok: true, message: 'Profile updated successfully', user: toPublicUser(users[0]) });
   } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
 });
 

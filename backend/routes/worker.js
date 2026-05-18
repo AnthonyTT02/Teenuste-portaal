@@ -2,6 +2,36 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 
+const ALLOWED_USER_STATUSES = new Set(['user', 'admin', 'moderator', 'support', 'worker']);
+
+function getEffectiveStatus(user) {
+  const status = String(user?.status || '').toLowerCase();
+  const role = String(user?.role || '').toLowerCase();
+  if (ALLOWED_USER_STATUSES.has(status) && status !== 'user') return status;
+  if (ALLOWED_USER_STATUSES.has(role) && role !== 'user') return role;
+  if (Number(user?.is_worker) === 1) return 'worker';
+  return 'user';
+}
+
+function toWorkerUser(user) {
+  const status = getEffectiveStatus(user);
+  return {
+    id: user.id,
+    username: user.username,
+    phone: user.phone,
+    email: user.email,
+    government_name: user.government_name,
+    government_surname: user.government_surname,
+    profile_photo: user.profile_photo,
+    worker_lat: user.worker_lat,
+    worker_lng: user.worker_lng,
+    is_worker: user.is_worker,
+    worker_online: user.worker_online,
+    status,
+    role: status
+  };
+}
+
 // Get worker application status
 router.get('/api/worker/application-status/:userId', async (req, res) => {
   try {
@@ -120,7 +150,7 @@ router.get('/api/workers/for-service/:serviceId', async (req, res) => {
 // Get worker details
 router.get('/api/worker/:userId', async (req, res) => {
   try {
-    const [users] = await db.query('SELECT id, username, phone, email, government_name, government_surname, profile_photo, worker_lat, worker_lng, is_worker, worker_online, status, role FROM users WHERE id = ?', [req.params.userId]);
+    const [users] = await db.query('SELECT * FROM users WHERE id = ?', [req.params.userId]);
     if (users.length === 0) return res.status(404).json({ ok: false, error: 'Not found' });
     
     const [services] = await db.query(`
@@ -128,7 +158,7 @@ router.get('/api/worker/:userId', async (req, res) => {
       JOIN services s ON ws.service_id = s.id
       WHERE ws.user_id = ?
     `, [users[0].id]);
-    res.json({ ok: true, user: users[0], services });
+    res.json({ ok: true, user: toWorkerUser(users[0]), services });
   } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
 });
 

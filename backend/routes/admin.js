@@ -5,13 +5,21 @@ const { hashPassword, isUserPhoneTaken } = require('../utils');
 
 const ALLOWED_USER_STATUSES = new Set(['user', 'admin', 'moderator', 'support', 'worker']);
 
+function getEffectiveUserStatus(user) {
+  const status = String(user?.status || '').toLowerCase();
+  const role = String(user?.role || '').toLowerCase();
+  if (ALLOWED_USER_STATUSES.has(status) && status !== 'user') return status;
+  if (ALLOWED_USER_STATUSES.has(role) && role !== 'user') return role;
+  return 'user';
+}
+
 // Middleware to ensure user is admin
 async function ensureAdmin(req, res, next) {
   if (req.session && req.session.isAdmin) return next();
   const uid = req.headers['x-user-id'] || req.query.userId;
   if (uid) {
-    const [users] = await db.query('SELECT status FROM users WHERE id = ?', [uid]);
-    if (users.length > 0 && users[0].status === 'admin') return next();
+    const [users] = await db.query('SELECT * FROM users WHERE id = ?', [uid]);
+    if (users.length > 0 && getEffectiveUserStatus(users[0]) === 'admin') return next();
   }
   res.status(401).json({ ok: false, error: 'Not authorized' });
 }
