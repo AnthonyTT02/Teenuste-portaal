@@ -170,7 +170,7 @@ export default function Register() {
               <p className="text-xs text-gray-400 mt-1">Valid for 10 minutes</p>
             </div>
             <div className="group/input relative">
-              <label className={`block text-[13px] font-bold tracking-wide mb-2 transition-colors duration-300 ${isFocused === 'code' ? 'text-brand' : 'text-gray-700'}`}>6-digit code</label>
+              <label className={`block text-[13px] font-bold tracking-wide mb-2 transition-colors duration-300 ${isFocused === 'code' ? 'text-brand' : 'text-gray-700'}`}>{t('six_digit_code')}</label>
               <input type="text" required inputMode="numeric" maxLength={6} value={code}
                 onFocus={() => setIsFocused('code')} onBlur={() => setIsFocused(null)}
                 onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
