@@ -167,7 +167,7 @@ export default function Register() {
           <form onSubmit={handleVerify} className="space-y-6">
             <div className="bg-brand/5 border border-brand/20 rounded-2xl p-4 text-center">
               <p className="text-sm text-gray-600">{t('code_sent_to')} <strong>{email}</strong></p>
-              <p className="text-xs text-gray-400 mt-1">Valid for 10 minutes</p>
+              <p className="text-xs text-gray-400 mt-1">{t('valid_for_10_minutes')}</p>
             </div>
             <div className="group/input relative">
               <label className={`block text-[13px] font-bold tracking-wide mb-2 transition-colors duration-300 ${isFocused === 'code' ? 'text-brand' : 'text-gray-700'}`}>{t('six_digit_code')}</label>
