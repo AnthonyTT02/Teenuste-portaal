@@ -5,6 +5,14 @@ import { useSidebar } from '../context/SidebarContext';
 import LanguageSwitcher from './LanguageSwitcher';
 import { useTranslation } from 'react-i18next';
 
+/**
+ * Cabinet Component
+ * The central Customer Dashboard. Enables regular users to:
+ * 1. Request roadside assistance (using Leaflet maps to drop location pins).
+ * 2. Select professional services, input vehicle details, and calculate prices.
+ * 3. Track active & completed emergency requests with assigned workers.
+ * 4. Manage favorite towing/assistance providers.
+ */
 export default function Cabinet() {
   const { t } = useTranslation();
   const navigate = useNavigate();

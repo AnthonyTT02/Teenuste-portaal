@@ -21,6 +21,16 @@ function MapClickHandler({ onLocationSelect }) {
 }
 
 // Steps: 1=Service, 2=Location&Vehicle, 3=Payment, 3.5=Card details, 4=Send Request, 5=Confirm
+/**
+ * RequestHelp Component
+ * Manages the step-by-step Roadside Assistance Checkout and Booking workflow:
+ * Step 1: Select Emergency Service (Towing, Battery jumpstart, fuel, tire repair).
+ * Step 2: Set incident GPS location (Leaflet Map drop pin & auto reverse-geocoding) and specify vehicle details (Brand, Model, Plate number).
+ * Step 3: Choose Payment Method (Cash, Card, or Stripe).
+ * Step 3.5: Input credit card details (under security compliance).
+ * Step 4: Display list of active, nearby, and online professional providers.
+ * Step 5: Submit order to database and redirect user to track assigned emergency vehicle.
+ */
 export default function RequestHelp() {
   const { openSidebar } = useSidebar();
   const navigate = useNavigate();

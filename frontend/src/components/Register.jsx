@@ -4,6 +4,12 @@ import { api } from '../api';
 import LanguageSwitcher from './LanguageSwitcher';
 import { useTranslation } from 'react-i18next';
 
+/**
+ * Register Component
+ * Handles a secure 2-step registration process:
+ * 1. User details form (username, password, Estonian phone number, email).
+ * 2. 6-digit email verification code check sent via Resend API.
+ */
 export default function Register() {
   const { t } = useTranslation();
   const [step, setStep] = useState(1); // 1=form, 2=verify
@@ -49,8 +55,8 @@ export default function Register() {
   const handleSendCode = async (e) => {
     e.preventDefault();
     setError('');
-    if (phoneDigits.length !== 8) return setError('Введите эстонский номер в формате +372 XXXX XXXX');
-    if (!email.includes('@') || !email.includes('.')) return setError('Введите корректный email адрес');
+    if (phoneDigits.length !== 8) return setError(t('error_invalid_phone'));
+    if (!email.includes('@') || !email.includes('.')) return setError(t('error_invalid_email'));
     if (password.length < 8 && !weakPasswordWarningSeen) { setWeakPasswordWarningSeen(true); return; }
     setIsSubmitting(true);
     try {
@@ -60,20 +66,20 @@ export default function Register() {
       });
       setStep(2);
     } catch (err) {
-      setError(err.payload?.error || err.message || 'Ошибка отправки');
+      setError(err.payload?.error || err.message || t('error_sending_failed'));
     } finally { setIsSubmitting(false); }
   };
 
   const handleVerify = async (e) => {
     e.preventDefault();
     setError('');
-    if (!code.trim()) return setError('Введите код подтверждения');
+    if (!code.trim()) return setError(t('error_enter_code'));
     setIsSubmitting(true);
     try {
       await api('/api/register-user', { method: 'POST', body: JSON.stringify({ code: code.trim() }) });
       navigate('/');
     } catch (err) {
-      setError(err.payload?.error || err.message || 'Неверный код');
+      setError(err.payload?.error || err.message || t('error_invalid_code'));
     } finally { setIsSubmitting(false); }
   };
 
@@ -138,7 +144,7 @@ export default function Register() {
                   <div className="tp-alert-error text-[12px] px-3 py-2">{error}</div>
                 ) : weakPasswordWarningSeen && password.length < 8 ? (
                   <p className="tp-alert-warning text-[12px] px-3 py-2">
-                    Пароль слишком легкий. Продолжайте на свой страх и риск.
+                    {t('password_too_weak_warning')}
                   </p>
                 ) : null}
               </div>

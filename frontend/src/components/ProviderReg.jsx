@@ -3,6 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { api } from '../api';
 import { useSidebar } from '../context/SidebarContext';
 
+/**
+ * ProviderReg Component
+ * Handles the 3-step professional Worker registration application:
+ * Step 1: Select services/specialties (towing, tires, etc.) and view pricing.
+ * Step 2: Input personal details (government name, Estonian Isikukood, bank account IBAN, and profile photo base64 upload).
+ * Step 3: Review all compiled information and submit the application for moderator approval.
+ */
 export default function ProviderReg() {
   const { openSidebar } = useSidebar();
   const navigate = useNavigate();

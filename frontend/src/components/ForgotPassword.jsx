@@ -4,6 +4,12 @@ import { api } from '../api';
 import LanguageSwitcher from './LanguageSwitcher';
 import { useTranslation } from 'react-i18next';
 
+/**
+ * ForgotPassword Component
+ * Manages the secure 2-step password recovery flow:
+ * 1. Takes username and email, requesting a 6-digit recovery code via API.
+ * 2. Takes the 6-digit recovery code and the new password, resetting credentials on the backend.
+ */
 export default function ForgotPassword() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -82,7 +88,7 @@ export default function ForgotPassword() {
         <div className="animate-float" style={{ animationDuration: '8s' }}>
           <h2 className="text-[2.75rem] leading-none font-extrabold text-[#111827] mb-3 tracking-tight">
             {t('reset_title_first')}{' '}
-            <span className="tp-brand-accent drop-shadow-sm">{t('reset_title_second')}</span>
+            {t('reset_title_second')}
           </h2>
         </div>
         <p className="text-gray-500 mb-10 text-[15px] font-medium tracking-wide">

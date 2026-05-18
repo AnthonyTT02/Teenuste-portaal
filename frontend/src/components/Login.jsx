@@ -4,6 +4,12 @@ import { api } from '../api';
 import LanguageSwitcher from './LanguageSwitcher';
 import { useTranslation } from 'react-i18next';
 
+/**
+ * Login Component
+ * Handles user credentials authentication (username, password).
+ * On success, caches session details in localStorage (userId, role, status, phone, email)
+ * and redirects the user to their corresponding role-based landing dashboard.
+ */
 export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');

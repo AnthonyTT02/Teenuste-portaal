@@ -32,6 +32,15 @@ function WorkerLocationAnimator({ position }) {
   return null;
 }
 
+/**
+ * Provider Component
+ * The professional Worker Dashboard (Self-Employed).
+ * Enables approved roadside specialists to:
+ * 1. Toggle online/offline status dynamically (notifying customers of availability).
+ * 2. Select and manage individual service specialities (e.g. Towing, Fuel Delivery).
+ * 3. Track current GPS/map dispatch location.
+ * 4. Manage active assigned rescue requests and mark them as complete.
+ */
 function Provider() {
   const navigate = useNavigate();
   const userId = localStorage.getItem('userId');
@@ -51,7 +60,7 @@ function Provider() {
   useEffect(() => {
     if (!userId) { navigate('/'); return; }
     fetchWorkerData();
-    api('/api/services').then(r => setAllServices(r.services || [])).catch(() => {});
+    api('/api/services').then(r => setAllServices(r.services || [])).catch(() => { });
   }, [userId]);
 
   const fetchWorkerData = async () => {
@@ -65,7 +74,7 @@ function Provider() {
       setWorkerServices(res.services || []);
       setSelectedServiceIds((res.services || []).map(s => s.id));
       setIsOnline(res.user.worker_online === 1);
-      const ordersRes = await api(`/api/user/${userId}/orders/active`);
+      const ordersRes = await api(`/api/user/${userId}/orders/active?role=worker`);
       setActiveOrders((ordersRes.orders || []).filter(o => o.worker_user_id === Number(userId)));
     } catch (e) { console.error(e); }
     setLoading(false);
@@ -171,7 +180,7 @@ function Provider() {
                   className={`tp-choice gap-3 p-3 rounded-xl ${selectedServiceIds.includes(s.id) ? 'tp-choice-active' : ''}`}>
                   <div className="flex items-center min-w-0">
                     <div className={`tp-choice-check rounded-md mr-3 ${selectedServiceIds.includes(s.id) ? 'tp-choice-check-active' : ''}`}>
-                      {selectedServiceIds.includes(s.id) && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>}
+                      {selectedServiceIds.includes(s.id) && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><polyline points="20 6 9 17 4 12" /></svg>}
                     </div>
                     <p className="font-semibold text-gray-800 text-sm truncate">{s.name}</p>
                   </div>
@@ -263,6 +272,7 @@ function Provider() {
                         <h4 className="font-bold text-gray-800 mb-1">Order #{o.id}</h4>
                         <p className="text-sm text-gray-500 mb-1">{o.vehicleBrand} {o.vehicleModel} — {o.regNumber}</p>
                         <p className="text-sm text-gray-500 mb-1">Address: {o.address}</p>
+                        <p className="text-sm text-gray-500 mb-1">Note: {o.note}</p>
                         {o.price && <p className="text-sm font-bold text-brand">€{Number(o.price).toFixed(2)} · {o.paymentType}</p>}
                       </div>
                       {hasLocation && (
@@ -310,7 +320,7 @@ function Provider() {
           </div>
         ) : (
           <div className="py-10 px-6 bg-white/40 rounded-3xl border border-white border-dashed text-gray-400 text-center">
-            <svg className="w-14 h-14 mx-auto mb-3 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+            <svg className="w-14 h-14 mx-auto mb-3 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
             <p className="font-semibold">You are currently offline.</p>
             <p className="text-sm mt-1">Toggle the switch above to start receiving orders.</p>
           </div>

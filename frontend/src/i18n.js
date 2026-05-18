@@ -125,7 +125,13 @@ const resources = {
       "transactions": "Transactions",
       "bolt_balance": "My balance",
       "profile": "Profile",
-      "edit": "Edit"
+      "edit": "Edit",
+      "error_invalid_phone": "Enter Estonian number in format +372 XXXX XXXX",
+      "error_invalid_email": "Enter a valid email address",
+      "error_sending_failed": "Failed to send code",
+      "error_enter_code": "Enter verification code",
+      "error_invalid_code": "Invalid verification code",
+      "password_too_weak_warning": "Password is too weak. Continue at your own risk."
     }
   },
   ru: {
@@ -250,7 +256,13 @@ const resources = {
       "bolt_balance": "Мой баланс",
       "profile": "Профиль",
       "edit": "Изменить",
-      "have_account": "Уже есть аккаунт?"
+      "have_account": "Уже есть аккаунт?",
+      "error_invalid_phone": "Введите эстонский номер в формате +372 XXXX XXXX",
+      "error_invalid_email": "Введите корректный email адрес",
+      "error_sending_failed": "Ошибка отправки",
+      "error_enter_code": "Введите код подтверждения",
+      "error_invalid_code": "Неверный код",
+      "password_too_weak_warning": "Пароль слишком легкий. Продолжайте на свой страх и риск."
     }
   },
   et: {
@@ -375,7 +387,13 @@ const resources = {
       "bolt_balance": "Minu saldo",
       "profile": "Profiil",
       "edit": "Muuda",
-      "have_account": "Kas sul on juba konto?"
+      "have_account": "Kas sul on juba konto?",
+      "error_invalid_phone": "Sisestage Eesti number formaadis +372 XXXX XXXX",
+      "error_invalid_email": "Sisestage kehtiv e-posti aadress",
+      "error_sending_failed": "Koodi saatmine ebaõnnestus",
+      "error_enter_code": "Sisesta kinnituskood",
+      "error_invalid_code": "Vale kinnituskood",
+      "password_too_weak_warning": "Parool on liiga nõrk. Jätkake omal vastutusel."
     }
   }
 };

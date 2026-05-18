@@ -37,13 +37,24 @@ router.post('/api/order/:orderId/complete', async (req, res) => {
 // Get active orders for a user
 router.get('/api/user/:id/orders/active', async (req, res) => {
   try {
-    const [orders] = await db.query(`
+    const role = req.query.role;
+    let queryStr = `
       SELECT o.*, w.government_name, w.government_surname, w.phone 
       FROM orders o 
       LEFT JOIN users w ON o.worker_user_id = w.id 
       WHERE o.user_id = ? AND o.status != 'completed' 
       ORDER BY o.created_at DESC
-    `, [req.params.id]);
+    `;
+    if (role === 'worker') {
+      queryStr = `
+        SELECT o.*, w.government_name, w.government_surname, w.phone 
+        FROM orders o 
+        LEFT JOIN users w ON o.worker_user_id = w.id 
+        WHERE o.worker_user_id = ? AND o.status != 'completed' 
+        ORDER BY o.created_at DESC
+      `;
+    }
+    const [orders] = await db.query(queryStr, [req.params.id]);
 
     const formatted = orders.map(o => {
       const { government_name, government_surname, phone, ...orderData } = o;
