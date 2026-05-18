@@ -138,7 +138,7 @@ function Admin() {
                         <td className="py-3 px-4"><span className={`px-2 py-0.5 rounded-full text-xs font-bold ${u.status === 'worker' ? 'bg-green-100 text-green-700' : u.status === 'moderator' ? 'bg-blue-100 text-blue-700' : u.status === 'support' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-600'}`}>{u.status}</span></td>
                         <td className="py-3 px-4 text-gray-500 text-sm">{u.phone || '—'}</td>
                         <td className="py-3 px-4">
-                          <button onClick={() => deleteUser(u.id)} className="text-red-500 hover:text-red-700 font-semibold text-sm transition-colors">Delete</button>
+                          <button onClick={() => deleteUser(u.id)} className="text-red-500 hover:text-red-700 font-semibold text-sm transition-colors">{t('delete', 'Delete')}</button>
                         </td>
                       </tr>
                     ))}
