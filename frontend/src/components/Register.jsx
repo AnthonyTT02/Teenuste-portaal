@@ -36,11 +36,11 @@ export default function Register() {
       /\d/.test(value),
       /[^A-Za-z0-9]/.test(value)
     ].filter(Boolean).length;
-    if (value.length < 6) return { label: 'Очень слабый', color: 'text-red-600', bar: 'bg-red-500', width: 'w-[20%]' };
-    if (score <= 2) return { label: 'Слишком легкий', color: 'text-red-600', bar: 'bg-red-500', width: 'w-[30%]' };
-    if (score === 3) return { label: 'Нормальный', color: 'text-amber-600', bar: 'bg-amber-500', width: 'w-[55%]' };
-    if (score === 4) return { label: 'Хороший', color: 'text-emerald-600', bar: 'bg-emerald-500', width: 'w-[78%]' };
-    return { label: 'Надежный', color: 'text-emerald-700', bar: 'bg-emerald-600', width: 'w-full' };
+    if (value.length < 6) return { label: t('password_strength_very_weak'), color: 'text-red-600', bar: 'bg-red-500', width: 'w-[20%]' };
+    if (score <= 2) return { label: t('password_strength_too_weak'), color: 'text-red-600', bar: 'bg-red-500', width: 'w-[30%]' };
+    if (score === 3) return { label: t('password_strength_normal'), color: 'text-amber-600', bar: 'bg-amber-500', width: 'w-[55%]' };
+    if (score === 4) return { label: t('password_strength_good'), color: 'text-emerald-600', bar: 'bg-emerald-500', width: 'w-[78%]' };
+    return { label: t('password_strength_strong'), color: 'text-emerald-700', bar: 'bg-emerald-600', width: 'w-full' };
   };
 
   const passwordStrength = getPasswordStrength(password);
@@ -129,7 +129,7 @@ export default function Register() {
               <div className="mt-3 space-y-2">
                 <div className="flex items-center justify-between text-[13px] font-semibold">
                   <span className={passwordStrength.color}>{passwordStrength.label}</span>
-                  <span className="text-gray-400">минимум 8 символов</span>
+                  <span className="text-gray-400">{t('password_min_8_chars')}</span>
                 </div>
                 <div className="h-2 rounded-full bg-gray-100 overflow-hidden">
                   <div className={`h-full rounded-full transition-all duration-300 ${passwordStrength.bar} ${passwordStrength.width}`}></div>
