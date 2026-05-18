@@ -82,8 +82,8 @@ const resources = {
       "send_code": "Send verification code",
       "enter_code": "Enter verification code",
       "confirm_code": "Confirm code",
-      "back_to_login": "Back to login"
-      ,
+      "back_to_login": "Back to login",
+      "have_account": "Already have an account?",
       "greeting": "Hello, {{name}}",
       "favorites": "Favorites",
       "empty_favorites": "Empty favorites list\nMark favorite providers and they will appear here",
@@ -175,8 +175,7 @@ const resources = {
       "send_code": "Отправить код подтверждения",
       "enter_code": "Введите код подтверждения",
       "confirm_code": "Подтвердить код",
-      "back_to_login": "Назад ко входу"
-    ,
+      "back_to_login": "Назад ко входу",
       "greeting": "Привет, {{name}}",
       "favorites": "Избранное",
       "empty_favorites": "Пустой список избранных\nОтмечайте сердечком любимых поставщиков, и они появятся здесь",
@@ -186,7 +185,8 @@ const resources = {
       "transactions": "Операции",
       "bolt_balance": "Мой баланс",
       "profile": "Профиль",
-      "edit": "Изменить"
+      "edit": "Изменить",
+      "have_account": "Уже есть аккаунт?"
     }
   },
   et: {
@@ -268,8 +268,7 @@ const resources = {
       "send_code": "Saada kinnituskood",
       "enter_code": "Sisesta kinnituskood",
       "confirm_code": "Kinnita kood",
-      "back_to_login": "Tagasi sisselogimise juurde"
-    ,
+      "back_to_login": "Tagasi sisselogimise juurde",
       "greeting": "Tere, {{name}}",
       "favorites": "Lemmikud",
       "empty_favorites": "Tühi lemmikute nimekiri\nMärgi lemmikpakkujad ja nad ilmuvad siia",
@@ -279,7 +278,8 @@ const resources = {
       "transactions": "Tehingud",
       "bolt_balance": "Minu saldo",
       "profile": "Profiil",
-      "edit": "Muuda"
+      "edit": "Muuda",
+      "have_account": "Kas sul on juba konto?"
     }
   }
 };
