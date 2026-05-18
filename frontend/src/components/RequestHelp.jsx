@@ -294,7 +294,7 @@ export default function RequestHelp() {
                   onChange={(e) => setAgreedToStorage(e.target.checked)} 
                   className="w-5 h-5 text-brand rounded border-gray-300 focus:ring-brand accent-brand"
                 />
-                <span className="text-sm text-gray-700">Я согласен на краткосрочное хранение своих банковских данных</span>
+                <span className="text-sm text-gray-700">I agree to the short-term storage of my personal and banking data</span>
               </label>
             )}
 

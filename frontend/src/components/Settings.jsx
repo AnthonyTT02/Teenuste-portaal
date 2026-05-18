@@ -102,28 +102,6 @@ export default function Settings() {
 
         <div className="space-y-4">
           <div className="bg-white/60 border border-gray-100 rounded-3xl p-5 shadow-sm">
-            <div className="flex justify-between items-start">
-              <div>
-                <h3 className="font-semibold text-gray-900">{t('favorites')}</h3>
-                <p className="text-sm text-gray-500 mt-2 whitespace-pre-line">{t('empty_favorites')}</p>
-              </div>
-              <div className="flex items-start">
-                <button className="ml-3 px-3 py-2 rounded-xl bg-gray-100 text-gray-700 text-sm font-semibold">+</button>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white/60 border border-gray-100 rounded-3xl p-5 shadow-sm">
-            <div className="flex justify-between items-center mb-3">
-              <h3 className="font-semibold text-gray-900">{t('payment_method')}</h3>
-            </div>
-            <p className="text-sm text-gray-500 mb-3">{t('bolt_balance')}: <span className="font-bold text-gray-800">0,00 EUR</span></p>
-            <div className="flex flex-col gap-2">
-              <button onClick={() => navigate('/payment-methods')} className="text-left px-3 py-2 rounded-xl bg-gray-100 text-gray-700">+ {t('add_payment_method')}</button>
-            </div>
-          </div>
-
-          <div className="bg-white/60 border border-gray-100 rounded-3xl p-5 shadow-sm">
             <div className="flex justify-between items-center mb-3">
               <h3 className="font-semibold text-gray-900">{t('profile')}</h3>
             </div>

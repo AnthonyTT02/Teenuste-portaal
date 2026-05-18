@@ -35,6 +35,7 @@ export default function Cabinet() {
   const [hasPendingApp, setHasPendingApp] = useState(false);
   const [photoUploading, setPhotoUploading] = useState(false);
   const [photoError, setPhotoError] = useState('');
+  const [ticketStatusByOrder, setTicketStatusByOrder] = useState({});
   const profilePhoto = user?.profile_photo;
   const profileStatus = user?.status || userStatus || 'user';
 
@@ -80,13 +81,18 @@ export default function Cabinet() {
       // Pre-check which orders already have tickets
       const completedOrdersData = completedRes.status === 'fulfilled' ? (completedRes.value.orders || []) : [];
       const sentSet = new Set();
+      const statusMap = {};
       await Promise.all(completedOrdersData.map(async (o) => {
         try {
           const r = await api(`/api/support/tickets/check?userId=${userId}&orderId=${o.id}`);
-          if (r.exists) sentSet.add(o.id);
+          if (r.exists) {
+            sentSet.add(o.id);
+            statusMap[o.id] = r.status || 'open';
+          }
         } catch {}
       }));
       setTicketSentOrders(sentSet);
+      setTicketStatusByOrder(statusMap);
     } catch (e) { console.error(e); }
     finally { setLoading(false); }
   };
@@ -135,13 +141,15 @@ export default function Cabinet() {
   const sendTicket = async () => {
     if (!ticketMsg.trim()) return;
     try {
-      await api('/api/support/tickets', { method: 'POST', body: JSON.stringify({ userId, orderId: ticketModal, message: ticketMsg }) });
+      const result = await api('/api/support/tickets', { method: 'POST', body: JSON.stringify({ userId, orderId: ticketModal, message: ticketMsg }) });
       setTicketSent(true);
       setTicketSentOrders(prev => new Set([...prev, ticketModal]));
+      setTicketStatusByOrder(prev => ({ ...prev, [ticketModal]: result.status || 'open' }));
       setTimeout(() => { setTicketModal(null); setTicketMsg(''); setTicketSent(false); }, 2000);
     } catch (err) {
       if (err.payload?.alreadyExists) {
         setTicketSentOrders(prev => new Set([...prev, ticketModal]));
+        setTicketStatusByOrder(prev => ({ ...prev, [ticketModal]: err.payload.status || 'open' }));
         setTicketModal(null);
       }
     }
@@ -296,7 +304,7 @@ export default function Cabinet() {
                       {workerPhone && <p className="text-xs text-gray-500 mb-3">Worker Phone: {workerPhone}</p>}
                       {alreadySubmitted ? (
                         <div className="w-full py-2 text-center text-xs text-gray-400 border border-gray-100 rounded-xl bg-gray-50">
-                          Support ticket submitted
+                          {ticketStatusByOrder[o.id] === 'resolved' ? 'Support ticket resolved' : 'Support ticket submitted'}
                         </div>
                       ) : (
                         <button onClick={() => setTicketModal(o.id)} className="w-full py-2 border border-gray-200 text-gray-600 hover:bg-gray-50 font-semibold text-sm rounded-xl transition-colors">

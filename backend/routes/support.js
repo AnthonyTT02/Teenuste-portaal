@@ -7,8 +7,34 @@ router.post('/api/support/tickets', async (req, res) => {
   try {
     const { userId, orderId, message } = req.body;
     if (!userId || !orderId || !message) return res.status(400).json({ ok: false, error: 'userId, orderId, message required' });
+
+    const [existing] = await db.query(
+      'SELECT id, status FROM support_tickets WHERE user_id = ? AND order_id = ? ORDER BY created_at DESC LIMIT 1',
+      [userId, orderId]
+    );
+
+    if (existing.length) {
+      return res.status(409).json({ ok: false, alreadyExists: true, ticketId: existing[0].id, status: existing[0].status });
+    }
+
     const [result] = await db.query('INSERT INTO support_tickets (user_id, order_id, message, status) VALUES (?, ?, ?, ?)', [userId, orderId, message, 'open']);
     res.json({ ok: true, ticketId: result.insertId });
+  } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
+});
+
+// Check if a support ticket already exists for an order
+router.get('/api/support/tickets/check', async (req, res) => {
+  try {
+    const { userId, orderId } = req.query;
+    if (!userId || !orderId) return res.status(400).json({ ok: false, error: 'userId and orderId required' });
+
+    const [rows] = await db.query(
+      'SELECT id, status FROM support_tickets WHERE user_id = ? AND order_id = ? ORDER BY created_at DESC LIMIT 1',
+      [userId, orderId]
+    );
+
+    if (!rows.length) return res.json({ ok: true, exists: false, status: null });
+    res.json({ ok: true, exists: true, ticketId: rows[0].id, status: rows[0].status });
   } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
 });
 

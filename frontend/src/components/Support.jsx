@@ -74,25 +74,25 @@ function Support() {
           </div>
         ) : (
           <div className="space-y-3">
-            {displayTickets.map(t => (
-              <div key={t.id} className="bg-white/70 border border-white/60 rounded-2xl p-5 shadow-sm">
+            {displayTickets.map(ticket => (
+              <div key={ticket.id} className="bg-white/70 border border-white/60 rounded-2xl p-5 shadow-sm">
                 <div className="flex justify-between items-start mb-3">
                   <div>
-                    <h3 className="font-bold text-gray-800">{t('ticket', 'Ticket')} #{t.id}</h3>
-                    <p className="text-sm text-gray-500">{t('worker', 'Worker')}: <span className="font-semibold text-gray-700">{t.order?.worker_user ? `${t.order.worker_user.government_name} ${t.order.worker_user.government_surname}` : t('not_assigned', 'Not assigned')}</span> · {t('ticket', 'Ticket')} #{t.order_id}</p>
-                    {t.user?.phone && <p className="text-xs text-gray-400">{t('customer_phone', 'Customer Phone')}: {t.user.phone}</p>}
+                    <h3 className="font-bold text-gray-800">{t('ticket', 'Ticket')} #{ticket.id}</h3>
+                    <p className="text-sm text-gray-500">{t('worker', 'Worker')}: <span className="font-semibold text-gray-700">{ticket.order?.worker_user ? `${ticket.order.worker_user.government_name} ${ticket.order.worker_user.government_surname}` : t('not_assigned', 'Not assigned')}</span> · {t('ticket', 'Ticket')} #{ticket.order_id}</p>
+                    {ticket.user?.phone && <p className="text-xs text-gray-400">{t('customer_phone', 'Customer Phone')}: {ticket.user.phone}</p>}
                   </div>
-                  <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${t.status === 'open' ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700'}`}>
-                    {t(t.status, t.status)}
+                  <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${ticket.status === 'open' ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700'}`}>
+                    {t(ticket.status, ticket.status)}
                   </span>
                 </div>
                 <div className="bg-gray-50 rounded-xl p-4 mb-3">
-                  <p className="text-sm text-gray-700">{t.message}</p>
+                  <p className="text-sm text-gray-700">{ticket.message}</p>
                 </div>
                 <div className="flex justify-between items-center">
-                  <p className="text-xs text-gray-400">{new Date(t.created_at).toLocaleString()}</p>
-                  {t.status === 'open' && (
-                    <button onClick={() => resolveTicket(t.id)} className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-bold rounded-xl text-sm transition-colors">
+                  <p className="text-xs text-gray-400">{new Date(ticket.created_at).toLocaleString()}</p>
+                  {ticket.status === 'open' && (
+                    <button onClick={() => resolveTicket(ticket.id)} className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-bold rounded-xl text-sm transition-colors">
                       {t('resolve', 'Resolve')}
                     </button>
                   )}
