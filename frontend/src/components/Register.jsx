@@ -153,7 +153,7 @@ export default function Register() {
                 className="w-full px-5 py-4 rounded-2xl bg-gray-50/50 border border-gray-200/60 focus:border-brand/40 focus:bg-white focus:ring-[4px] focus:ring-brand/15 transition-all duration-300 shadow-inner hover:bg-white text-gray-900 font-medium text-[15px]"
                 placeholder="+372 1234 5678" />
               <p className={`mt-3 text-[12px] font-medium leading-relaxed ${phoneIsComplete ? 'text-emerald-600' : 'text-gray-500'}`}>
-                Формат: +372 1234 5678. Вводится только 8 цифр после кода страны.
+                {t('phone_format_hint')}
               </p>
             </div>
 
