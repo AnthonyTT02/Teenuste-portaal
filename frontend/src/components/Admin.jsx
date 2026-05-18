@@ -124,7 +124,7 @@ function Admin() {
                 <table className="w-full text-left">
                   <thead className="border-b border-gray-100">
                     <tr>
-                      {['ID', 'Username', 'Role', 'Status', 'Phone', 'Action'].map(h => (
+                      {['ID', 'Username', 'Status', 'Phone', 'Action'].map(h => (
                         <th key={h} className="py-3 px-4 text-xs font-bold text-gray-500 uppercase">{h}</th>
                       ))}
                     </tr>
@@ -134,7 +134,6 @@ function Admin() {
                       <tr key={u.id} className="border-b border-gray-50 hover:bg-white/50 transition-colors">
                         <td className="py-3 px-4 text-gray-400 text-sm">#{u.id}</td>
                         <td className="py-3 px-4 font-semibold text-gray-800">{u.username}</td>
-                        <td className="py-3 px-4 text-gray-600 text-sm capitalize">{u.role}</td>
                         <td className="py-3 px-4"><span className={`px-2 py-0.5 rounded-full text-xs font-bold ${u.status === 'worker' ? 'bg-green-100 text-green-700' : u.status === 'moderator' ? 'bg-blue-100 text-blue-700' : u.status === 'support' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-600'}`}>{u.status}</span></td>
                         <td className="py-3 px-4 text-gray-500 text-sm">{u.phone || '—'}</td>
                         <td className="py-3 px-4">

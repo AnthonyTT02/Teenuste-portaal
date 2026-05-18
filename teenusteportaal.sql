@@ -91,7 +91,7 @@ CREATE TABLE `users` (
   `email` varchar(191) DEFAULT NULL,
   `created_at` datetime(3) NOT NULL DEFAULT current_timestamp(3),
   `role` varchar(191) NOT NULL DEFAULT 'user',
-  `status` varchar(191) NOT NULL DEFAULT 'user',
+  `status` enum('user','admin','moderator','support','worker') NOT NULL DEFAULT 'user',
   `is_worker` int(11) NOT NULL DEFAULT 0,
   `worker_online` int(11) NOT NULL DEFAULT 0,
   `government_name` varchar(191) DEFAULT NULL,
@@ -221,6 +221,16 @@ ALTER TABLE `support_tickets`
 --
 ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+
+--
+-- Нормализация и ограничение значений статуса пользователей
+--
+UPDATE `users`
+SET `status` = 'user'
+WHERE `status` NOT IN ('user', 'admin', 'moderator', 'support', 'worker');
+
+ALTER TABLE `users`
+  MODIFY `status` enum('user','admin','moderator','support','worker') NOT NULL DEFAULT 'user';
 
 --
 -- AUTO_INCREMENT для таблицы `worker_applications`

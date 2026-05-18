@@ -64,7 +64,7 @@ router.post('/api/register-user', async (req, res) => {
   } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
 });
 
-// Login user
+// User login
 router.post('/api/login', async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -72,7 +72,43 @@ router.post('/api/login', async (req, res) => {
     const [users] = await db.query('SELECT * FROM users WHERE username = ? AND password = ?', [username, hashPassword(password)]);
     if (users.length === 0) return res.status(401).json({ ok: false, error: 'Неправильное имя пользователя или пароль' });
     const user = users[0];
-    res.json({ ok: true, userId: user.id, role: user.role || 'user', status: user.status || 'user', phone: user.phone || '', is_worker: user.is_worker || 0, language: user.language || 'en' });
+    res.json({ ok: true, userId: user.id, status: user.status || 'user', phone: user.phone || '', is_worker: user.is_worker || 0, language: user.language || 'en' });
+  } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
+});
+
+// Admin login
+router.post('/api/admin-login', async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    if (!username || !password) return res.status(400).json({ ok: false, error: 'Username and password required' });
+    const [users] = await db.query('SELECT * FROM users WHERE username = ? AND password = ? AND status = ?', [username, hashPassword(password), 'admin']);
+    if (users.length === 0) return res.status(401).json({ ok: false, error: 'Invalid credentials or not an admin' });
+    const user = users[0];
+    res.json({ ok: true, userId: user.id });
+  } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
+});
+
+// Support login
+router.post('/api/support-login', async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    if (!username || !password) return res.status(400).json({ ok: false, error: 'Username and password required' });
+    const [users] = await db.query('SELECT * FROM users WHERE username = ? AND password = ? AND status = ?', [username, hashPassword(password), 'support']);
+    if (users.length === 0) return res.status(401).json({ ok: false, error: 'Invalid credentials or not support staff' });
+    const user = users[0];
+    res.json({ ok: true, userId: user.id });
+  } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
+});
+
+// Moderator login
+router.post('/api/moderator-login', async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    if (!username || !password) return res.status(400).json({ ok: false, error: 'Username and password required' });
+    const [users] = await db.query('SELECT * FROM users WHERE username = ? AND password = ? AND status = ?', [username, hashPassword(password), 'moderator']);
+    if (users.length === 0) return res.status(401).json({ ok: false, error: 'Invalid credentials or not a moderator' });
+    const user = users[0];
+    res.json({ ok: true, userId: user.id });
   } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
 });
 

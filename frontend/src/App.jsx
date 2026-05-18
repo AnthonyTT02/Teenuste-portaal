@@ -16,6 +16,7 @@ import RequestHelp from './components/RequestHelp';
 import AdminLogin from './components/AdminLogin';
 import Admin from './components/Admin';
 import Moderator from './components/Moderator';
+import ModeratorLogin from './components/ModeratorLogin';
 import SupportLogin from './components/SupportLogin';
 import Support from './components/Support';
 import Provider from './components/Provider';
@@ -48,6 +49,7 @@ export default function App() {
           <Route path="/request-assistance" element={<RequestHelp />} />
           <Route path="/admin-login" element={<AdminLogin />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/moderator-login" element={<ModeratorLogin />} />
           <Route path="/moderator" element={<Moderator />} />
           <Route path="/support-login" element={<SupportLogin />} />
           <Route path="/support" element={<Support />} />

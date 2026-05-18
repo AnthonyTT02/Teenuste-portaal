@@ -3,13 +3,15 @@ const router = express.Router();
 const db = require('../db');
 const { hashPassword, isUserPhoneTaken } = require('../utils');
 
+const ALLOWED_USER_STATUSES = new Set(['user', 'admin', 'moderator', 'support', 'worker']);
+
 // Middleware to ensure user is admin
 async function ensureAdmin(req, res, next) {
   if (req.session && req.session.isAdmin) return next();
   const uid = req.headers['x-user-id'] || req.query.userId;
   if (uid) {
-    const [users] = await db.query('SELECT role FROM users WHERE id = ?', [uid]);
-    if (users.length > 0 && users[0].role === 'admin') return next();
+    const [users] = await db.query('SELECT status FROM users WHERE id = ?', [uid]);
+    if (users.length > 0 && users[0].status === 'admin') return next();
   }
   res.status(401).json({ ok: false, error: 'Not authorized' });
 }
@@ -22,7 +24,7 @@ router.post('/admin/logout', (req, res) => {
 // Get all users
 router.get('/admin/users', ensureAdmin, async (req, res) => {
   try {
-    const [users] = await db.query('SELECT id, username, role, status, phone, email, is_worker FROM users ORDER BY id ASC');
+    const [users] = await db.query('SELECT id, username, status, phone, email, is_worker FROM users ORDER BY id ASC');
     res.json({ ok: true, users });
   } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
 });
@@ -30,10 +32,12 @@ router.get('/admin/users', ensureAdmin, async (req, res) => {
 // Create user
 router.post('/admin/users', ensureAdmin, async (req, res) => {
   try {
-    const { username, password, role, phone } = req.body;
+    const { username, password, status, phone } = req.body;
+    const nextStatus = (status || 'user').toLowerCase();
     if (!username || !password) return res.status(400).json({ ok: false, error: 'username/password required' });
+    if (!ALLOWED_USER_STATUSES.has(nextStatus)) return res.status(400).json({ ok: false, error: 'Invalid status value' });
     if (phone && await isUserPhoneTaken(phone)) return res.status(400).json({ ok: false, error: 'Этот номер телефона уже используется' });
-    const [result] = await db.query('INSERT INTO users (username, password, role, phone) VALUES (?, ?, ?, ?)', [username, hashPassword(password), role || 'user', phone || '']);
+    const [result] = await db.query('INSERT INTO users (username, password, status, phone) VALUES (?, ?, ?, ?)', [username, hashPassword(password), nextStatus, phone || '']);
     res.json({ ok: true, userId: result.insertId });
   } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
 });
@@ -43,9 +47,14 @@ router.put('/admin/users/:id', ensureAdmin, async (req, res) => {
   try {
     const id = Number(req.params.id);
     const p = req.body || {};
+    if ('status' in p) {
+      const nextStatus = String(p.status || '').toLowerCase();
+      if (!ALLOWED_USER_STATUSES.has(nextStatus)) return res.status(400).json({ ok: false, error: 'Invalid status value' });
+      p.status = nextStatus;
+    }
     let updates = [];
     let params = [];
-    ['username', 'phone', 'role'].forEach(f => {
+    ['username', 'phone', 'status'].forEach(f => {
       if (f in p) { updates.push(`${f} = ?`); params.push(p[f]); }
     });
     if ('password' in p) { updates.push('password = ?'); params.push(hashPassword(p.password)); }

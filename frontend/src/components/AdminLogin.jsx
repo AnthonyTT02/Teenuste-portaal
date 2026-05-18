@@ -14,10 +14,11 @@ function AdminLogin() {
     setError('');
     setIsSubmitting(true);
     try {
-      await api('/admin/login', {
+      const result = await api('/api/admin-login', {
         method: 'POST',
         body: JSON.stringify({ username: username.trim(), password })
       });
+      localStorage.setItem('userId', String(result.userId || ''));
       navigate('/admin');
     } catch (err) {
       setError(err.payload?.error || err.message || 'Admin login failed');
