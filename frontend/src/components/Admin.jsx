@@ -152,7 +152,7 @@ function Admin() {
               <div>
                 {/* Add service */}
                 <div className="bg-white/70 border border-white/60 rounded-2xl p-5 mb-4">
-                  <h3 className="font-bold text-gray-800 mb-3">Add New Service</h3>
+                  <h3 className="font-bold text-gray-800 mb-3">{t('add_new_service', 'Add New Service')}</h3>
                   <div className="flex gap-3">
                     <input value={newService.name} onChange={e => setNewService(p => ({ ...p, name: e.target.value }))} placeholder="Service name" className="flex-1 px-4 py-2 border border-gray-200 rounded-xl text-sm outline-none focus:border-brand" />
                     <input value={newService.price} onChange={e => setNewService(p => ({ ...p, price: e.target.value }))} placeholder="Price €" type="number" className="w-28 px-4 py-2 border border-gray-200 rounded-xl text-sm outline-none focus:border-brand" />
