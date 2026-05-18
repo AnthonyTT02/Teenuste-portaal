@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../api';
-import { useSidebar } from '../context/SidebarContext';
 import LanguageSwitcher from './LanguageSwitcher';
 import { useTranslation } from 'react-i18next';
 
@@ -16,7 +15,6 @@ export default function ForgotPassword() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const navigate = useNavigate();
-  const { openSidebar } = useSidebar();
   const { t } = useTranslation();
 
   const handleSendCode = async (e) => {
@@ -70,13 +68,13 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="w-full max-w-md bg-white/80 backdrop-blur-xl border border-white/40 rounded-[2.5rem] shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05),0_0_80px_rgba(91,108,249,0.08)] p-10 overflow-hidden relative transition-all duration-500 hover:shadow-[0_30px_60px_-15px_rgba(91,108,249,0.15)] group">
-      <div className="absolute inset-0 bg-gradient-to-br from-white/60 to-transparent pointer-events-none opacity-50 rounded-[2.5rem]"></div>
+    <div className="tp-page-card tp-page-card-hover max-w-md p-10">
+      <div className="tp-page-card-shine"></div>
       
       <div className="relative z-10">
         <div className="flex justify-between items-center mb-10">
-          <h1 className="text-2xl font-black tracking-tighter text-[#111827]">
-            Teenuste<span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-light">Portaal</span>
+          <h1 className="tp-brand-title">
+            Teenuste<span className="tp-brand-accent">Portaal</span>
           </h1>
           <LanguageSwitcher />
         </div>
@@ -84,7 +82,7 @@ export default function ForgotPassword() {
         <div className="animate-float" style={{ animationDuration: '8s' }}>
           <h2 className="text-[2.75rem] leading-none font-extrabold text-[#111827] mb-3 tracking-tight">
             {t('reset_title_first')}{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-light drop-shadow-sm">{t('reset_title_second')}</span>
+            <span className="tp-brand-accent drop-shadow-sm">{t('reset_title_second')}</span>
           </h2>
         </div>
         <p className="text-gray-500 mb-10 text-[15px] font-medium tracking-wide">
@@ -94,7 +92,7 @@ export default function ForgotPassword() {
         {step === 1 ? (
           <form onSubmit={handleSendCode} className="space-y-6">
             <div className="group/input relative">
-              <label className={`block text-[13px] font-bold tracking-wide mb-2 transition-colors duration-300 ${isFocused === 'username' ? 'text-brand' : 'text-gray-700'}`}>
+              <label className={`tp-label ${isFocused === 'username' ? 'text-brand' : ''}`}>
                 {t('username')}
               </label>
               <input
@@ -105,13 +103,13 @@ export default function ForgotPassword() {
                 onFocus={() => setIsFocused('username')}
                 onBlur={() => setIsFocused(null)}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full px-5 py-4 rounded-2xl bg-gray-50/50 border border-gray-200/60 focus:border-brand/40 focus:bg-white focus:ring-[4px] focus:ring-brand/15 transition-all duration-300 shadow-inner hover:bg-white text-gray-900 font-medium text-[15px]"
+                className="tp-input"
                 placeholder={t('username')}
               />
             </div>
 
             <div className="group/input relative">
-              <label className={`block text-[13px] font-bold tracking-wide mb-2 transition-colors duration-300 ${isFocused === 'email' ? 'text-brand' : 'text-gray-700'}`}>
+              <label className={`tp-label ${isFocused === 'email' ? 'text-brand' : ''}`}>
                 {t('email_address')}
               </label>
               <input
@@ -122,7 +120,7 @@ export default function ForgotPassword() {
                 onFocus={() => setIsFocused('email')}
                 onBlur={() => setIsFocused(null)}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-5 py-4 rounded-2xl bg-gray-50/50 border border-gray-200/60 focus:border-brand/40 focus:bg-white focus:ring-[4px] focus:ring-brand/15 transition-all duration-300 shadow-inner hover:bg-white text-gray-900 font-medium text-[15px]"
+                className="tp-input"
                 placeholder={t('email_placeholder')}
               />
             </div>
@@ -130,7 +128,7 @@ export default function ForgotPassword() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="group relative w-full py-4 mt-2 overflow-hidden bg-brand rounded-2xl font-bold text-lg text-white shadow-[0_8px_20px_rgba(91,108,249,0.25)] hover:shadow-[0_15px_30px_rgba(91,108,249,0.4)] transform hover:-translate-y-1 active:scale-[0.97] active:translate-y-0 active:shadow-inner transition-all duration-300 ease-out"
+              className="group relative tp-btn-primary tp-btn-form mt-2 overflow-hidden hover:-translate-y-1 active:translate-y-0 active:shadow-inner ease-out"
             >
               <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-brand via-[#7482f6] to-brand opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               <span className="relative z-10 tracking-wide">{isSubmitting ? t('sending') : t('send_reset_code')}</span>
@@ -139,7 +137,7 @@ export default function ForgotPassword() {
         ) : (
           <form onSubmit={handleReset} className="space-y-6">
             <div className="group/input relative">
-              <label className={`block text-[13px] font-bold tracking-wide mb-2 transition-colors duration-300 ${isFocused === 'code' ? 'text-brand' : 'text-gray-700'}`}>
+              <label className={`tp-label ${isFocused === 'code' ? 'text-brand' : ''}`}>
                 {t('verification_code')}
               </label>
               <input
@@ -149,14 +147,14 @@ export default function ForgotPassword() {
                 onFocus={() => setIsFocused('code')}
                 onBlur={() => setIsFocused(null)}
                 onChange={(e) => setCode(e.target.value)}
-                className="w-full px-5 py-4 rounded-2xl bg-gray-50/50 border border-gray-200/60 focus:border-brand/40 focus:bg-white focus:ring-[4px] focus:ring-brand/15 transition-all duration-300 shadow-inner hover:bg-white text-gray-900 font-medium text-[15px] tracking-widest text-center"
+                className="tp-input tracking-widest text-center"
                 placeholder="000000"
                 maxLength={6}
               />
             </div>
 
             <div className="group/input relative">
-              <label className={`block text-[13px] font-bold tracking-wide mb-2 transition-colors duration-300 ${isFocused === 'newPassword' ? 'text-brand' : 'text-gray-700'}`}>
+              <label className={`tp-label ${isFocused === 'newPassword' ? 'text-brand' : ''}`}>
                 {t('new_password')}
               </label>
               <input
@@ -166,7 +164,7 @@ export default function ForgotPassword() {
                 onFocus={() => setIsFocused('newPassword')}
                 onBlur={() => setIsFocused(null)}
                 onChange={(e) => setNewPassword(e.target.value)}
-                className="w-full px-5 py-4 rounded-2xl bg-gray-50/50 border border-gray-200/60 focus:border-brand/40 focus:bg-white focus:ring-[4px] focus:ring-brand/15 transition-all duration-300 shadow-inner hover:bg-white text-gray-900 font-medium text-[15px]"
+                className="tp-input"
                 placeholder="••••••••"
               />
             </div>
@@ -174,7 +172,7 @@ export default function ForgotPassword() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="group relative w-full py-4 mt-2 overflow-hidden bg-brand rounded-2xl font-bold text-lg text-white shadow-[0_8px_20px_rgba(91,108,249,0.25)] hover:shadow-[0_15px_30px_rgba(91,108,249,0.4)] transform hover:-translate-y-1 active:scale-[0.97] active:translate-y-0 active:shadow-inner transition-all duration-300 ease-out"
+              className="group relative tp-btn-primary tp-btn-form mt-2 overflow-hidden hover:-translate-y-1 active:translate-y-0 active:shadow-inner ease-out"
             >
               <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-brand via-[#7482f6] to-brand opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               <span className="relative z-10 tracking-wide">{isSubmitting ? t('resetting') : t('reset_password')}</span>
@@ -183,13 +181,13 @@ export default function ForgotPassword() {
         )}
 
         {error ? (
-          <div className="mt-6 text-sm font-semibold text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+          <div className="tp-alert-error mt-6">
             {error}
           </div>
         ) : null}
 
         {success ? (
-          <div className="mt-6 text-sm font-semibold text-green-600 bg-green-50 border border-green-200 rounded-xl px-4 py-3">
+          <div className="tp-alert-success mt-6">
             {success}
           </div>
         ) : null}

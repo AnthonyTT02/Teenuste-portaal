@@ -123,7 +123,7 @@ export default function ProviderReg() {
 
   if (success) {
     return (
-      <div className="w-full max-w-md bg-white/80 backdrop-blur-xl border border-white/40 rounded-[2.5rem] shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] p-10 text-center animate-fade-in-up">
+      <div className="tp-page-card max-w-md p-10 text-center">
         <h2 className="text-3xl font-extrabold text-gray-900 mb-2">Registration Complete!</h2>
         <p className="text-gray-500">Your application will be reviewed by a moderator. We'll notify you when it's approved.</p>
         <p className="text-sm text-gray-400 mt-4">Redirecting to cabinet...</p>
@@ -132,12 +132,12 @@ export default function ProviderReg() {
   }
 
   return (
-    <div className="w-full max-w-xl bg-white/80 backdrop-blur-xl border border-white/40 rounded-[2.5rem] shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05),0_0_80px_rgba(91,108,249,0.08)] p-8 md:p-10 overflow-hidden relative transition-all duration-500 animate-fade-in-up">
-      <div className="absolute inset-0 bg-gradient-to-br from-white/60 to-transparent pointer-events-none opacity-50 rounded-[2.5rem]" />
+    <div className="tp-page-card max-w-xl p-8 md:p-10">
+      <div className="tp-page-card-shine" />
       <div className="relative z-10">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-black tracking-tighter text-[#111827]">Teenuste<span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-light">Portaal</span></h1>
-          <button onClick={openSidebar} className="p-2.5 rounded-full hover:bg-gray-100/80 transition-all text-gray-500">
+          <h1 className="tp-brand-title">Teenuste<span className="tp-brand-accent">Portaal</span></h1>
+          <button onClick={openSidebar} className="tp-icon-btn">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </button>
         </div>
@@ -152,7 +152,7 @@ export default function ProviderReg() {
           ))}
         </div>
 
-        {error && <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm font-semibold">{error}</div>}
+        {error && <div className="tp-alert-error mb-4">{error}</div>}
 
         {loading ? <div className="text-center py-8 text-gray-400">Loading services...</div> : (
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -163,9 +163,9 @@ export default function ProviderReg() {
                 <div className="space-y-2">
                   {services.map(s => (
                     <button key={s.id} type="button" onClick={() => toggleService(s.id)}
-                      className={`w-full flex items-center justify-between p-4 border rounded-2xl transition-all text-left ${selectedServices.includes(s.id) ? 'bg-brand/5 border-brand/40 shadow-sm' : 'bg-gray-50/50 border-gray-200/60 hover:bg-white'}`}>
+                      className={`tp-choice justify-between ${selectedServices.includes(s.id) ? 'tp-choice-active' : ''}`}>
                       <div className="flex items-center">
-                        <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-colors ${selectedServices.includes(s.id) ? 'bg-brand border-brand' : 'border-gray-300'}`}>
+                        <div className={`tp-choice-check rounded-md ${selectedServices.includes(s.id) ? 'tp-choice-check-active' : ''}`}>
                           {selectedServices.includes(s.id) && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>}
                         </div>
                         <p className="ml-3 font-semibold text-gray-800">{s.name}</p>
@@ -182,7 +182,7 @@ export default function ProviderReg() {
               <div className="space-y-4">
                 {/* Photo Upload */}
                 <div>
-                  <label className="block text-xs font-bold tracking-wide mb-2 text-gray-700">Profile Photo</label>
+                  <label className="tp-label-sm">Profile Photo</label>
                   <div className="flex items-end gap-4">
                     <div className="flex-1">
                       <label htmlFor="photo-input" className="w-full flex items-center justify-center p-4 border-2 border-dashed border-gray-200/60 hover:border-brand/40 rounded-2xl bg-gray-50/50 hover:bg-gray-50 cursor-pointer transition-all">
@@ -206,40 +206,40 @@ export default function ProviderReg() {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-bold tracking-wide mb-1.5 text-gray-700">First Name</label>
+                    <label className="tp-label-sm">First Name</label>
                     <input name="government_name" value={formData.government_name} onChange={handleInput}
-                      className="w-full px-4 py-3 rounded-2xl bg-gray-50/50 border border-gray-200/60 focus:border-brand/40 focus:ring-[4px] focus:ring-brand/15 transition-all outline-none text-sm"
+                      className="tp-input-sm"
                       placeholder="Artjom" />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold tracking-wide mb-1.5 text-gray-700">Last Name</label>
+                    <label className="tp-label-sm">Last Name</label>
                     <input name="government_surname" value={formData.government_surname} onChange={handleInput}
-                      className="w-full px-4 py-3 rounded-2xl bg-gray-50/50 border border-gray-200/60 focus:border-brand/40 focus:ring-[4px] focus:ring-brand/15 transition-all outline-none text-sm"
+                      className="tp-input-sm"
                       placeholder="Slavyantsev" />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold tracking-wide mb-1.5 text-gray-700">Isikukood</label>
+                  <label className="tp-label-sm">Isikukood</label>
                   <input name="isikukood" value={formData.isikukood} onChange={handleInput}
-                    className="w-full px-4 py-3 rounded-2xl bg-gray-50/50 border border-gray-200/60 focus:border-brand/40 focus:ring-[4px] focus:ring-brand/15 transition-all outline-none text-sm"
+                    className="tp-input-sm"
                     placeholder="38001010000" />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold tracking-wide mb-1.5 text-gray-700">Bank Account (IBAN)</label>
+                  <label className="tp-label-sm">Bank Account (IBAN)</label>
                   <input name="bank_account" value={formData.bank_account} onChange={handleInput}
-                    className="w-full px-4 py-3 rounded-2xl bg-gray-50/50 border border-gray-200/60 focus:border-brand/40 focus:ring-[4px] focus:ring-brand/15 transition-all outline-none text-sm"
+                    className="tp-input-sm"
                     placeholder="EE382200221020145685" />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold tracking-wide mb-1.5 text-gray-700">Email (from account)</label>
-                  <input value={accountEmail || '(no email on account)'} readOnly
-                    className="w-full px-4 py-3 rounded-2xl bg-gray-100 border border-gray-200/60 text-gray-500 text-sm cursor-not-allowed" />
+                  <label className="tp-label-sm">Email (from account)</label>
+                  <input value={accountEmail || '(no email on account)'} readOnly disabled
+                    className="tp-input-sm" />
                   {!accountEmail && <p className="text-xs text-amber-600 mt-1">No email associated with your account. Please update your profile.</p>}
                 </div>
                 <div>
-                  <label className="block text-xs font-bold tracking-wide mb-1.5 text-gray-700">Phone (from account)</label>
-                  <input value={accountPhone || '(no phone on account)'} readOnly
-                    className="w-full px-4 py-3 rounded-2xl bg-gray-100 border border-gray-200/60 text-gray-500 text-sm cursor-not-allowed" />
+                  <label className="tp-label-sm">Phone (from account)</label>
+                  <input value={accountPhone || '(no phone on account)'} readOnly disabled
+                    className="tp-input-sm" />
                 </div>
               </div>
             )}
@@ -276,7 +276,7 @@ export default function ProviderReg() {
             {/* Navigation */}
             <div className="flex gap-3 pt-2">
               {step > 1 && (
-                <button type="button" onClick={() => setStep(p => p - 1)} className="flex-1 py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold rounded-2xl transition-colors">Back</button>
+                <button type="button" onClick={() => setStep(p => p - 1)} className="tp-btn-secondary flex-1 py-3">Back</button>
               )}
               {step < 3 ? (
                 <button type="button" onClick={() => {
@@ -290,11 +290,11 @@ export default function ProviderReg() {
                     return;
                   }
                   setStep(p => p + 1);
-                }} className="flex-1 py-3 bg-brand hover:bg-brand-dark text-white font-bold rounded-2xl transition-colors">
+                }} className="tp-btn-primary flex-1 py-3">
                   Next Step
                 </button>
               ) : (
-                <button type="submit" disabled={isSubmitting} className="flex-1 py-3 bg-brand hover:bg-brand-dark text-white font-bold rounded-2xl transition-colors disabled:opacity-50">
+                <button type="submit" disabled={isSubmitting} className="tp-btn-primary flex-1 py-3">
                   {isSubmitting ? 'Submitting...' : 'Submit Application'}
                 </button>
               )}

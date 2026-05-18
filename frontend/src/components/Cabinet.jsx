@@ -165,33 +165,33 @@ export default function Cabinet() {
   if (!userId) return null;
 
   return (
-    <div className="w-full max-w-2xl bg-white/80 backdrop-blur-xl border border-white/40 rounded-[2rem] sm:rounded-[2.5rem] shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05),0_0_80px_rgba(91,108,249,0.08)] p-5 sm:p-8 overflow-hidden relative animate-fade-in-up">
-      <div className="absolute inset-0 bg-gradient-to-br from-white/60 to-transparent pointer-events-none opacity-50 rounded-[2rem] sm:rounded-[2.5rem]" />
+    <div className="tp-page-card max-w-2xl p-5 sm:p-8">
+      <div className="tp-page-card-shine" />
 
       {showWorkerPopup && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl p-10 shadow-2xl text-center max-w-sm mx-4 animate-fade-in-up">
+        <div className="tp-modal-backdrop">
+          <div className="tp-modal max-w-sm p-10 text-center">
             <h2 className="text-2xl font-extrabold text-gray-900 mb-2">Congratulations!</h2>
             <p className="text-gray-500 mb-6">You became a worker! You can now accept orders.</p>
-            <button onClick={() => setShowWorkerPopup(false)} className="w-full py-3 bg-brand text-white font-bold rounded-2xl">Let's go!</button>
+            <button onClick={() => setShowWorkerPopup(false)} className="tp-btn-primary w-full py-3">Let's go!</button>
           </div>
         </div>
       )}
 
       {ticketModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl p-8 shadow-2xl max-w-sm w-full mx-4 animate-fade-in-up">
+        <div className="tp-modal-backdrop">
+          <div className="tp-modal max-w-sm p-8">
             <h2 className="text-xl font-extrabold text-gray-900 mb-4">Contact Support</h2>
             {ticketSent ? (
               <p className="text-green-600 font-bold text-center py-4">Ticket sent!</p>
             ) : (
               <>
                 <textarea value={ticketMsg} onChange={e => setTicketMsg(e.target.value)} rows={4}
-                  className="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm outline-none focus:border-brand mb-4"
+                  className="tp-textarea mb-4"
                   placeholder="Describe your problem..." />
                 <div className="flex gap-3">
-                  <button onClick={() => setTicketModal(null)} className="flex-1 py-3 bg-gray-100 text-gray-700 font-bold rounded-2xl">Cancel</button>
-                  <button onClick={sendTicket} className="flex-1 py-3 bg-brand text-white font-bold rounded-2xl">Send</button>
+                  <button onClick={() => setTicketModal(null)} className="tp-btn-secondary flex-1 py-3">Cancel</button>
+                  <button onClick={sendTicket} className="tp-btn-primary flex-1 py-3">Send</button>
                 </div>
               </>
             )}
@@ -202,16 +202,16 @@ export default function Cabinet() {
       <div className="relative z-10">
         <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start mb-5">
           <div className="min-w-0">
-            <h1 className="text-[22px] sm:text-2xl font-black tracking-tighter text-[#111827] mt-1 mb-1 break-words leading-tight">
-              Teenuste<span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-light">Portaal</span>
+            <h1 className="tp-brand-title text-[22px] sm:text-2xl mt-1 mb-1 break-words leading-tight">
+              Teenuste<span className="tp-brand-accent">Portaal</span>
             </h1>
             <h1 className="text-[28px] sm:text-3xl font-extrabold text-[#111827] tracking-tight leading-tight break-words">{t('greeting', { name: user?.username || '' })}</h1>
             <p className="text-sm text-gray-500 mt-1">{t('cabinet')}</p>
           </div>
           <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:justify-end">
             <LanguageSwitcher className="shrink-0" />
-            <button onClick={handleSignOut} className="ml-auto sm:ml-0 shrink-0 px-3 sm:px-4 py-2 rounded-xl bg-gray-50 hover:bg-red-50 text-gray-600 hover:text-red-500 font-bold text-[12px] sm:text-[13px] whitespace-nowrap transition-colors border border-gray-200/60">{t('sign_out')}</button>
-            <button onClick={openSidebar} className="shrink-0 p-2.5 rounded-full bg-brand/10 hover:bg-brand/20 transition-all text-brand border border-transparent" aria-label="Open menu">
+            <button onClick={handleSignOut} className="tp-btn-ghost-danger px-3 sm:px-4 py-2 ml-auto sm:ml-0 shrink-0 text-[12px] sm:text-[13px] whitespace-nowrap">{t('sign_out')}</button>
+            <button onClick={openSidebar} className="tp-icon-btn shrink-0 bg-brand/10 hover:bg-brand/20 text-brand hover:text-brand" aria-label="Open menu">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
             </button>
           </div>
@@ -221,7 +221,7 @@ export default function Cabinet() {
         ) : (
           <>
             {/* Profile Card */}
-            <div className="bg-white/60 border border-gray-100 rounded-[1.75rem] sm:rounded-3xl p-4 sm:p-5 mb-4 shadow-sm">
+            <div className="tp-panel rounded-[1.75rem] sm:rounded-3xl p-4 sm:p-5 mb-4">
               <div className="flex items-center gap-4 mb-3">
                 <label className="relative shrink-0 w-12 h-12 rounded-2xl overflow-hidden bg-brand/10 border border-gray-100 text-brand flex items-center justify-center text-xl font-bold cursor-pointer transition-all hover:ring-4 hover:ring-brand/15">
                   {profilePhoto ? (
@@ -247,7 +247,7 @@ export default function Cabinet() {
             {/* Tabs */}
             <div className="grid grid-cols-2 gap-2 mb-4">
               {['active', 'history'].map(tabKey => (
-                <button key={tabKey} onClick={() => setTab(tabKey)} className={`min-h-[40px] px-2 py-2 rounded-xl font-bold text-[13px] sm:text-sm leading-tight transition-colors ${tab === tabKey ? 'bg-brand text-white shadow' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
+                <button key={tabKey} onClick={() => setTab(tabKey)} className={`tp-tab px-2 text-[13px] sm:text-sm ${tab === tabKey ? 'tp-tab-active' : ''}`}>
                   {tabKey === 'active' ? `${t('active_orders')} (${activeOrders.length})` : `${t('history')} (${completedOrders.length})`}
                 </button>
               ))}
@@ -271,7 +271,7 @@ export default function Cabinet() {
                     {(o.worker_phone || o.worker_user?.phone) && <p className="text-xs text-gray-500 mb-1">Worker Phone: {o.worker_phone || o.worker_user?.phone}</p>}
                     {o.price && <p className="text-sm font-bold text-brand mb-1">Price: €{Number(o.price).toFixed(2)}</p>}
                     {o.paymentType && <p className="text-xs text-gray-400">Payment: {o.paymentType}</p>}
-                    <button onClick={() => completeOrder(o.id)} className="mt-3 w-full py-2 bg-green-500 hover:bg-green-600 text-white font-bold text-sm rounded-xl transition-colors">
+                    <button onClick={() => completeOrder(o.id)} className="tp-btn-success tp-btn-sm mt-3 w-full">
                       Mark as Completed
                     </button>
                   </div>
@@ -306,7 +306,7 @@ export default function Cabinet() {
                           {ticketStatusByOrder[o.id] === 'resolved' ? 'Support ticket resolved' : 'Support ticket submitted'}
                         </div>
                       ) : (
-                        <button onClick={() => setTicketModal(o.id)} className="w-full py-2 border border-gray-200 text-gray-600 hover:bg-gray-50 font-semibold text-sm rounded-xl transition-colors">
+                        <button onClick={() => setTicketModal(o.id)} className="tp-btn-secondary tp-btn-sm w-full">
                           Contact Support
                         </button>
                       )}
@@ -317,21 +317,21 @@ export default function Cabinet() {
             )}
 
             {/* CTA Buttons */}
-            <button onClick={() => navigate('/request-help')} className="group relative w-full py-4 mt-2 overflow-hidden bg-brand rounded-2xl font-bold text-[17px] text-white shadow-[0_8px_20px_rgba(91,108,249,0.25)] hover:shadow-[0_15px_30px_rgba(91,108,249,0.4)] transform hover:-translate-y-1 active:scale-[0.97] transition-all duration-300 flex items-center justify-center gap-2">
+            <button onClick={() => navigate('/request-help')} className="group relative tp-btn-primary w-full py-4 mt-2 overflow-hidden hover:-translate-y-1 text-[17px] gap-2">
               <div className="absolute inset-0 bg-gradient-to-r from-brand via-[#7482f6] to-brand opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <span className="relative z-10">{t('request_assistance')}</span>
             </button>
 
             {(isWorkerLocal || user?.is_worker) ? (
-              <button onClick={() => navigate('/provider')} className="w-full py-3 mt-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-2xl transition-colors">
+              <button onClick={() => navigate('/provider')} className="tp-btn-success w-full py-3 mt-3">
                 {t('go_to_work')}
               </button>
             ) : hasPendingApp ? (
-              <div className="w-full py-3 mt-3 border-2 border-grey-300 bg-grey-50 text-grey-700 font-bold rounded-2xl text-sm text-center">
+              <div className="w-full py-3 mt-3 border-2 border-gray-300 bg-gray-50 text-gray-700 font-bold rounded-2xl text-sm text-center">
                 {t('app_pending')}
               </div>
             ) : (
-              <button onClick={() => navigate('/provider-reg')} className="w-full py-3 mt-3 border-2 border-brand/30 text-brand hover:bg-brand/5 font-bold rounded-2xl transition-colors text-sm">
+              <button onClick={() => navigate('/provider-reg')} className="tp-btn-outline w-full py-3 mt-3 text-sm">
                 {t('become_worker')}
               </button>
             )}

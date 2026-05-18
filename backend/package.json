@@ -12,8 +12,6 @@
     "express": "^4.18.2",
     "express-session": "^1.19.0",
     "mysql2": "^3.22.3",
-    "nodemailer": "^8.0.1",
-    "resend": "^6.12.3",
-    "teenuste-portaal": "file:.."
+    "resend": "^6.12.3"
   }
 }

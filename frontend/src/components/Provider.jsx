@@ -159,18 +159,18 @@ function Provider() {
   }
 
   return (
-    <div className="w-full max-w-lg animate-fade-in-up mt-8 relative">
+    <div className="w-full max-w-lg mt-8 relative">
       {/* Services Modal */}
       {showServicesModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl p-8 shadow-2xl max-w-sm w-full mx-4 animate-fade-in-up">
+        <div className="tp-modal-backdrop">
+          <div className="tp-modal max-w-sm p-8">
             <h2 className="text-xl font-extrabold text-gray-900 mb-4">Manage My Services</h2>
             <div className="space-y-2 mb-6">
               {allServices.map(s => (
                 <button key={s.id} type="button" onClick={() => toggleServiceId(s.id)}
-                  className={`w-full flex items-center justify-between gap-3 p-3 border rounded-xl transition-all text-left ${selectedServiceIds.includes(s.id) ? 'bg-brand/5 border-brand/40' : 'bg-gray-50 border-gray-200 hover:bg-white'}`}>
+                  className={`tp-choice gap-3 p-3 rounded-xl ${selectedServiceIds.includes(s.id) ? 'tp-choice-active' : ''}`}>
                   <div className="flex items-center min-w-0">
-                    <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 mr-3 ${selectedServiceIds.includes(s.id) ? 'bg-brand border-brand' : 'border-gray-300'}`}>
+                    <div className={`tp-choice-check rounded-md mr-3 ${selectedServiceIds.includes(s.id) ? 'tp-choice-check-active' : ''}`}>
                       {selectedServiceIds.includes(s.id) && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>}
                     </div>
                     <p className="font-semibold text-gray-800 text-sm truncate">{s.name}</p>
@@ -180,8 +180,8 @@ function Provider() {
               ))}
             </div>
             <div className="flex gap-3">
-              <button onClick={() => setShowServicesModal(false)} className="flex-1 py-3 bg-gray-100 text-gray-700 font-bold rounded-2xl">Cancel</button>
-              <button onClick={saveServices} disabled={savingServices} className="flex-1 py-3 bg-brand text-white font-bold rounded-2xl disabled:opacity-50">
+              <button onClick={() => setShowServicesModal(false)} className="tp-btn-secondary flex-1 py-3">Cancel</button>
+              <button onClick={saveServices} disabled={savingServices} className="tp-btn-primary flex-1 py-3">
                 {savingServices ? 'Saving...' : 'Save'}
               </button>
             </div>
@@ -189,7 +189,7 @@ function Provider() {
         </div>
       )}
 
-      <div className="backdrop-blur-xl bg-white/60 border border-white/40 shadow-2xl rounded-[2rem] p-6">
+      <div className="tp-page-card p-6">
         {/* Header */}
         <div className="flex justify-between items-center mb-6 gap-4">
           <div className="flex items-center gap-4 min-w-0">
@@ -207,7 +207,7 @@ function Provider() {
               </p>
             </div>
           </div>
-          <button onClick={handleSignOut} className="px-4 py-2 text-sm bg-gray-50 hover:bg-red-50 text-gray-500 hover:text-red-500 rounded-xl font-bold border border-gray-200 transition-colors">
+          <button onClick={handleSignOut} className="tp-btn-ghost-danger tp-btn-sm">
             Sign Out
           </button>
         </div>
@@ -234,7 +234,7 @@ function Provider() {
         <div className="mb-6">
           <div className="flex justify-between items-center mb-2">
             <h3 className="text-sm font-bold text-gray-500 uppercase">My Services</h3>
-            <button onClick={() => setShowServicesModal(true)} className="text-xs font-bold text-brand hover:underline">
+            <button onClick={() => setShowServicesModal(true)} className="tp-text-link text-xs">
               + Manage Services
             </button>
           </div>
@@ -317,7 +317,7 @@ function Provider() {
         )}
 
         {/* Back to Cabinet */}
-        <button onClick={() => navigate('/cabinet')} className="w-full mt-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-2xl transition-colors text-sm">
+        <button onClick={() => navigate('/cabinet')} className="tp-btn-secondary w-full mt-4 py-3 text-sm">
           ← Back to Cabinet
         </button>
       </div>

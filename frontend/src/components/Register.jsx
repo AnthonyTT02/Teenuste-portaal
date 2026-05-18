@@ -78,12 +78,12 @@ export default function Register() {
   };
 
   return (
-    <div className="w-full max-w-md bg-white/80 backdrop-blur-xl border border-white/40 rounded-[2.5rem] shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05),0_0_80px_rgba(91,108,249,0.08)] p-10 overflow-hidden relative transition-all duration-500 hover:shadow-[0_30px_60px_-15px_rgba(91,108,249,0.15)] group animate-fade-in-up">
-      <div className="absolute inset-0 bg-gradient-to-br from-white/60 to-transparent pointer-events-none opacity-50 rounded-[2.5rem]"></div>
+    <div className="tp-page-card tp-page-card-hover max-w-md p-10">
+      <div className="tp-page-card-shine"></div>
       <div className="relative z-10">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-2xl font-black tracking-tighter text-[#111827]">
-            Teenuste<span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-light">Portaal</span>
+          <h1 className="tp-brand-title">
+            Teenuste<span className="tp-brand-accent">Portaal</span>
           </h1>
           <div className="flex items-center gap-4">
             <LanguageSwitcher />
@@ -102,29 +102,29 @@ export default function Register() {
         {step === 1 ? (
           <form onSubmit={handleSendCode} className="space-y-6" noValidate>
             <div className="group/input relative">
-              <label className={`block text-[13px] font-bold tracking-wide mb-2 transition-colors duration-300 ${isFocused === 'user' ? 'text-brand' : 'text-gray-700'}`}>{t('username')}</label>
+              <label className={`tp-label ${isFocused === 'user' ? 'text-brand' : ''}`}>{t('username')}</label>
               <input type="text" required autoComplete="username" value={username}
                 onFocus={() => setIsFocused('user')} onBlur={() => setIsFocused(null)}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full px-5 py-4 rounded-2xl bg-gray-50/50 border border-gray-200/60 focus:border-brand/40 focus:bg-white focus:ring-[4px] focus:ring-brand/15 transition-all duration-300 shadow-inner hover:bg-white text-gray-900 font-medium text-[15px]"
+                className="tp-input"
                 placeholder={t('username')} />
             </div>
 
             <div className="group/input relative">
-              <label className={`block text-[13px] font-bold tracking-wide mb-2 transition-colors duration-300 ${isFocused === 'email' ? 'text-brand' : 'text-gray-700'}`}>{t('email')}</label>
+              <label className={`tp-label ${isFocused === 'email' ? 'text-brand' : ''}`}>{t('email')}</label>
               <input type="email" required value={email}
                 onFocus={() => setIsFocused('email')} onBlur={() => setIsFocused(null)}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-5 py-4 rounded-2xl bg-gray-50/50 border border-gray-200/60 focus:border-brand/40 focus:bg-white focus:ring-[4px] focus:ring-brand/15 transition-all duration-300 shadow-inner hover:bg-white text-gray-900 font-medium text-[15px]"
+                className="tp-input"
                 placeholder="you@example.com" />
             </div>
 
             <div className="group/input relative">
-              <label className={`block text-[13px] font-bold tracking-wide mb-2 transition-colors duration-300 ${isFocused === 'password' ? 'text-brand' : 'text-gray-700'}`}>{t('password')}</label>
+              <label className={`tp-label ${isFocused === 'password' ? 'text-brand' : ''}`}>{t('password')}</label>
               <input type="password" required value={password}
                 onFocus={() => setIsFocused('password')} onBlur={() => setIsFocused(null)}
                 onChange={(e) => { setPassword(e.target.value); setWeakPasswordWarningSeen(false); if (error) setError(''); }}
-                className="w-full px-5 py-4 rounded-2xl bg-gray-50/50 border border-gray-200/60 focus:border-brand/40 focus:bg-white focus:ring-[4px] focus:ring-brand/15 transition-all duration-300 shadow-inner hover:bg-white text-gray-900 font-medium text-[15px]"
+                className="tp-input"
                 placeholder="••••••••" />
               <div className="mt-3 space-y-2">
                 <div className="flex items-center justify-between text-[13px] font-semibold">
@@ -135,9 +135,9 @@ export default function Register() {
                   <div className={`h-full rounded-full transition-all duration-300 ${passwordStrength.bar} ${passwordStrength.width}`}></div>
                 </div>
                 {error ? (
-                  <div className="text-[12px] font-semibold text-red-600 bg-red-50 border border-red-200 rounded-xl px-3 py-2">{error}</div>
+                  <div className="tp-alert-error text-[12px] px-3 py-2">{error}</div>
                 ) : weakPasswordWarningSeen && password.length < 8 ? (
-                  <p className="text-[12px] font-semibold text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2">
+                  <p className="tp-alert-warning text-[12px] px-3 py-2">
                     Пароль слишком легкий. Продолжайте на свой страх и риск.
                   </p>
                 ) : null}
@@ -145,12 +145,12 @@ export default function Register() {
             </div>
 
             <div className="group/input relative">
-              <label className={`block text-[13px] font-bold tracking-wide mb-2 transition-colors duration-300 ${isFocused === 'phone' ? 'text-brand' : 'text-gray-700'}`}>{t('phone')}</label>
+              <label className={`tp-label ${isFocused === 'phone' ? 'text-brand' : ''}`}>{t('phone')}</label>
               <input type="text" required inputMode="numeric" autoComplete="tel"
                 value={phoneValue}
                 onFocus={() => setIsFocused('phone')} onBlur={() => setIsFocused(null)}
                 onChange={(e) => { const digits = e.target.value.replace(/\D/g, '').replace(/^372/, '').slice(0, 8); setPhoneDigits(digits); }}
-                className="w-full px-5 py-4 rounded-2xl bg-gray-50/50 border border-gray-200/60 focus:border-brand/40 focus:bg-white focus:ring-[4px] focus:ring-brand/15 transition-all duration-300 shadow-inner hover:bg-white text-gray-900 font-medium text-[15px]"
+                className="tp-input"
                 placeholder="+372 1234 5678" />
               <p className={`mt-3 text-[12px] font-medium leading-relaxed ${phoneIsComplete ? 'text-emerald-600' : 'text-gray-500'}`}>
                 {t('phone_format_hint')}
@@ -158,7 +158,7 @@ export default function Register() {
             </div>
 
             <button type="submit" disabled={isSubmitting}
-              className="group relative w-full py-4 mt-2 overflow-hidden bg-brand rounded-2xl font-bold text-lg text-white shadow-[0_8px_20px_rgba(91,108,249,0.25)] hover:shadow-[0_15px_30px_rgba(91,108,249,0.4)] transform hover:-translate-y-1 active:scale-[0.97] active:translate-y-0 active:shadow-inner transition-all duration-300 ease-out">
+              className="group relative tp-btn-primary tp-btn-form mt-2 overflow-hidden hover:-translate-y-1 active:translate-y-0 active:shadow-inner ease-out">
               <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-brand via-[#7482f6] to-brand opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               <span className="relative z-10 tracking-wide">{isSubmitting ? t('loading') : t('send_code')}</span>
             </button>
@@ -170,20 +170,20 @@ export default function Register() {
               <p className="text-xs text-gray-400 mt-1">{t('valid_for_10_minutes')}</p>
             </div>
             <div className="group/input relative">
-              <label className={`block text-[13px] font-bold tracking-wide mb-2 transition-colors duration-300 ${isFocused === 'code' ? 'text-brand' : 'text-gray-700'}`}>{t('six_digit_code')}</label>
+              <label className={`tp-label ${isFocused === 'code' ? 'text-brand' : ''}`}>{t('six_digit_code')}</label>
               <input type="text" required inputMode="numeric" maxLength={6} value={code}
                 onFocus={() => setIsFocused('code')} onBlur={() => setIsFocused(null)}
                 onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                className="w-full px-5 py-4 rounded-2xl bg-gray-50/50 border border-gray-200/60 focus:border-brand/40 focus:bg-white focus:ring-[4px] focus:ring-brand/15 transition-all duration-300 shadow-inner hover:bg-white text-gray-900 font-bold text-2xl text-center tracking-[0.5em]"
+                className="tp-input font-bold text-2xl text-center tracking-[0.5em]"
                 placeholder="——————" />
-              {error && <div className="mt-2 text-[12px] font-semibold text-red-600 bg-red-50 border border-red-200 rounded-xl px-3 py-2">{error}</div>}
+              {error && <div className="tp-alert-error mt-2 text-[12px] px-3 py-2">{error}</div>}
             </div>
             <button type="submit" disabled={isSubmitting}
-              className="group relative w-full py-4 overflow-hidden bg-brand rounded-2xl font-bold text-lg text-white shadow-[0_8px_20px_rgba(91,108,249,0.25)] hover:shadow-[0_15px_30px_rgba(91,108,249,0.4)] transform hover:-translate-y-1 active:scale-[0.97] transition-all duration-300">
+              className="group relative tp-btn-primary tp-btn-form overflow-hidden hover:-translate-y-1">
               <span className="relative z-10 tracking-wide">{isSubmitting ? t('loading') : t('confirm_code')}</span>
             </button>
             <button type="button" onClick={() => { setStep(1); setError(''); setCode(''); }}
-              className="w-full py-3 text-sm text-gray-500 hover:text-gray-700 font-semibold transition-colors">
+              className="tp-btn-secondary w-full py-3 text-sm">
               {t('back_to_login')}
             </button>
           </form>

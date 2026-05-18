@@ -1,8 +1,6 @@
 const express = require('express');
-const path = require('path');
 require('dotenv').config();
 const session = require('express-session');
-const nodemailer = require('nodemailer');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -10,11 +8,6 @@ const PORT = process.env.PORT || 3001;
 // Middleware
 app.use(session({ secret: process.env.SESSION_SECRET || 'change_this', resave: false, saveUninitialized: false }));
 app.use(express.json({ limit: '8mb' }));
-app.use(express.static(path.join(__dirname)));
-
-const transporter = nodemailer.createTransport({
-  service: 'gmail', auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASSWORD }
-});
 
 // Import external routes
 const authRoutes = require('./routes/auth');

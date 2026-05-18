@@ -70,19 +70,19 @@ export default function Settings() {
   };
 
   return (
-    <div className="w-full max-w-2xl bg-white/80 backdrop-blur-xl border border-white/40 rounded-[2.5rem] shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05),0_0_80px_rgba(91,108,249,0.08)] p-8 md:p-12 overflow-hidden relative transition-all duration-500 hover:shadow-[0_30px_60px_-15px_rgba(91,108,249,0.15)] group animate-fade-in-up">
-      <div className="absolute inset-0 bg-gradient-to-br from-white/60 to-transparent pointer-events-none opacity-50 rounded-[2.5rem]"></div>
+    <div className="tp-page-card tp-page-card-hover max-w-2xl p-8 md:p-12">
+      <div className="tp-page-card-shine"></div>
 
       <div className="relative z-10">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-2xl font-black tracking-tighter text-[#111827]">
-            Teenuste<span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-light">Portaal</span>
+          <h1 className="tp-brand-title">
+            Teenuste<span className="tp-brand-accent">Portaal</span>
           </h1>
           <div className="flex gap-2">
             <button
               type="button"
               onClick={openSidebar}
-              className="p-2.5 rounded-full hover:bg-gray-100/80 active:scale-95 transition-all duration-300 text-gray-500 hover:text-gray-900 shadow-sm border border-transparent hover:border-gray-200/50"
+              className="tp-icon-btn"
             >
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="3" y1="12" x2="21" y2="12"></line>
@@ -98,7 +98,7 @@ export default function Settings() {
         </h2>
 
         <div className="space-y-4">
-          <div className="bg-white/60 border border-gray-100 rounded-3xl p-5 shadow-sm">
+          <div className="tp-panel">
             <div className="flex justify-between items-center mb-3">
               <h3 className="font-semibold text-gray-900">{t('profile')}</h3>
             </div>
@@ -107,7 +107,7 @@ export default function Settings() {
                 {editingUsername ? (
                   <form onSubmit={saveUsername} className="space-y-3">
                     <div>
-                      <label className="text-xs text-gray-400 uppercase font-semibold" htmlFor="settings-username">
+                      <label className="tp-label-sm uppercase text-gray-400" htmlFor="settings-username">
                         {t('username')}
                       </label>
                       <input
@@ -118,7 +118,7 @@ export default function Settings() {
                           setUsernameDraft(e.target.value);
                           setUsernameError('');
                         }}
-                        className="mt-1 w-full px-3 py-2 rounded-xl bg-white border border-gray-200 text-sm font-medium text-gray-800 outline-none focus:border-brand focus:ring-4 focus:ring-brand/10"
+                        className="tp-input-compact mt-1"
                         autoComplete="username"
                         disabled={usernameSaving}
                         autoFocus
@@ -131,7 +131,7 @@ export default function Settings() {
                       <button
                         type="submit"
                         disabled={usernameSaving}
-                        className="px-4 py-2 rounded-xl bg-brand text-white text-sm font-bold disabled:opacity-60"
+                        className="tp-btn-primary tp-btn-sm"
                       >
                         {usernameSaving ? t('saving', { defaultValue: 'Saving...' }) : t('save')}
                       </button>
@@ -139,7 +139,7 @@ export default function Settings() {
                         type="button"
                         onClick={cancelUsernameEdit}
                         disabled={usernameSaving}
-                        className="px-4 py-2 rounded-xl bg-gray-100 text-gray-700 text-sm font-bold disabled:opacity-60"
+                        className="tp-btn-secondary tp-btn-sm"
                       >
                         {t('cancel', { defaultValue: 'Cancel' })}
                       </button>
@@ -154,7 +154,7 @@ export default function Settings() {
                     <button
                       type="button"
                       onClick={startUsernameEdit}
-                      className="text-sm text-brand font-semibold"
+                      className="tp-text-link"
                     >
                       {t('edit')}
                     </button>

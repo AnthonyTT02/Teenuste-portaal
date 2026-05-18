@@ -6,11 +6,6 @@ function hashPassword(p) {
   return crypto.createHash('sha256').update(p).digest('hex');
 }
 
-// Generate random token
-function generateToken() {
-  return crypto.randomBytes(32).toString('hex');
-}
-
 // Check if a phone number is already taken by a different user
 async function isUserPhoneTaken(phone, excludeUserId) {
   if (!phone) return false;
@@ -24,4 +19,4 @@ async function isUserPhoneTaken(phone, excludeUserId) {
   return rows.length > 0;
 }
 
-module.exports = { hashPassword, generateToken, isUserPhoneTaken };
+module.exports = { hashPassword, isUserPhoneTaken };

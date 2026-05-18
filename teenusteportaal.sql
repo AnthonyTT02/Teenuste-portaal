@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Время создания: Май 14 2026 г., 21:43
+-- Время создания: Май 18 2026 г., 13:23
 -- Версия сервера: 10.4.32-MariaDB
 -- Версия PHP: 8.2.12
 
@@ -36,8 +36,8 @@ CREATE TABLE `orders` (
   `address` varchar(191) DEFAULT NULL,
   `lat` double DEFAULT NULL,
   `lng` double DEFAULT NULL,
+  `note` varchar(50) DEFAULT NULL,
   `paymentType` varchar(191) DEFAULT NULL,
-  `note` varchar(191) DEFAULT NULL,
   `created_at` datetime(3) NOT NULL DEFAULT current_timestamp(3),
   `completed_at` datetime(3) DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
@@ -90,8 +90,7 @@ CREATE TABLE `users` (
   `phone` varchar(191) NOT NULL DEFAULT '',
   `email` varchar(191) DEFAULT NULL,
   `created_at` datetime(3) NOT NULL DEFAULT current_timestamp(3),
-  `role` varchar(191) NOT NULL DEFAULT 'user',
-  `status` enum('user','admin','moderator','support','worker') NOT NULL DEFAULT 'user',
+  `status` varchar(191) NOT NULL DEFAULT 'user',
   `is_worker` int(11) NOT NULL DEFAULT 0,
   `worker_online` int(11) NOT NULL DEFAULT 0,
   `government_name` varchar(191) DEFAULT NULL,
@@ -99,24 +98,26 @@ CREATE TABLE `users` (
   `email_verified` int(11) NOT NULL DEFAULT 0,
   `email_verify_code` varchar(191) DEFAULT NULL,
   `email_verify_expires` datetime(3) DEFAULT NULL,
+  `language` varchar(191) NOT NULL DEFAULT 'en',
   `profile_photo` longtext DEFAULT NULL,
+  `google_id` varchar(191) DEFAULT NULL,
   `worker_lat` double DEFAULT NULL,
   `worker_lng` double DEFAULT NULL,
-  `language` varchar(191) NOT NULL DEFAULT 'en'
+  `theme` varchar(191) NOT NULL DEFAULT 'light'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Дамп данных таблицы `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `password`, `phone`, `email`, `created_at`, `role`, `status`, `is_worker`, `worker_online`, `government_name`, `government_surname`, `email_verified`, `email_verify_code`, `email_verify_expires`, `profile_photo`, `worker_lat`, `worker_lng`, `language`) VALUES
-(1, 'admin', '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b', '', NULL, '0000-00-00 00:00:00.000', 'admin', 'user', 0, 0, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 'ru'),
-(2, 'support', '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b', '', NULL, '0000-00-00 00:00:00.000', 'user', 'support', 0, 0, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 'et'),
-(3, 'moderator', '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b', '', NULL, '0000-00-00 00:00:00.000', 'user', 'moderator', 0, 0, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 'en');
+INSERT INTO `users` (`id`, `username`, `password`, `phone`, `email`, `created_at`, `status`, `is_worker`, `worker_online`, `government_name`, `government_surname`, `email_verified`, `email_verify_code`, `email_verify_expires`, `language`, `profile_photo`, `google_id`, `worker_lat`, `worker_lng`, `theme`) VALUES
+(18, 'admin', '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b', '', NULL, '0000-00-00 00:00:00.000', 'admin', 0, 0, NULL, NULL, 0, NULL, NULL, 'et', NULL, NULL, 59.4, 28.2, 'light'),
+(19, 'support', '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b', '', NULL, '0000-00-00 00:00:00.000', 'support', 0, 0, NULL, NULL, 0, NULL, NULL, 'en', NULL, NULL, NULL, NULL, 'light'),
+(20, 'moderator', '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b', '', NULL, '0000-00-00 00:00:00.000', 'moderator', 0, 0, NULL, NULL, 0, NULL, NULL, 'et', NULL, NULL, NULL, NULL, 'light');
 
 -- --------------------------------------------------------
 
-
+--
 -- Структура таблицы `worker_applications`
 --
 
@@ -177,7 +178,8 @@ ALTER TABLE `support_tickets`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `users_username_key` (`username`);
+  ADD UNIQUE KEY `users_username_key` (`username`),
+  ADD UNIQUE KEY `users_google_id_key` (`google_id`);
 
 --
 -- Индексы таблицы `worker_applications`
@@ -202,47 +204,37 @@ ALTER TABLE `worker_services`
 -- AUTO_INCREMENT для таблицы `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
 
 --
 -- AUTO_INCREMENT для таблицы `services`
 --
 ALTER TABLE `services`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT для таблицы `support_tickets`
 --
 ALTER TABLE `support_tickets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT для таблицы `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
-
---
--- Нормализация и ограничение значений статуса пользователей
---
-UPDATE `users`
-SET `status` = 'user'
-WHERE `status` NOT IN ('user', 'admin', 'moderator', 'support', 'worker');
-
-ALTER TABLE `users`
-  MODIFY `status` enum('user','admin','moderator','support','worker') NOT NULL DEFAULT 'user';
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- AUTO_INCREMENT для таблицы `worker_applications`
 --
 ALTER TABLE `worker_applications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT для таблицы `worker_services`
 --
 ALTER TABLE `worker_services`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Ограничения внешнего ключа сохраненных таблиц

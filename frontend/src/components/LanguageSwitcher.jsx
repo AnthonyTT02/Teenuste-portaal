@@ -24,9 +24,15 @@ export default function LanguageSwitcher({ className = '', onLanguageChange }) {
 
   return (
     <div className={`flex gap-2 ${className}`}>
-      <button onClick={() => changeLanguage('en')} className={`px-2 py-1 text-xs font-bold rounded ${i18n.language === 'en' ? 'bg-brand text-white' : 'bg-gray-100 text-gray-600'}`}>EN</button>
-      <button onClick={() => changeLanguage('ru')} className={`px-2 py-1 text-xs font-bold rounded ${i18n.language === 'ru' ? 'bg-brand text-white' : 'bg-gray-100 text-gray-600'}`}>RU</button>
-      <button onClick={() => changeLanguage('et')} className={`px-2 py-1 text-xs font-bold rounded ${i18n.language === 'et' ? 'bg-brand text-white' : 'bg-gray-100 text-gray-600'}`}>ET</button>
+      {['en', 'ru', 'et'].map((lng) => (
+        <button
+          key={lng}
+          onClick={() => changeLanguage(lng)}
+          className={`tp-lang-btn ${i18n.language === lng ? 'tp-lang-btn-active' : 'tp-lang-btn-inactive'}`}
+        >
+          {lng.toUpperCase()}
+        </button>
+      ))}
     </div>
   );
 }

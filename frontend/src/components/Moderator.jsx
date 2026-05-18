@@ -48,8 +48,8 @@ function Moderator() {
   };
 
   return (
-    <div className="w-full max-w-5xl animate-fade-in-up">
-      <div className="backdrop-blur-xl bg-white/60 border border-white/40 shadow-2xl rounded-[2rem] p-5 sm:p-8 mt-4 sm:mt-8 relative overflow-hidden">
+    <div className="w-full max-w-5xl">
+      <div className="tp-page-card p-5 sm:p-8 mt-4 sm:mt-8">
 
         <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start mb-8">
           <div className="min-w-0">
@@ -58,13 +58,13 @@ function Moderator() {
           </div>
           <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:justify-end">
             <LanguageSwitcher className="shrink-0" />
-            <button onClick={handleSignOut} className="ml-auto sm:ml-0 shrink-0 px-4 sm:px-5 py-2.5 rounded-xl bg-gray-50 hover:bg-red-50 text-gray-600 hover:text-red-500 font-bold text-sm transition-colors border border-gray-200/60 hover:border-red-200">
+            <button onClick={handleSignOut} className="tp-btn-ghost-danger tp-btn-md ml-auto sm:ml-0 shrink-0">
               {t('sign_out', 'Sign Out')}
             </button>
           </div>
         </div>
 
-        {error && <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm font-semibold">{error}</div>}
+        {error && <div className="tp-alert-error mb-6">{error}</div>}
 
         {loading ? (
           <div className="text-center py-12 text-gray-400">{t('loading_apps', 'Loading applications...')}</div>
@@ -110,8 +110,8 @@ function Moderator() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
-                  <button onClick={() => handleApprove(app.id)} className="flex-1 px-4 py-2.5 bg-green-500 hover:bg-green-600 text-white font-bold rounded-xl transition-colors">Approve</button>
-                  <button onClick={() => handleReject(app.id)} className="flex-1 px-4 py-2.5 bg-red-500 hover:bg-red-600 text-white font-bold rounded-xl transition-colors">Reject</button>
+                  <button onClick={() => handleApprove(app.id)} className="tp-btn-success tp-btn-md flex-1">Approve</button>
+                  <button onClick={() => handleReject(app.id)} className="tp-btn-danger tp-btn-md flex-1">Reject</button>
                 </div>
               </div>
             ))}

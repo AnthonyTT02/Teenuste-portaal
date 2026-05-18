@@ -20,8 +20,6 @@ import ModeratorLogin from './components/ModeratorLogin';
 import SupportLogin from './components/SupportLogin';
 import Support from './components/Support';
 import Provider from './components/Provider';
-import VerifyEmail from './components/VerifyEmail';
-import PaymentMethods from './components/PaymentMethods';
 
 export default function App() {
   return (
@@ -46,16 +44,13 @@ export default function App() {
           <Route path="/for-individuals" element={<ForIndividuals />} />
           <Route path="/provider-reg" element={<ProviderReg />} />
           <Route path="/request-help" element={<RequestHelp />} />
-          <Route path="/request-assistance" element={<RequestHelp />} />
           <Route path="/admin-login" element={<AdminLogin />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/moderator-login" element={<ModeratorLogin />} />
           <Route path="/moderator" element={<Moderator />} />
           <Route path="/support-login" element={<SupportLogin />} />
           <Route path="/support" element={<Support />} />
-          <Route path="/payment-methods" element={<PaymentMethods />} />
           <Route path="/provider" element={<Provider />} />
-          <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>

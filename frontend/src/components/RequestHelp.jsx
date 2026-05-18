@@ -157,23 +157,23 @@ export default function RequestHelp() {
   const progressStep = step === 3.5 ? 3 : step;
 
   return (
-    <div className="w-full max-w-2xl bg-white/80 backdrop-blur-xl border border-white/40 rounded-[2.5rem] shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05),0_0_80px_rgba(91,108,249,0.08)] p-8 overflow-hidden relative animate-fade-in-up">
-      <div className="absolute inset-0 bg-gradient-to-br from-white/60 to-transparent pointer-events-none opacity-50 rounded-[2.5rem]" />
+    <div className="tp-page-card max-w-2xl p-8">
+      <div className="tp-page-card-shine" />
       <div className="relative z-10">
 
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-black tracking-tighter text-[#111827]">
-            Teenuste<span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-light">Portaal</span>
+          <h1 className="tp-brand-title">
+            Teenuste<span className="tp-brand-accent">Portaal</span>
           </h1>
-          <button onClick={openSidebar} className="p-2.5 rounded-full hover:bg-gray-100/80 transition-all text-gray-500">
+          <button onClick={openSidebar} className="tp-icon-btn">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </button>
         </div>
 
         {step < 5 && (
           <>
-            <h2 className="text-3xl font-extrabold text-[#111827] mb-1">Request <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-light">Assistance</span></h2>
+            <h2 className="text-3xl font-extrabold text-[#111827] mb-1">Request <span className="tp-brand-accent">Assistance</span></h2>
             <p className="text-gray-400 text-sm mb-5">{displayStep}</p>
             <div className="flex gap-1.5 mb-6">
               {[1,2,3,4].map(s => <div key={s} className={`h-1.5 flex-1 rounded-full transition-colors duration-300 ${s <= progressStep ? 'bg-brand' : 'bg-gray-200'}`} />)}
@@ -181,7 +181,7 @@ export default function RequestHelp() {
           </>
         )}
 
-        {error && <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm font-semibold">{error}</div>}
+        {error && <div className="tp-alert-error mb-4">{error}</div>}
 
         {/* STEP 1: Select Service */}
         {step === 1 && (
@@ -189,9 +189,9 @@ export default function RequestHelp() {
             <h3 className="text-sm font-bold text-gray-500 uppercase mb-3">What do you need?</h3>
             {services.map(s => (
               <button key={s.id} type="button" onClick={() => setSelectedService(s)}
-                className={`w-full flex items-center justify-between p-4 border rounded-2xl transition-all text-left ${selectedService?.id === s.id ? 'bg-brand/5 border-brand/40 shadow-sm' : 'bg-gray-50/50 border-gray-200/60 hover:bg-white'}`}>
+                className={`tp-choice justify-between ${selectedService?.id === s.id ? 'tp-choice-active' : ''}`}>
                 <div className="flex items-center gap-3">
-                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${selectedService?.id === s.id ? 'bg-brand border-brand' : 'border-gray-300'}`}>
+                  <div className={`tp-choice-check rounded-full ${selectedService?.id === s.id ? 'tp-choice-check-active' : ''}`}>
                     {selectedService?.id === s.id && <div className="w-2 h-2 bg-white rounded-full" />}
                   </div>
                   <p className="font-semibold text-gray-800">{s.name}</p>
@@ -199,7 +199,7 @@ export default function RequestHelp() {
                 <p className="font-bold text-brand">€{Number(s.price).toFixed(2)}</p>
               </button>
             ))}
-            <button onClick={() => goToStep(2)} className="w-full mt-4 py-4 bg-brand text-white font-bold rounded-2xl shadow-[0_8px_20px_rgba(91,108,249,0.25)] hover:shadow-[0_15px_30px_rgba(91,108,249,0.4)] transform hover:-translate-y-1 transition-all">
+            <button onClick={() => goToStep(2)} className="tp-btn-primary w-full mt-4 py-4 hover:-translate-y-1">
               Next →
             </button>
           </div>
@@ -211,7 +211,7 @@ export default function RequestHelp() {
             <div>
               <div className="flex justify-between items-center mb-2">
                 <label className="text-sm font-bold text-gray-700">Your Location</label>
-                <button onClick={getUserLocation} disabled={geoLoading} className="text-xs font-bold text-brand hover:underline flex items-center gap-1 disabled:opacity-50">
+                <button onClick={getUserLocation} disabled={geoLoading} className="tp-text-link text-xs flex items-center gap-1 disabled:opacity-50">
                   {geoLoading ? 'Locating...' : 'Use GPS'}
                 </button>
               </div>
@@ -228,9 +228,9 @@ export default function RequestHelp() {
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1.5">Vehicle Brand *</label>
+                <label className="tp-label-sm">Vehicle Brand *</label>
                 <input list="car-brands" value={vehicle.brand} onChange={e => setVehicle(p => ({ ...p, brand: e.target.value, model: '' }))}
-                  className="w-full px-4 py-3 rounded-2xl bg-gray-50/50 border border-gray-200/60 focus:border-brand/40 focus:ring-[4px] focus:ring-brand/15 transition-all outline-none text-sm"
+                  className="tp-input-sm"
                   placeholder="Toyota, BMW..." />
                 <datalist id="car-brands">
                   {Object.keys(carBrandModels).map((b) => (
@@ -238,9 +238,9 @@ export default function RequestHelp() {
                   ))}
                 </datalist>
                 <div className="mt-2">
-                  <label className="block text-xs font-bold text-gray-700 mb-1.5">Vehicle Model</label>
+                  <label className="tp-label-sm">Vehicle Model</label>
                   <input list="car-models" value={vehicle.model} onChange={e => setVehicle(p => ({ ...p, model: e.target.value }))}
-                    className="w-full px-4 py-3 rounded-2xl bg-gray-50/50 border border-gray-200/60 focus:border-brand/40 focus:ring-[4px] focus:ring-brand/15 transition-all outline-none text-sm"
+                    className="tp-input-sm"
                     placeholder="Model or type" />
                   <datalist id="car-models">
                     {(carBrandModels[vehicle.brand] || []).map(m => <option key={m} value={m} />)}
@@ -248,23 +248,23 @@ export default function RequestHelp() {
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1.5">Reg. Number *</label>
+                <label className="tp-label-sm">Reg. Number *</label>
                 <input value={vehicle.plate} onChange={e => setVehicle(p => ({ ...p, plate: e.target.value.replace(/[^a-zA-Z0-9\s]/g, '').toUpperCase() }))}
-                  className="w-full px-4 py-3 rounded-2xl bg-gray-50/50 border border-gray-200/60 focus:border-brand/40 focus:ring-[4px] focus:ring-brand/15 transition-all outline-none text-sm"
+                  className="tp-input-sm"
                   placeholder="123 ABC" maxLength={10} />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-gray-700 mb-1.5">Note for worker (max 50 characters)</label>
+              <label className="tp-label-sm">Note for worker (max 50 characters)</label>
               <input value={note} onChange={e => setNote(e.target.value.slice(0, 50))}
-                className="w-full px-4 py-3 rounded-2xl bg-gray-50/50 border border-gray-200/60 focus:border-brand/40 focus:ring-[4px] focus:ring-brand/15 transition-all outline-none text-sm"
+                className="tp-input-sm"
                 placeholder="Short note for the worker" maxLength={50} />
             </div>
 
             <div className="flex gap-3 pt-2">
-              <button onClick={() => setStep(1)} className="flex-1 py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold rounded-2xl transition-colors">Back</button>
-              <button onClick={() => goToStep(3)} className="flex-1 py-3 bg-brand text-white font-bold rounded-2xl hover:bg-brand-dark transition-colors">Next →</button>
+              <button onClick={() => setStep(1)} className="tp-btn-secondary flex-1 py-3">Back</button>
+              <button onClick={() => goToStep(3)} className="tp-btn-primary flex-1 py-3">Next →</button>
             </div>
           </div>
         )}
@@ -275,12 +275,12 @@ export default function RequestHelp() {
             <h3 className="text-sm font-bold text-gray-500 uppercase mb-3">Payment Method</h3>
             {[{ id: 'cash', label: 'Cash', desc: 'Pay the worker directly in cash' }, { id: 'card', label: 'Card', desc: 'Pay securely by card' }].map(m => (
               <button key={m.id} type="button" onClick={() => setPayment(m.id)}
-                className={`w-full flex items-center gap-4 p-5 border rounded-2xl transition-all text-left ${payment === m.id ? 'bg-brand/5 border-brand/40 shadow-sm' : 'bg-gray-50/50 border-gray-200/60 hover:bg-white'}`}>
+                className={`tp-choice p-5 ${payment === m.id ? 'tp-choice-active' : ''}`}>
                 <div>
                   <p className="font-bold text-gray-800">{m.label}</p>
                   <p className="text-xs text-gray-500">{m.desc}</p>
                 </div>
-                <div className={`ml-auto w-5 h-5 rounded-full border-2 flex items-center justify-center ${payment === m.id ? 'bg-brand border-brand' : 'border-gray-300'}`}>
+                <div className={`tp-choice-check ml-auto rounded-full ${payment === m.id ? 'tp-choice-check-active' : ''}`}>
                   {payment === m.id && <div className="w-2 h-2 bg-white rounded-full" />}
                 </div>
               </button>
@@ -292,19 +292,19 @@ export default function RequestHelp() {
                   type="checkbox" 
                   checked={agreedToStorage} 
                   onChange={(e) => setAgreedToStorage(e.target.checked)} 
-                  className="w-5 h-5 text-brand rounded border-gray-300 focus:ring-brand accent-brand"
+                  className="tp-checkbox"
                 />
                 <span className="text-sm text-gray-700">I agree to the short-term storage of my personal and banking data</span>
               </label>
             )}
 
             <div className="flex gap-3 pt-2">
-              <button onClick={() => setStep(2)} className="flex-1 py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold rounded-2xl transition-colors">Back</button>
+              <button onClick={() => setStep(2)} className="tp-btn-secondary flex-1 py-3">Back</button>
               <button disabled={payment === 'card' && !agreedToStorage} onClick={() => {
                 setError('');
                 if (payment === 'card') { setStep(3.5); }
                 else { goToStep(4); }
-              }} className={`flex-1 py-3 font-bold rounded-2xl transition-colors ${payment === 'card' && !agreedToStorage ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-brand text-white hover:bg-brand-dark'}`}>
+              }} className={`flex-1 py-3 ${payment === 'card' && !agreedToStorage ? 'tp-btn-secondary opacity-60 cursor-not-allowed' : 'tp-btn-primary'}`}>
                 {payment === 'card' ? 'Enter Card Details →' : 'Send Request →'}
               </button>
             </div>
@@ -326,36 +326,36 @@ export default function RequestHelp() {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-gray-700 mb-1.5">Card Number *</label>
+              <label className="tp-label-sm">Card Number *</label>
               <input value={cardData.number} onChange={e => {
                 const v = e.target.value.replace(/\D/g, '').slice(0, 19);
                 setCardData(p => ({ ...p, number: v.replace(/(\d{4})(?=\d)/g, '$1 ') }));
-              }} className="w-full px-4 py-3 rounded-2xl bg-gray-50/50 border border-gray-200/60 focus:border-brand/40 focus:ring-[4px] focus:ring-brand/15 transition-all outline-none text-sm font-mono tracking-wider" placeholder="1234 5678 9012 3456" />
+              }} className="tp-input-sm font-mono tracking-wider" placeholder="1234 5678 9012 3456" />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1.5">Expiry *</label>
+                <label className="tp-label-sm">Expiry *</label>
                 <input value={cardData.expiry} onChange={e => {
                   let v = e.target.value.replace(/\D/g, '').slice(0, 4);
                   if (v.length >= 3) v = v.slice(0, 2) + '/' + v.slice(2);
                   setCardData(p => ({ ...p, expiry: v }));
-                }} className="w-full px-4 py-3 rounded-2xl bg-gray-50/50 border border-gray-200/60 focus:border-brand/40 focus:ring-[4px] focus:ring-brand/15 transition-all outline-none text-sm" placeholder="MM/YY" maxLength={5} />
+                }} className="tp-input-sm" placeholder="MM/YY" maxLength={5} />
               </div>
               <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1.5">CVV *</label>
+                <label className="tp-label-sm">CVV *</label>
                 <input value={cardData.cvv} onChange={e => setCardData(p => ({ ...p, cvv: e.target.value.replace(/\D/g, '').slice(0, 4) }))}
-                  className="w-full px-4 py-3 rounded-2xl bg-gray-50/50 border border-gray-200/60 focus:border-brand/40 focus:ring-[4px] focus:ring-brand/15 transition-all outline-none text-sm" placeholder="123" maxLength={4} type="password" />
+                  className="tp-input-sm" placeholder="123" maxLength={4} type="password" />
               </div>
             </div>
             <div>
-              <label className="block text-xs font-bold text-gray-700 mb-1.5">Cardholder Name *</label>
+              <label className="tp-label-sm">Cardholder Name *</label>
               <input value={cardData.name} onChange={e => setCardData(p => ({ ...p, name: e.target.value.toUpperCase() }))}
-                className="w-full px-4 py-3 rounded-2xl bg-gray-50/50 border border-gray-200/60 focus:border-brand/40 focus:ring-[4px] focus:ring-brand/15 transition-all outline-none text-sm" placeholder="JOHN DOE" />
+                className="tp-input-sm" placeholder="JOHN DOE" />
             </div>
             
             <div className="flex gap-3 pt-2">
-              <button onClick={() => setStep(3)} className="flex-1 py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold rounded-2xl transition-colors">Back</button>
-              <button onClick={handleCardContinue} className="flex-1 py-3 bg-brand text-white font-bold rounded-2xl hover:bg-brand-dark transition-colors">
+              <button onClick={() => setStep(3)} className="tp-btn-secondary flex-1 py-3">Back</button>
+              <button onClick={handleCardContinue} className="tp-btn-primary flex-1 py-3">
                 Pay & Send Request →
               </button>
             </div>
@@ -382,14 +382,14 @@ export default function RequestHelp() {
               <div className="text-center py-12">
                 <h3 className="text-xl font-bold text-gray-700 mb-2">No workers available</h3>
                 <p className="text-gray-400 text-sm">No workers are currently online for this service. Please try again later.</p>
-                <button onClick={() => setStep(3)} className="mt-6 px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-2xl transition-colors">Go Back</button>
+                <button onClick={() => setStep(3)} className="tp-btn-secondary mt-6 px-6 py-3">Go Back</button>
               </div>
             ) : (
               <>
                 <div className="space-y-3 mb-4">
                   {workers.map(w => (
                     <button key={w.id} type="button" onClick={() => setSelectedWorker(w)}
-                      className={`w-full flex items-center gap-4 p-5 border rounded-2xl transition-all text-left ${selectedWorker?.id === w.id ? 'bg-brand/5 border-brand/40 shadow-sm' : 'bg-gray-50/50 border-gray-200/60 hover:bg-white'}`}>
+                      className={`tp-choice p-5 ${selectedWorker?.id === w.id ? 'tp-choice-active' : ''}`}>
                       <div className="w-12 h-12 rounded-2xl bg-brand/10 text-brand flex items-center justify-center text-lg font-bold flex-shrink-0">
                         {(w.name || '?')[0].toUpperCase()}
                       </div>
@@ -406,8 +406,8 @@ export default function RequestHelp() {
                   ))}
                 </div>
                 <div className="flex gap-3">
-                  <button onClick={() => setStep(payment === 'card' ? 3.5 : 3)} className="flex-1 py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold rounded-2xl transition-colors">Back</button>
-                  <button onClick={confirmOrder} disabled={submitting || !selectedWorker} className="flex-1 py-3 bg-brand text-white font-bold rounded-2xl hover:bg-brand-dark transition-colors disabled:opacity-50">
+                  <button onClick={() => setStep(payment === 'card' ? 3.5 : 3)} className="tp-btn-secondary flex-1 py-3">Back</button>
+                  <button onClick={confirmOrder} disabled={submitting || !selectedWorker} className="tp-btn-primary flex-1 py-3">
                     {submitting ? 'Confirming...' : 'Confirm Order'}
                   </button>
                 </div>
@@ -432,7 +432,7 @@ export default function RequestHelp() {
               </div>
             )}
             <p className="text-sm text-gray-400 mb-6">The worker is on their way. You can track the order in your cabinet.</p>
-            <button onClick={() => navigate('/cabinet')} className="w-full py-4 bg-brand text-white font-bold rounded-2xl shadow-[0_8px_20px_rgba(91,108,249,0.25)] hover:shadow-[0_15px_30px_rgba(91,108,249,0.4)] transform hover:-translate-y-1 transition-all">
+            <button onClick={() => navigate('/cabinet')} className="tp-btn-primary w-full py-4 hover:-translate-y-1">
               Go to My Cabinet
             </button>
           </div>
