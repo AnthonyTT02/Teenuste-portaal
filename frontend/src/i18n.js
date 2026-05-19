@@ -1,6 +1,6 @@
 import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
+import { initReactI18next } from 'react-i18next';
 
 const resources = {
   en: {
@@ -131,7 +131,8 @@ const resources = {
       "error_sending_failed": "Failed to send code",
       "error_enter_code": "Enter verification code",
       "error_invalid_code": "Invalid verification code",
-      "password_too_weak_warning": "Password is too weak. Continue at your own risk."
+      "password_too_weak_warning": "Password is too weak. Continue at your own risk.",
+      "agree_data_storage": "I agree to the short-term storage of my personal and banking data"
     }
   },
   ru: {
@@ -262,7 +263,8 @@ const resources = {
       "error_sending_failed": "Ошибка отправки",
       "error_enter_code": "Введите код подтверждения",
       "error_invalid_code": "Неверный код",
-      "password_too_weak_warning": "Пароль слишком легкий. Продолжайте на свой страх и риск."
+      "password_too_weak_warning": "Пароль слишком легкий. Продолжайте на свой страх и риск.",
+      "agree_data_storage": "Я согласен на кратковременное хранение моих личных и банковских данных"
     }
   },
   et: {
@@ -393,7 +395,8 @@ const resources = {
       "error_sending_failed": "Koodi saatmine ebaõnnestus",
       "error_enter_code": "Sisesta kinnituskood",
       "error_invalid_code": "Vale kinnituskood",
-      "password_too_weak_warning": "Parool on liiga nõrk. Jätkake omal vastutusel."
+      "password_too_weak_warning": "Parool on liiga nõrk. Jätkake omal vastutusel.",
+      "agree_data_storage": "Nõustun oma isiku- ja pangaandmete lühiajalise töötlemisega"
     }
   }
 };

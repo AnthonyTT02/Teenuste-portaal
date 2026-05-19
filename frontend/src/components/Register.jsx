@@ -1,8 +1,8 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../api';
 import LanguageSwitcher from './LanguageSwitcher';
-import { useTranslation } from 'react-i18next';
 
 /**
  * Register Component
@@ -22,6 +22,7 @@ export default function Register() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [weakPasswordWarningSeen, setWeakPasswordWarningSeen] = useState(false);
+  const [agreedToStorage, setAgreedToStorage] = useState(false);
   const navigate = useNavigate();
 
   const formatEstonianPhone = (digits) => {
@@ -163,8 +164,18 @@ export default function Register() {
               </p>
             </div>
 
-            <button type="submit" disabled={isSubmitting}
-              className="group relative tp-btn-primary tp-btn-form mt-2 overflow-hidden hover:-translate-y-1 active:translate-y-0 active:shadow-inner ease-out">
+            <label className="flex items-center gap-3 p-3 bg-brand/5 border border-brand/20 rounded-xl cursor-pointer mt-2">
+              <input 
+                type="checkbox" 
+                checked={agreedToStorage} 
+                onChange={(e) => setAgreedToStorage(e.target.checked)} 
+                className="tp-checkbox"
+              />
+              <span className="text-sm text-gray-700">{t('agree_data_storage')}</span>
+            </label>
+
+            <button type="submit" disabled={isSubmitting || !agreedToStorage}
+              className="group relative tp-btn-primary tp-btn-form mt-4 overflow-hidden disabled:opacity-60 disabled:cursor-not-allowed hover:-translate-y-1 active:translate-y-0 active:shadow-inner ease-out">
               <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-brand via-[#7482f6] to-brand opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               <span className="relative z-10 tracking-wide">{isSubmitting ? t('loading') : t('send_code')}</span>
             </button>
