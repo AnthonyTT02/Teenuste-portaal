@@ -3,3 +3,5 @@ dist
 build
 .env
 .example.env
+test-results
+playwright-report

@@ -7,6 +7,8 @@
     "dev": "npm --prefix frontend exec concurrently -- \"npm start --prefix backend\" \"npm run dev --prefix frontend\"",
     "start": "npm run dev",
     "build": "npm run build --prefix frontend",
-    "test:workflow": "npm run audit:workflow --prefix frontend"
+    "test:backend": "npm test --prefix backend -- --runInBand",
+    "test:regression": "npm test --prefix backend -- regression.workflow.test.js --runInBand",
+    "test:e2e": "npm run test:e2e --prefix frontend"
   }
 }

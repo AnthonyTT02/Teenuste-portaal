@@ -13,11 +13,8 @@ import GetStarted from './components/GetStarted';
 import ForIndividuals from './components/ForIndividuals';
 import ProviderReg from './components/ProviderReg';
 import RequestHelp from './components/RequestHelp';
-import AdminLogin from './components/AdminLogin';
 import Admin from './components/Admin';
 import Moderator from './components/Moderator';
-import ModeratorLogin from './components/ModeratorLogin';
-import SupportLogin from './components/SupportLogin';
 import Support from './components/Support';
 import Provider from './components/Provider';
 
@@ -33,6 +30,7 @@ export default function App() {
       <div className="z-10 w-full flex justify-center animate-fade-in-up">
         <Routes>
           <Route path="/" element={<Login />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/register" element={<Register />} />
           <Route path="/cabinet" element={<Cabinet />} />
@@ -44,11 +42,8 @@ export default function App() {
           <Route path="/for-individuals" element={<ForIndividuals />} />
           <Route path="/provider-reg" element={<ProviderReg />} />
           <Route path="/request-help" element={<RequestHelp />} />
-          <Route path="/admin-login" element={<AdminLogin />} />
           <Route path="/admin" element={<Admin />} />
-          <Route path="/moderator-login" element={<ModeratorLogin />} />
           <Route path="/moderator" element={<Moderator />} />
-          <Route path="/support-login" element={<SupportLogin />} />
           <Route path="/support" element={<Support />} />
           <Route path="/provider" element={<Provider />} />
           <Route path="*" element={<Navigate to="/" replace />} />

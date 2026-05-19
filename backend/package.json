@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "test": "jest"
   },
   "dependencies": {
     "dotenv": "^16.0.3",
@@ -14,5 +15,9 @@
     "mysql2": "^3.22.3",
     "resend": "^6.12.3",
     "teenuste-portaal": "file:.."
+  },
+  "devDependencies": {
+    "jest": "^30.4.2",
+    "supertest": "^7.2.2"
   }
 }
