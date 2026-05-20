@@ -1,5 +1,9 @@
+// frontend/src/i18n.js contains project logic or configuration with inline comments for maintainability.
+// Imports i18next so this file can use its exported functionality.
 import i18n from 'i18next';
+// Imports i18next-browser-languagedetector so this file can use its exported functionality.
 import LanguageDetector from 'i18next-browser-languagedetector';
+// Imports React hooks used to manage component state and lifecycle behavior.
 import { initReactI18next } from 'react-i18next';
 
 const resources = {

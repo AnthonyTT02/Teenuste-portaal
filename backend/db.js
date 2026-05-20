@@ -1,3 +1,5 @@
+// backend/db.js configures the database connection pool used by backend route modules.
+// Loads mysql for this module so the code can use it below.
 const mysql = require('mysql2/promise');
 require('dotenv').config();
 
@@ -15,4 +17,5 @@ const pool = mysql.createPool({
   charset: 'utf8mb4'
 });
 
+// Exports configuration or reusable values for Node-based tooling.
 module.exports = pool;

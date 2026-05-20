@@ -1,3 +1,4 @@
+// frontend/tailwind.config.js contains project logic or configuration with inline comments for maintainability.
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [

@@ -1,20 +1,35 @@
+// frontend/src/components/Settings.jsx defines a React UI component and documents the state, handlers, and render flow used by this screen.
+// Imports React hooks used to manage component state and lifecycle behavior.
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+// Imports the shared API client functions used to communicate with the backend.
 import { api } from '../api';
+// Imports ../context/SidebarContext so this file can use its exported functionality.
 import { useSidebar } from '../context/SidebarContext';
+// Imports React hooks used to manage component state and lifecycle behavior.
 import { useTranslation } from 'react-i18next';
 
+// Settings renders the settings screen and connects its UI behavior.
 export default function Settings() {
+  // The translation hook provides localized labels and lets the component react to language changes.
   const { t } = useTranslation();
   const { openSidebar } = useSidebar();
+  // This navigation helper redirects the user after successful actions or role-based decisions.
   const navigate = useNavigate();
+  // This value is read from localStorage to restore existing session or preference data.
   const userId = localStorage.getItem('userId');
+  // Stores the user value so the UI can update when it changes.
   const [user, setUser] = useState(null);
+  // Stores the editingUsername value so the UI can update when it changes.
   const [editingUsername, setEditingUsername] = useState(false);
+  // Stores the usernameDraft value so the UI can update when it changes.
   const [usernameDraft, setUsernameDraft] = useState('');
+  // Stores the usernameSaving value so the UI can update when it changes.
   const [usernameSaving, setUsernameSaving] = useState(false);
+  // Stores the usernameError value so the UI can update when it changes.
   const [usernameError, setUsernameError] = useState('');
 
+  // useEffect keeps this component behavior synchronized with its dependencies.
   useEffect(() => {
     if (!userId) { navigate('/'); return; }
     api(`/api/user/${userId}`)
@@ -22,18 +37,21 @@ export default function Settings() {
       .catch(err => console.error(err));
   }, [userId]);
 
+  // startUsernameEdit contains reusable logic for this file.
   const startUsernameEdit = () => {
     setUsernameDraft(user?.username || '');
     setUsernameError('');
     setEditingUsername(true);
   };
 
+  // cancelUsernameEdit contains reusable logic for this file.
   const cancelUsernameEdit = () => {
     setUsernameDraft(user?.username || '');
     setUsernameError('');
     setEditingUsername(false);
   };
 
+  // saveUsername performs the related data change and keeps the UI or database in sync.
   const saveUsername = async (e) => {
     e.preventDefault();
     const nextUsername = usernameDraft.trim();
@@ -52,7 +70,9 @@ export default function Settings() {
     setUsernameSaving(true);
     setUsernameError('');
 
+    // The try block wraps operations that may fail, such as API requests or browser storage updates.
     try {
+      // This API call sends data to the backend or retrieves data needed by the component.
       const res = await api(`/api/user/${userId}`, {
         method: 'PUT',
         body: JSON.stringify({ username: nextUsername })
@@ -69,16 +89,21 @@ export default function Settings() {
     }
   };
 
+  // Renders the JSX markup for this component.
   return (
     <div className="tp-page-card tp-page-card-hover max-w-2xl p-8 md:p-12">
+      {/* This container groups related UI elements and keeps the layout consistent. */}
       <div className="tp-page-card-shine"></div>
 
       <div className="relative z-10">
+        {/* This container groups related UI elements and keeps the layout consistent. */}
         <div className="flex justify-between items-center mb-8">
+          {/* This container groups related UI elements and keeps the layout consistent. */}
           <h1 className="tp-brand-title">
             Teenuste<span className="tp-brand-accent">Portaal</span>
           </h1>
           <div className="flex gap-2">
+            {/* This container groups related UI elements and keeps the layout consistent. */}
             <button
               type="button"
               onClick={openSidebar}
@@ -98,15 +123,22 @@ export default function Settings() {
         </h2>
 
         <div className="space-y-4">
+          {/* This container groups related UI elements and keeps the layout consistent. */}
           <div className="tp-panel">
+            {/* This container groups related UI elements and keeps the layout consistent. */}
             <div className="flex justify-between items-center mb-3">
+              {/* This container groups related UI elements and keeps the layout consistent. */}
               <h3 className="font-semibold text-gray-900">{t('profile')}</h3>
             </div>
             <div className="space-y-3">
+              {/* This container groups related UI elements and keeps the layout consistent. */}
               <div>
+                {/* This container groups related UI elements and keeps the layout consistent. */}
                 {editingUsername ? (
                   <form onSubmit={saveUsername} className="space-y-3">
+                    {/* This form groups related fields and connects the submit button to the matching handler. */}
                     <div>
+                      {/* This container groups related UI elements and keeps the layout consistent. */}
                       <label className="tp-label-sm uppercase text-gray-400" htmlFor="settings-username">
                         {t('username')}
                       </label>
@@ -128,6 +160,7 @@ export default function Settings() {
                       <p className="text-xs font-semibold text-red-500">{usernameError}</p>
                     )}
                     <div className="flex gap-2">
+                      {/* This container groups related UI elements and keeps the layout consistent. */}
                       <button
                         type="submit"
                         disabled={usernameSaving}
@@ -147,7 +180,9 @@ export default function Settings() {
                   </form>
                 ) : (
                   <div className="flex justify-between items-center">
+                    {/* This container groups related UI elements and keeps the layout consistent. */}
                     <div>
+                      {/* This container groups related UI elements and keeps the layout consistent. */}
                       <p className="text-xs text-gray-400 uppercase">{t('username')}</p>
                       <p className="font-medium text-gray-700">{user?.username}</p>
                     </div>
@@ -163,7 +198,9 @@ export default function Settings() {
               </div>
               {user?.phone && (
                 <div className="flex justify-between items-center">
+                  {/* This container groups related UI elements and keeps the layout consistent. */}
                   <div>
+                    {/* This container groups related UI elements and keeps the layout consistent. */}
                     <p className="text-xs text-gray-400 uppercase">{t('phone')}</p>
                     <p className="font-medium text-gray-700">{user.phone}</p>
                   </div>
@@ -171,7 +208,9 @@ export default function Settings() {
               )}
               {user?.email && (
                 <div className="flex justify-between items-center">
+                  {/* This container groups related UI elements and keeps the layout consistent. */}
                   <div>
+                    {/* This container groups related UI elements and keeps the layout consistent. */}
                     <p className="text-xs text-gray-400 uppercase">{t('email')}</p>
                     <p className="font-medium text-gray-700">{user.email}</p>
                   </div>

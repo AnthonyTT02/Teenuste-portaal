@@ -1,7 +1,12 @@
+// backend/routes/auth.js defines backend API endpoints and documents validation, database access, and response behavior.
+// Loads Express to build lightweight test applications around route modules.
 const express = require('express');
 const router = express.Router();
+// Loads the mocked database module so tests can control query results.
 const db = require('../db');
+// Loads mocked utility helpers used by authentication and user-management routes.
 const { hashPassword, isUserPhoneTaken } = require('../utils');
+// Loads { Resend } for this module so the code can use it below.
 const { Resend } = require('resend');
 
 // Initialize Resend
@@ -9,6 +14,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 const allowedStatuses = new Set(['user', 'admin', 'moderator', 'support', 'worker']);
 
+// normalizeUserStatus contains reusable backend logic for this module.
 function normalizeUserStatus(user) {
   const status = String(user?.status || '').toLowerCase();
   const role = String(user?.role || '').toLowerCase();
@@ -18,6 +24,7 @@ function normalizeUserStatus(user) {
   return 'user';
 }
 
+// buildLoginPayload contains reusable backend logic for this module.
 function buildLoginPayload(user) {
   const status = normalizeUserStatus(user);
   return {
@@ -41,6 +48,7 @@ router.post('/api/register-user/send-code', async (req, res) => {
     if (password.length < 3) return res.status(400).json({ ok: false, error: 'Пароль должен быть минимум 3 символа' });
     if (!email.includes('@')) return res.status(400).json({ ok: false, error: 'Некорректный email' });
     if (await isUserPhoneTaken(phone)) return res.status(400).json({ ok: false, error: 'Этот номер телефона уже используется' });
+    // Executes the database query used by this route or test scenario.
     const [users] = await db.query('SELECT id FROM users WHERE username = ?', [username]);
     if (users.length > 0) return res.status(400).json({ ok: false, error: 'Это имя пользователя уже занято' });
 
@@ -77,6 +85,7 @@ router.post('/api/register-user', async (req, res) => {
     if (await isUserPhoneTaken(pending.phone)) return res.status(400).json({ ok: false, error: 'Этот номер телефона уже используется' });
 
     try {
+      // Executes the database query used by this route or test scenario.
       const [result] = await db.query(
         'INSERT INTO users (username, password, phone, email, email_verified) VALUES (?, ?, ?, ?, 1)',
         [pending.username, pending.password, pending.phone, pending.email]
@@ -95,6 +104,7 @@ router.post('/api/login', async (req, res) => {
   try {
     const { username, password } = req.body;
     if (!username || !password) return res.status(400).json({ ok: false, error: 'Имя пользователя и пароль обязательны' });
+    // Executes the database query used by this route or test scenario.
     const [users] = await db.query('SELECT * FROM users WHERE username = ? AND password = ?', [username, hashPassword(password)]);
     if (users.length === 0) return res.status(401).json({ ok: false, error: 'Неправильное имя пользователя или пароль' });
     const user = users[0];
@@ -107,6 +117,7 @@ router.post('/api/admin-login', async (req, res) => {
   try {
     const { username, password } = req.body;
     if (!username || !password) return res.status(400).json({ ok: false, error: 'Username and password required' });
+    // Executes the database query used by this route or test scenario.
     const [users] = await db.query('SELECT * FROM users WHERE username = ? AND password = ?', [username, hashPassword(password)]);
     if (users.length === 0) return res.status(401).json({ ok: false, error: 'Invalid credentials or not an admin' });
     const user = users[0];
@@ -120,6 +131,7 @@ router.post('/api/support-login', async (req, res) => {
   try {
     const { username, password } = req.body;
     if (!username || !password) return res.status(400).json({ ok: false, error: 'Username and password required' });
+    // Executes the database query used by this route or test scenario.
     const [users] = await db.query('SELECT * FROM users WHERE username = ? AND password = ?', [username, hashPassword(password)]);
     if (users.length === 0) return res.status(401).json({ ok: false, error: 'Invalid credentials or not support staff' });
     const user = users[0];
@@ -133,6 +145,7 @@ router.post('/api/moderator-login', async (req, res) => {
   try {
     const { username, password } = req.body;
     if (!username || !password) return res.status(400).json({ ok: false, error: 'Username and password required' });
+    // Executes the database query used by this route or test scenario.
     const [users] = await db.query('SELECT * FROM users WHERE username = ? AND password = ?', [username, hashPassword(password)]);
     if (users.length === 0) return res.status(401).json({ ok: false, error: 'Invalid credentials or not a moderator' });
     const user = users[0];
@@ -147,6 +160,7 @@ router.post('/api/send-reset-code', async (req, res) => {
     const { email, username } = req.body;
     if (!email || !username) return res.status(400).json({ ok: false, error: 'Email и имя пользователя обязательны' });
 
+    // Executes the database query used by this route or test scenario.
     const [users] = await db.query('SELECT id, email FROM users WHERE username = ?', [username]);
     if (users.length === 0) return res.status(404).json({ ok: false, error: 'Пользователь с таким именем не найден' });
     if (users[0].email !== email) return res.status(400).json({ ok: false, error: 'Указанная почта не подходит для этого аккаунта' });
@@ -189,6 +203,7 @@ router.post('/api/reset-password', async (req, res) => {
 
     const pending = req.session.pendingReset;
     if (!pending || pending.username !== username || pending.email !== email) {
+      // Sends the HTTP response for this validation branch or completed action.
       return res.status(400).json({ ok: false, error: 'Сначала отправьте код подтверждения или данные не совпадают' });
     }
     if (new Date() > new Date(pending.expires)) return res.status(400).json({ ok: false, error: 'Код истёк, запросите новый' });
@@ -196,6 +211,7 @@ router.post('/api/reset-password', async (req, res) => {
 
     if (newPassword.length < 3) return res.status(400).json({ ok: false, error: 'Новый пароль должен быть минимум 3 символа' });
 
+    // Executes the database query used by this route or test scenario.
     const [result] = await db.query('UPDATE users SET password = ? WHERE username = ? AND email = ?', [hashPassword(newPassword), username, email]);
     if (result.affectedRows === 0) return res.status(404).json({ ok: false, error: 'Пользователь не найден или данные не совпадают' });
 
@@ -204,4 +220,5 @@ router.post('/api/reset-password', async (req, res) => {
   } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
 });
 
+// Exports configuration or reusable values for Node-based tooling.
 module.exports = router;

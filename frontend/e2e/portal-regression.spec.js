@@ -1,14 +1,23 @@
+// frontend/e2e/portal-regression.spec.js contains automated tests with comments explaining setup, mocks, actions, and assertions.
+// Imports @playwright/test so this file can use its exported functionality.
 import { expect, test } from '@playwright/test';
+// Imports node:buffer so this file can use its exported functionality.
 import { Buffer } from 'node:buffer';
+// Imports node:crypto so this file can use its exported functionality.
 import crypto from 'node:crypto';
+// Imports node:fs so this file can use its exported functionality.
 import fs from 'node:fs';
+// Imports node:module so this file can use its exported functionality.
 import { createRequire } from 'node:module';
+// Imports node:path so this file can use its exported functionality.
 import path from 'node:path';
+// Imports node:url so this file can use its exported functionality.
 import { fileURLToPath } from 'node:url';
 
 const require = createRequire(import.meta.url);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+// loadBackendEnv prepares or runs a test scenario for this module.
 function loadBackendEnv() {
   const envPath = path.resolve(__dirname, '../../backend/.env');
   if (!fs.existsSync(envPath)) return;
@@ -26,6 +35,7 @@ function loadBackendEnv() {
 }
 
 loadBackendEnv();
+// Loads the mocked database module so tests can control query results.
 const db = require('../../backend/db');
 
 const env = process.env;
@@ -73,10 +83,12 @@ const workerLastName = 'Worker';
 const supportMessage = `E2E support ticket ${Date.now()}`;
 let serviceId;
 
+// sha256 prepares or runs a test scenario for this module.
 function sha256(value) {
   return crypto.createHash('sha256').update(value).digest('hex');
 }
 
+// resetE2eDatabase prepares or runs a test scenario for this module.
 async function resetE2eDatabase() {
   if (missingCredentials.length > 0) return;
 
@@ -84,6 +96,7 @@ async function resetE2eDatabase() {
   const workerName = credentials.worker.username;
   const names = [userName, workerName];
 
+  // Executes the database query used by this route or test scenario.
   await db.query(`
     DELETE st FROM support_tickets st
     LEFT JOIN users u ON st.user_id = u.id
@@ -95,6 +108,7 @@ async function resetE2eDatabase() {
        OR ow.username IN (?, ?)
   `, [...names, ...names, ...names]);
 
+  // Executes the database query used by this route or test scenario.
   await db.query(`
     DELETE o FROM orders o
     LEFT JOIN users u1 ON o.user_id = u1.id
@@ -103,21 +117,26 @@ async function resetE2eDatabase() {
        OR u2.username IN (?, ?)
   `, [...names, ...names]);
 
+  // Executes the database query used by this route or test scenario.
   await db.query(`
     DELETE ws FROM worker_services ws
     JOIN users u ON ws.user_id = u.id
     WHERE u.username IN (?, ?)
   `, names);
 
+  // Executes the database query used by this route or test scenario.
   await db.query(`
     DELETE wa FROM worker_applications wa
     JOIN users u ON wa.user_id = u.id
     WHERE u.username IN (?, ?)
   `, names);
 
+  // Executes the database query used by this route or test scenario.
   await db.query('DELETE FROM users WHERE username IN (?, ?)', names);
+  // Executes the database query used by this route or test scenario.
   await db.query('DELETE FROM services WHERE name LIKE ?', ['E2E Regression Service%']);
 
+  // Executes the database query used by this route or test scenario.
   await db.query(`
     INSERT INTO users (
       username, password, phone, email, status, is_worker,
@@ -136,10 +155,12 @@ async function resetE2eDatabase() {
   ]);
 }
 
+// escapeRegExp prepares or runs a test scenario for this module.
 function escapeRegExp(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
+// installNetworkStubs prepares or runs a test scenario for this module.
 async function installNetworkStubs(page) {
   await page.route('https://nominatim.openstreetmap.org/**', (route) => route.fulfill({
     status: 200,
@@ -150,6 +171,7 @@ async function installNetworkStubs(page) {
   await page.route('https://unpkg.com/**', (route) => route.fulfill({ status: 204, body: '' }));
 }
 
+// resetBrowserState prepares or runs a test scenario for this module.
 async function resetBrowserState(page) {
   await page.goto('/');
   await page.evaluate(() => {
@@ -159,6 +181,7 @@ async function resetBrowserState(page) {
   });
 }
 
+// login prepares or runs a test scenario for this module.
 async function login(page, path, username, password, expectedPath) {
   await resetBrowserState(page);
   await page.goto(path);
@@ -171,15 +194,18 @@ async function login(page, path, username, password, expectedPath) {
   await expect(page).toHaveURL(new RegExp(`${escapeRegExp(expectedPath)}$`), { timeout: 15000 });
 }
 
+// loginAdmin prepares or runs a test scenario for this module.
 async function loginAdmin(page) {
   await login(page, '/login', credentials.admin.username, credentials.admin.password, '/admin');
 }
 
+// openAdminServicesTab prepares or runs a test scenario for this module.
 async function openAdminServicesTab(page) {
   await page.getByRole('button', { name: /services/i }).click();
   await expect(page.locator('input[placeholder="Service name"]')).toBeVisible();
 }
 
+// createService prepares or runs a test scenario for this module.
 async function createService(page) {
   await loginAdmin(page);
   await openAdminServicesTab(page);
@@ -192,9 +218,11 @@ async function createService(page) {
   await expect(servicesResponse).toBeOK();
   const servicesPayload = await servicesResponse.json();
   serviceId = servicesPayload.services.find((service) => service.name === serviceName)?.id;
+  // Asserts that the route or component produced the expected result.
   expect(serviceId).toBeTruthy();
 }
 
+// deleteService prepares or runs a test scenario for this module.
 async function deleteService(page) {
   await loginAdmin(page);
   await openAdminServicesTab(page);
@@ -211,6 +239,7 @@ async function deleteService(page) {
   await expect(page.getByText(serviceName, { exact: true })).toHaveCount(0);
 }
 
+// registerWorker prepares or runs a test scenario for this module.
 async function registerWorker(page) {
   await login(page, '/login', credentials.worker.username, credentials.worker.password, '/cabinet');
   const workerUserId = await page.evaluate(() => localStorage.getItem('userId'));
@@ -249,6 +278,7 @@ async function registerWorker(page) {
   return true;
 }
 
+// approveWorker prepares or runs a test scenario for this module.
 async function approveWorker(page) {
   await login(page, '/login', credentials.moderator.username, credentials.moderator.password, '/moderator');
   const applicationCard = page.locator('div').filter({
@@ -262,6 +292,7 @@ async function approveWorker(page) {
   await expect(applicationCard).toHaveCount(0);
 }
 
+// putWorkerOnline prepares or runs a test scenario for this module.
 async function putWorkerOnline(page) {
   await login(page, '/login', credentials.worker.username, credentials.worker.password, '/cabinet');
   const workerUserId = await page.evaluate(() => localStorage.getItem('userId'));
@@ -277,6 +308,7 @@ async function putWorkerOnline(page) {
   await expect(page.getByText(/^Online$/)).toBeVisible();
 }
 
+// orderAssistanceAndSendTicket prepares or runs a test scenario for this module.
 async function orderAssistanceAndSendTicket(page) {
   await login(page, '/login', credentials.user.username, credentials.user.password, '/cabinet');
 
@@ -320,6 +352,7 @@ async function orderAssistanceAndSendTicket(page) {
   await expect(page.getByText(/ticket sent/i)).toBeVisible();
 }
 
+// resolveSupportTicket prepares or runs a test scenario for this module.
 async function resolveSupportTicket(page) {
   await login(page, '/login', credentials.support.username, credentials.support.password, '/support');
   const ticketCard = page.locator('div').filter({ hasText: supportMessage }).filter({
@@ -350,6 +383,7 @@ test.describe('Teenuste Portaal role workflow regression', () => {
     });
   });
 
+  // Verifies that creates admin service, approves a worker, orders help, resolves support ticket, and deletes the service.
   test('creates admin service, approves a worker, orders help, resolves support ticket, and deletes the service', async ({ page }) => {
     let serviceDeleted = false;
 

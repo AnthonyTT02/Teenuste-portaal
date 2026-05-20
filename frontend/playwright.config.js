@@ -1,4 +1,7 @@
+// frontend/playwright.config.js contains project logic or configuration with inline comments for maintainability.
+// Imports @playwright/test so this file can use its exported functionality.
 import { defineConfig, devices } from '@playwright/test';
+// Imports node:fs so this file can use its exported functionality.
 import fs from 'node:fs';
 
 const baseURL = process.env.E2E_BASE_URL || 'http://127.0.0.1:3000';
@@ -9,6 +12,7 @@ const executablePath = process.env.E2E_BROWSER_PATH
   || (fs.existsSync(localChromePath) ? localChromePath : undefined)
   || (fs.existsSync(localEdgePath) ? localEdgePath : undefined);
 
+// Exports the tool configuration used by the project build or test runner.
 export default defineConfig({
   testDir: './e2e',
   timeout: 180000,

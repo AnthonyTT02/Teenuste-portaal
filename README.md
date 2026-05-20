@@ -1,55 +1,79 @@
 # Teenuste Portaal
 
-Teenuste Portaal is a roadside assistance service portal built with React, Express, and MySQL. The app supports role-based workflows for customers, workers, moderators, support staff, and admins.
+Teenuste Portaal is a roadside assistance portal built with React, Express and MySQL. The system supports separate flows for customers, workers, moderators, support staff and administrators.
+
+The repository contains two applications:
+
+- `backend`: Express API server with MySQL access.
+- `frontend`: React/Vite client with unit, component and Playwright E2E tests.
 
 ## Features
 
-- User login and registration with email verification code flow.
-- Admin dashboard for users, statistics, and service management.
-- Worker application and moderator approval flow.
-- Worker dashboard with online/offline availability.
-- Customer assistance request flow with service selection, location, payment method, and worker selection.
-- Support tickets for completed orders.
-- Backend unit and regression tests with Jest/Supertest.
-- End-to-end regression workflow with Playwright.
+- Customer registration, email verification and login.
+- Role-based login for users, workers, moderators, support staff and admins.
+- Roadside assistance request flow with vehicle data, location, service selection, payment type and worker selection.
+- Worker application flow with moderator approval.
+- Worker cabinet with online status, services and assigned orders.
+- Customer cabinet with active and completed orders.
+- Support ticket creation and support resolution flow.
+- Admin dashboard for users, statistics and services.
+- Backend API tests with Jest and Supertest.
+- Frontend tests with Vitest and Testing Library.
+- Browser E2E workflow with Playwright.
 
 ## Tech Stack
 
-- Frontend: React, Vite, Tailwind CSS, React Router, i18next, Leaflet
-- Backend: Node.js, Express, express-session
-- Database: MySQL/MariaDB
-- Tests: Jest, Supertest, Playwright
+| Area | Tools |
+| --- | --- |
+| Frontend | React, Vite, Tailwind CSS, React Router, i18next, Leaflet |
+| Backend | Node.js, Express, express-session |
+| Database | MySQL or MariaDB |
+| Backend tests | Jest, Supertest |
+| Frontend tests | Vitest, Testing Library, jsdom |
+| E2E tests | Playwright |
 
 ## Project Structure
 
 ```text
 Teenuste-portaal/
   backend/
-    routes/
     __tests__/
+    routes/
     db.js
     server.js
+    utils.js
   frontend/
     e2e/
     src/
+      __tests__/
+      components/
+      context/
+      test/
     playwright.config.js
+    vite.config.js
   teenusteportaal.sql
   package.json
+  README.md
 ```
 
 ## Requirements
 
-- Node.js 18+
-- MySQL or MariaDB
-- Chrome installed locally for Playwright e2e on Windows
+- Node.js 18 or newer.
+- npm.
+- MySQL or MariaDB.
+- Google Chrome or Microsoft Edge for Playwright E2E tests.
+
+On Windows, run commands from PowerShell or the VS Code terminal. Use `npm.cmd` instead of `npm` if PowerShell does not resolve npm scripts correctly.
 
 ## Installation
+
+Install backend and frontend dependencies from the repository root:
 
 ```bat
 npm.cmd run install-all
 ```
 
-Or install separately:
+The same installation can be done manually:
 
 ```bat
 npm.cmd install --prefix backend
@@ -58,25 +82,41 @@ npm.cmd install --prefix frontend
 
 ## Database Setup
 
-1. Create a MySQL/MariaDB database named:
-
-```sql
-CREATE DATABASE teenusteportaal CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-```
-
-2. Import the dump:
+The database dump is included in the repository as:
 
 ```text
 teenusteportaal.sql
 ```
 
-The dump includes default staff users:
+Create the database:
 
-```text
-admin / 1
-moderator / 1
-support / 1
+```sql
+CREATE DATABASE teenusteportaal CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
+
+Import the dump using phpMyAdmin, MySQL Workbench or the MySQL CLI.
+
+PowerShell example if `mysql` is available in `PATH`:
+
+```bat
+cmd /c "mysql -u root -p teenusteportaal < teenusteportaal.sql"
+```
+
+XAMPP example:
+
+```bat
+cmd /c "C:\xampp\mysql\bin\mysql.exe -u root teenusteportaal < teenusteportaal.sql"
+```
+
+The dump includes default staff accounts:
+
+| Username | Password | Role |
+| --- | --- | --- |
+| `admin` | `1` | Admin |
+| `moderator` | `1` | Moderator |
+| `support` | `1` | Support |
+
+Passwords are stored as SHA-256 hashes in the database.
 
 ## Environment Variables
 
@@ -84,149 +124,346 @@ Create `backend/.env`:
 
 ```env
 DATABASE_URL="mysql://root:@localhost:3306/teenusteportaal"
-RESEND_API_KEY="your_resend_api_key"
-SESSION_SECRET="change_this_secret"
+SESSION_SECRET="change_this_local_secret"
+RESEND_API_KEY="re_your_resend_api_key"
+PORT=3001
 ```
 
-`RESEND_API_KEY` is used for email verification and password reset email sending. The server also logs verification codes to the console.
+Variable notes:
 
-## Running the App
+| Variable | Required | Description |
+| --- | --- | --- |
+| `DATABASE_URL` | Yes | MySQL connection string used by `backend/db.js`. |
+| `SESSION_SECRET` | Recommended | Secret used by `express-session`. |
+| `RESEND_API_KEY` | Yes | Must be non-empty because the auth route initializes Resend during startup. Use a real key for real email sending. Verification and reset codes are also printed in the backend console. |
+| `PORT` | No | Backend port. Defaults to `3001`. |
 
-Start backend and frontend together:
+Do not commit `.env` to GitHub.
+
+## Running Locally
+
+Start backend and frontend together from the repository root:
 
 ```bat
 npm.cmd run dev
 ```
 
-Default URLs:
+Default local URLs:
 
 ```text
 Frontend: http://127.0.0.1:3000
 Backend:  http://127.0.0.1:3001
 ```
 
-Run only backend:
+Run only the backend:
 
 ```bat
 npm.cmd start --prefix backend
 ```
 
-Run only frontend:
+Run only the frontend:
 
 ```bat
 npm.cmd run dev --prefix frontend
 ```
 
-## Tests
-
-### Backend Tests
-
-Runs all backend Jest/Supertest tests, including the regression suite:
+Build the frontend:
 
 ```bat
-npm.cmd run test:backend
+npm.cmd run build --prefix frontend
 ```
 
-Current backend tests:
-
-```text
-backend/__tests__/admin.test.js
-backend/__tests__/auth.test.js
-backend/__tests__/moderator.test.js
-backend/__tests__/orders.test.js
-backend/__tests__/services.test.js
-backend/__tests__/user.test.js
-backend/__tests__/worker.test.js
-backend/__tests__/regression.workflow.test.js
-```
-
-### Backend Regression Test
-
-Runs only the backend regression workflow test:
-
-```bat
-npm.cmd run test:regression
-```
-
-This test uses mocked database calls. It verifies API behavior without changing the real MySQL database.
-
-The regression flow covers:
-
-```text
-admin creates service
-worker applies
-moderator approves worker
-worker goes online
-customer creates order
-order is completed
-customer creates support ticket
-duplicate support ticket is blocked
-support resolves ticket
-admin deletes service
-login role/status normalization
-```
-
-### Playwright E2E Test
-
-Runs the real end-to-end workflow against the app and the real MySQL database:
-
-```bat
-set "E2E_BROWSER_PATH=C:\Program Files\Google\Chrome\Application\chrome.exe"
-set E2E_USER_USERNAME=e2e_user
-set E2E_USER_PASSWORD=1
-set E2E_WORKER_USERNAME=e2e_worker
-set E2E_WORKER_PASSWORD=1
-
-npm.cmd run test:e2e --prefix frontend -- --headed
-```
-
-Headless mode:
-
-```bat
-npm.cmd run test:e2e --prefix frontend
-```
-
-The Playwright test automatically resets its own e2e data before running:
-
-```text
-e2e_user
-e2e_worker
-E2E Regression Service*
-related orders
-related worker applications
-related worker services
-related support tickets
-```
-
-The e2e flow covers:
-
-```text
-admin logs in
-admin creates service
-worker logs in
-worker applies for work
-moderator logs in
-moderator approves application
-worker goes online
-customer logs in
-customer requests assistance
-customer selects worker
-customer completes order
-customer sends support ticket
-support logs in
-support resolves ticket
-admin logs in
-admin deletes created service
-```
-
-## Build
+Build from the repository root:
 
 ```bat
 npm.cmd run build
 ```
 
-## Notes
+## Scripts
 
-- Staff users can log in through the common login page (`/login` or `/`).
-- Playwright is configured to use local Chrome via `E2E_BROWSER_PATH`, so downloading Playwright Chromium is not required on Windows.
-- `test-results` and `playwright-report` are ignored by Git.
+Root scripts:
+
+| Command | Description |
+| --- | --- |
+| `npm.cmd run install-all` | Installs backend and frontend dependencies. |
+| `npm.cmd run dev` | Starts backend and frontend together. |
+| `npm.cmd run build` | Builds the frontend. |
+| `npm.cmd run test:backend` | Runs all backend Jest tests. |
+| `npm.cmd run test:regression` | Runs only the backend regression workflow test. |
+| `npm.cmd run test:e2e` | Runs Playwright E2E tests from the frontend package. |
+
+Frontend scripts:
+
+| Command | Description |
+| --- | --- |
+| `npm.cmd run test --prefix frontend` | Runs frontend unit and component tests. |
+| `npm.cmd run coverage --prefix frontend` | Runs frontend tests with coverage. |
+| `npm.cmd run test:e2e --prefix frontend` | Runs Playwright E2E tests. |
+| `npm.cmd run lint --prefix frontend` | Runs ESLint. |
+
+## Testing
+
+### Backend Tests
+
+Run all backend tests:
+
+```bat
+npm.cmd run test:backend
+```
+
+Run backend coverage:
+
+```bat
+npm.cmd test --prefix backend -- --coverage --runInBand "--collectCoverageFrom=**/*.js" "--collectCoverageFrom=!**/__tests__/**" "--collectCoverageFrom=!**/coverage/**" "--collectCoverageFrom=!**/node_modules/**"
+```
+
+Latest verified backend coverage:
+
+| Metric | Coverage |
+| --- | --- |
+| Statements | 90.33% |
+| Branches | 88.20% |
+| Functions | 95.08% |
+| Lines | 91.02% |
+
+### Backend Regression Test
+
+Run only the backend regression workflow:
+
+```bat
+npm.cmd run test:regression
+```
+
+This test uses Jest and Supertest with mocked database calls. It does not modify the real MySQL database.
+
+The regression workflow checks:
+
+```text
+admin creates a service
+worker applies for work
+moderator approves the worker
+worker goes online
+customer creates an order
+customer completes the order
+customer creates a support ticket
+duplicate support ticket is blocked
+support resolves the ticket
+admin deletes the created service
+login role and status normalization
+```
+
+Expected successful output:
+
+```text
+PASS __tests__/regression.workflow.test.js
+Test Suites: 1 passed, 1 total
+Tests:       2 passed, 2 total
+```
+
+### Frontend Tests
+
+Run frontend unit and component tests:
+
+```bat
+npm.cmd run test --prefix frontend
+```
+
+Run frontend coverage:
+
+```bat
+npm.cmd run coverage --prefix frontend
+```
+
+Latest verified frontend coverage:
+
+| Metric | Coverage |
+| --- | --- |
+| Statements | 76.28% |
+| Branches | 64.13% |
+| Functions | 68.70% |
+| Lines | 80.33% |
+
+The `coverage` directories are generated reports. They are not required for the application and should not be committed.
+
+## Playwright E2E Tests
+
+The E2E test runs a full browser workflow against the frontend, backend and the real MySQL database.
+
+The workflow covers:
+
+```text
+admin logs in
+admin creates a service
+worker logs in
+worker applies for work
+moderator logs in
+moderator approves the worker
+worker goes online
+customer logs in
+customer requests roadside assistance
+customer selects a worker
+customer completes the order
+customer creates a support ticket
+support logs in
+support resolves the ticket
+admin deletes the created service
+```
+
+Before running E2E tests:
+
+1. Import `teenusteportaal.sql`.
+2. Create `backend/.env` with a valid `DATABASE_URL`.
+3. Confirm the default staff accounts exist: `admin`, `moderator`, `support`.
+4. Set E2E customer and worker credentials in PowerShell.
+
+The E2E test automatically deletes and recreates the customer and worker accounts before running. The account names and passwords come from environment variables.
+
+Set required E2E variables:
+
+```powershell
+$env:E2E_USER_USERNAME="e2e_user"
+$env:E2E_USER_PASSWORD="1"
+$env:E2E_WORKER_USERNAME="e2e_worker"
+$env:E2E_WORKER_PASSWORD="1"
+```
+
+Optional browser path for Windows:
+
+```powershell
+$env:E2E_BROWSER_PATH="C:\Program Files\Google\Chrome\Application\chrome.exe"
+```
+
+Run E2E in headed mode:
+
+```powershell
+npm.cmd run test:e2e --prefix frontend -- --headed
+```
+
+Run E2E in headless mode:
+
+```powershell
+npm.cmd run test:e2e --prefix frontend
+```
+
+Run from the repository root in headless mode:
+
+```powershell
+npm.cmd run test:e2e
+```
+
+If the test prints `1 skipped`, the required E2E variables are missing. In PowerShell the variable assignment must start with `$env:`.
+
+Correct:
+
+```powershell
+$env:E2E_WORKER_USERNAME="e2e_worker"
+```
+
+Incorrect:
+
+```powershell
+E2E_WORKER_USERNAME
+```
+
+### Optional Manual E2E User SQL
+
+The Playwright test creates these users automatically, so this SQL is not required for normal E2E runs. It is useful only if you want to prepare the same test users manually.
+
+```sql
+USE teenusteportaal;
+
+DELETE FROM worker_services
+WHERE user_id IN (SELECT id FROM users WHERE username IN ('e2e_user', 'e2e_worker'));
+
+DELETE FROM worker_applications
+WHERE user_id IN (SELECT id FROM users WHERE username IN ('e2e_user', 'e2e_worker'));
+
+DELETE st FROM support_tickets st
+LEFT JOIN users u ON st.user_id = u.id
+LEFT JOIN orders o ON st.order_id = o.id
+LEFT JOIN users ou ON o.user_id = ou.id
+LEFT JOIN users ow ON o.worker_user_id = ow.id
+WHERE u.username IN ('e2e_user', 'e2e_worker')
+   OR ou.username IN ('e2e_user', 'e2e_worker')
+   OR ow.username IN ('e2e_user', 'e2e_worker');
+
+DELETE FROM orders
+WHERE user_id IN (SELECT id FROM users WHERE username IN ('e2e_user', 'e2e_worker'))
+   OR worker_user_id IN (SELECT id FROM users WHERE username IN ('e2e_user', 'e2e_worker'));
+
+DELETE FROM users
+WHERE username IN ('e2e_user', 'e2e_worker');
+
+INSERT INTO users (
+  username, password, phone, email, status, is_worker,
+  worker_online, email_verified, language, theme
+) VALUES
+(
+  'e2e_user',
+  '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b',
+  '+37255510001',
+  'e2e_user@example.test',
+  'user',
+  0,
+  0,
+  1,
+  'en',
+  'light'
+),
+(
+  'e2e_worker',
+  '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b',
+  '+37255510002',
+  'e2e_worker@example.test',
+  'user',
+  0,
+  0,
+  1,
+  'en',
+  'light'
+);
+```
+
+The hash above is SHA-256 for password `1`.
+
+## Generated Files
+
+These paths are generated locally and should not be committed:
+
+```text
+node_modules/
+coverage/
+dist/
+build/
+.env
+test-results/
+playwright-report/
+```
+
+They are already listed in `.gitignore`.
+
+## Common Notes
+
+- Vite may print warnings about deprecated `esbuild` options during frontend coverage. These warnings do not fail the tests.
+- Playwright uses local Chrome or Edge if available. If neither browser is found, install a supported browser or set `E2E_BROWSER_PATH`.
+- The backend requires `DATABASE_URL`; without it, database initialization will fail.
+- `RESEND_API_KEY` must be non-empty. A real key is required only when actual email delivery is needed.
+- Verification and password reset codes are printed in the backend console during local development.
+- Regression tests use mocked database calls. Playwright E2E tests use the real database.
+
+## Recommended Check Before Pushing
+
+Run these commands before uploading the project to GitHub:
+
+```bat
+npm.cmd run test:backend
+npm.cmd run test:regression
+npm.cmd run coverage --prefix frontend
+npm.cmd run build --prefix frontend
+```
+
+Run the E2E test as an additional check when a local MySQL database is available:
+
+```powershell
+npm.cmd run test:e2e --prefix frontend -- --headed
+```

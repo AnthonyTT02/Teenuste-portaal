@@ -1,13 +1,14 @@
+// frontend/src/api.js centralizes frontend API requests so components can call backend endpoints consistently.
 // Core API fetch wrapper that automatically manages credentials and content headers
 export async function api(path, options = {}) {
   // Send request using credentials: 'include' to handle sessions correctly
   const response = await fetch(path, {
     credentials: 'include',
+    ...options,
     headers: {
       'Content-Type': 'application/json',
       ...(options.headers || {})
-    },
-    ...options
+    }
   });
 
   // Extract raw text first to avoid crash on empty or non-JSON payloads
@@ -31,4 +32,4 @@ export async function api(path, options = {}) {
 
   // Return standard parsed JSON object
   return payload;
-}
+}

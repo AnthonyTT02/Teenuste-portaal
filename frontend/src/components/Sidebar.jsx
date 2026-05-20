@@ -1,11 +1,19 @@
+// frontend/src/components/Sidebar.jsx defines a React UI component and documents the state, handlers, and render flow used by this screen.
+// Imports React hooks used to manage component state and lifecycle behavior.
 import { Link } from 'react-router-dom';
+// Imports ../context/SidebarContext so this file can use its exported functionality.
 import { useSidebar } from '../context/SidebarContext';
+// Imports React hooks used to manage component state and lifecycle behavior.
 import { useTranslation } from 'react-i18next';
 
+// Sidebar renders the sidebar screen and connects its UI behavior.
 export default function Sidebar() {
+  // The translation hook provides localized labels and lets the component react to language changes.
   const { t } = useTranslation();
   const { isOpen, closeSidebar } = useSidebar();
+  // This value is read from localStorage to restore existing session or preference data.
   const userStatus = localStorage.getItem('userStatus');
+  // This value is read from localStorage to restore existing session or preference data.
   const isWorker = userStatus === 'worker' || localStorage.getItem('userRole') === 'worker' || localStorage.getItem('is_worker') === '1';
 
   const menuItems = [
@@ -19,6 +27,7 @@ export default function Sidebar() {
     { name: t('contacts'), path: '/contacts' },
   ];
 
+  // Renders the JSX markup for this component.
   return (
     <>
       <div 
@@ -34,9 +43,11 @@ export default function Sidebar() {
         } overflow-y-auto`}
       >
         <div className="flex justify-between items-center mb-8">
+          {/* This container groups related UI elements and keeps the layout consistent. */}
           <h2 className="text-xl font-bold tracking-tight text-[#111827]">
             {t('menu')}
           </h2>
+          {/* This button triggers the main action for this part of the screen. */}
           <button 
             onClick={closeSidebar}
             className="tp-icon-btn p-2 shadow-none"
@@ -50,6 +61,7 @@ export default function Sidebar() {
         </div>
 
         <nav className="flex flex-col gap-5 flex-1">
+          {/* This navigation area exposes links or actions used to move around the portal. */}
           {menuItems.map((item, index) => (
             <Link 
               key={index} 

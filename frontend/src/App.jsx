@@ -1,24 +1,46 @@
+// frontend/src/App.jsx contains project logic or configuration with inline comments for maintainability.
+// Imports React because this file renders JSX components.
 import React from 'react';
+// Imports React hooks used to manage component state and lifecycle behavior.
 import { Navigate, Route, Routes } from 'react-router-dom';
+// Imports ./components/Login so this file can use its exported functionality.
 import Login from './components/Login';
+// Imports ./components/Register so this file can use its exported functionality.
 import Register from './components/Register';
+// Imports ./components/ForgotPassword so this file can use its exported functionality.
 import ForgotPassword from './components/ForgotPassword';
+// Imports ./components/Cabinet so this file can use its exported functionality.
 import Cabinet from './components/Cabinet';
+// Imports ./components/Sidebar so this file can use its exported functionality.
 import Sidebar from './components/Sidebar';
+// Imports ./components/Settings so this file can use its exported functionality.
 import Settings from './components/Settings';
+// Imports ./components/Contacts so this file can use its exported functionality.
 import Contacts from './components/Contacts';
+// Imports ./components/Terms so this file can use its exported functionality.
 import Terms from './components/Terms';
+// Imports ./components/Security so this file can use its exported functionality.
 import Security from './components/Security';
+// Imports ./components/GetStarted so this file can use its exported functionality.
 import GetStarted from './components/GetStarted';
+// Imports ./components/ForIndividuals so this file can use its exported functionality.
 import ForIndividuals from './components/ForIndividuals';
+// Imports ./components/ProviderReg so this file can use its exported functionality.
 import ProviderReg from './components/ProviderReg';
+// Imports ./components/RequestHelp so this file can use its exported functionality.
 import RequestHelp from './components/RequestHelp';
+// Imports ./components/Admin so this file can use its exported functionality.
 import Admin from './components/Admin';
+// Imports ./components/Moderator so this file can use its exported functionality.
 import Moderator from './components/Moderator';
+// Imports ./components/Support so this file can use its exported functionality.
 import Support from './components/Support';
+// Imports ./components/Provider so this file can use its exported functionality.
 import Provider from './components/Provider';
 
+// App renders the app screen and connects its UI behavior.
 export default function App() {
+  // Renders the JSX markup for this component.
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#f8f9fc] via-[#f3f5fa] to-[#e4e9fc] flex items-center justify-center p-4 relative overflow-x-hidden">
       <Sidebar />

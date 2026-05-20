@@ -1,7 +1,12 @@
+// frontend/src/components/ForgotPassword.jsx defines a React UI component and documents the state, handlers, and render flow used by this screen.
+// Imports React hooks used to manage component state and lifecycle behavior.
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+// Imports the shared API client functions used to communicate with the backend.
 import { api } from '../api';
+// Imports ./LanguageSwitcher so this file can use its exported functionality.
 import LanguageSwitcher from './LanguageSwitcher';
+// Imports React hooks used to manage component state and lifecycle behavior.
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -10,25 +15,40 @@ import { useTranslation } from 'react-i18next';
  * 1. Takes username and email, requesting a 6-digit recovery code via API.
  * 2. Takes the 6-digit recovery code and the new password, resetting credentials on the backend.
  */
+// ForgotPassword renders the page component and keeps its UI behavior in one place.
 export default function ForgotPassword() {
+  // Stores the username value so the UI can update when it changes.
   const [username, setUsername] = useState('');
+  // Stores the email value so the UI can update when it changes.
   const [email, setEmail] = useState('');
+  // Stores the code value so the UI can update when it changes.
   const [code, setCode] = useState('');
+  // Stores the newPassword value so the UI can update when it changes.
   const [newPassword, setNewPassword] = useState('');
+  // Stores the step value so the UI can update when it changes.
   const [step, setStep] = useState(1);
+  // Stores the isFocused value so the UI can update when it changes.
   const [isFocused, setIsFocused] = useState(null);
+  // Stores the isSubmitting value so the UI can update when it changes.
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // Stores the error value so the UI can update when it changes.
   const [error, setError] = useState('');
+  // Stores the success value so the UI can update when it changes.
   const [success, setSuccess] = useState('');
+  // This navigation helper redirects the user after successful actions or role-based decisions.
   const navigate = useNavigate();
+  // The translation hook provides localized labels and lets the component react to language changes.
   const { t } = useTranslation();
 
+  // handleSendCode handles the related user action and updates the component state or API data.
   const handleSendCode = async (e) => {
     e.preventDefault();
     setError('');
     setSuccess('');
     setIsSubmitting(true);
+    // The try block wraps operations that may fail, such as API requests or browser storage updates.
     try {
+      // This API call sends data to the backend or retrieves data needed by the component.
       const result = await api('/api/send-reset-code', {
         method: 'POST',
         body: JSON.stringify({ email: email.trim(), username: username.trim() })
@@ -47,12 +67,15 @@ export default function ForgotPassword() {
     }
   };
 
+  // handleReset handles the related user action and updates the component state or API data.
   const handleReset = async (e) => {
     e.preventDefault();
     setError('');
     setSuccess('');
     setIsSubmitting(true);
+    // The try block wraps operations that may fail, such as API requests or browser storage updates.
     try {
+      // This API call sends data to the backend or retrieves data needed by the component.
       const result = await api('/api/reset-password', {
         method: 'POST',
         body: JSON.stringify({ email: email.trim(), username: username.trim(), code: code.trim(), newPassword })
@@ -73,12 +96,16 @@ export default function ForgotPassword() {
     }
   };
 
+  // Renders the JSX markup for this component.
   return (
     <div className="tp-page-card tp-page-card-hover max-w-md p-10">
+      {/* This container groups related UI elements and keeps the layout consistent. */}
       <div className="tp-page-card-shine"></div>
       
       <div className="relative z-10">
+        {/* This container groups related UI elements and keeps the layout consistent. */}
         <div className="flex justify-between items-center mb-10">
+          {/* This container groups related UI elements and keeps the layout consistent. */}
           <h1 className="tp-brand-title">
             Teenuste<span className="tp-brand-accent">Portaal</span>
           </h1>
@@ -86,6 +113,7 @@ export default function ForgotPassword() {
         </div>
 
         <div className="animate-float" style={{ animationDuration: '8s' }}>
+          {/* This container groups related UI elements and keeps the layout consistent. */}
           <h2 className="text-[2.75rem] leading-none font-extrabold text-[#111827] mb-3 tracking-tight">
             {t('reset_title_first')}{' '}
             {t('reset_title_second')}
@@ -97,7 +125,9 @@ export default function ForgotPassword() {
 
         {step === 1 ? (
           <form onSubmit={handleSendCode} className="space-y-6">
+            {/* This form groups related fields and connects the submit button to the matching handler. */}
             <div className="group/input relative">
+              {/* This container groups related UI elements and keeps the layout consistent. */}
               <label className={`tp-label ${isFocused === 'username' ? 'text-brand' : ''}`}>
                 {t('username')}
               </label>
@@ -115,6 +145,7 @@ export default function ForgotPassword() {
             </div>
 
             <div className="group/input relative">
+              {/* This container groups related UI elements and keeps the layout consistent. */}
               <label className={`tp-label ${isFocused === 'email' ? 'text-brand' : ''}`}>
                 {t('email_address')}
               </label>
@@ -142,7 +173,9 @@ export default function ForgotPassword() {
           </form>
         ) : (
           <form onSubmit={handleReset} className="space-y-6">
+            {/* This form groups related fields and connects the submit button to the matching handler. */}
             <div className="group/input relative">
+              {/* This container groups related UI elements and keeps the layout consistent. */}
               <label className={`tp-label ${isFocused === 'code' ? 'text-brand' : ''}`}>
                 {t('verification_code')}
               </label>
@@ -160,6 +193,7 @@ export default function ForgotPassword() {
             </div>
 
             <div className="group/input relative">
+              {/* This container groups related UI elements and keeps the layout consistent. */}
               <label className={`tp-label ${isFocused === 'newPassword' ? 'text-brand' : ''}`}>
                 {t('new_password')}
               </label>
@@ -188,12 +222,14 @@ export default function ForgotPassword() {
 
         {error ? (
           <div className="tp-alert-error mt-6">
+            {/* This container groups related UI elements and keeps the layout consistent. */}
             {error}
           </div>
         ) : null}
 
         {success ? (
           <div className="tp-alert-success mt-6">
+            {/* This container groups related UI elements and keeps the layout consistent. */}
             {success}
           </div>
         ) : null}
