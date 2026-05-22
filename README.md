@@ -120,13 +120,12 @@ Passwords are stored as SHA-256 hashes in the database.
 
 ## Environment Variables
 
-Create `backend/.env`:
+Create `backend/.env`(if it is not already existing):
 
 ```env
 DATABASE_URL="mysql://root:@localhost:3306/teenusteportaal"
-SESSION_SECRET="change_this_local_secret"
-RESEND_API_KEY="re_your_resend_api_key"
-PORT=3001
+SESSION_SECRET="SPTV22_Secret_Key_ThisTimeForProduction"
+RESEND_API_KEY="re_gCpa6Ziu_AqPW4HpNKwYE1uNXBixKtuC8"
 ```
 
 Variable notes:
@@ -136,9 +135,8 @@ Variable notes:
 | `DATABASE_URL` | Yes | MySQL connection string used by `backend/db.js`. |
 | `SESSION_SECRET` | Recommended | Secret used by `express-session`. |
 | `RESEND_API_KEY` | Yes | Must be non-empty because the auth route initializes Resend during startup. Use a real key for real email sending. Verification and reset codes are also printed in the backend console. |
-| `PORT` | No | Backend port. Defaults to `3001`. |
 
-Do not commit `.env` to GitHub.
+The `.env` file should NOT be commited to GitHub, but as a part of the project it is already in the project.
 
 ## Running Locally
 
@@ -181,25 +179,23 @@ npm.cmd run build
 
 ## Scripts
 
-Root scripts:
+Root scripts (run from the repository root):
 
 | Command | Description |
 | --- | --- |
-| `npm.cmd run install-all` | Installs backend and frontend dependencies. |
-| `npm.cmd run dev` | Starts backend and frontend together. |
-| `npm.cmd run build` | Builds the frontend. |
-| `npm.cmd run test:backend` | Runs all backend Jest tests. |
-| `npm.cmd run test:regression` | Runs only the backend regression workflow test. |
-| `npm.cmd run test:e2e` | Runs Playwright E2E tests from the frontend package. |
+| `npm run install-all` | Installs backend and frontend dependencies. |
+| `npm run dev` | Starts backend and frontend together. |
+| `npm run build` | Builds the frontend. |
+| `npm run test:backend` | Runs all backend Jest tests. |
+| `npm run test:regression` | Runs only the backend regression workflow test. |
+| `npm run test:e2e` | Runs Playwright E2E tests for the frontend. (more below)|
 
-Frontend scripts:
+Frontend scripts (can also be run from root with `--prefix frontend`):
 
 | Command | Description |
 | --- | --- |
-| `npm.cmd run test --prefix frontend` | Runs frontend unit and component tests. |
-| `npm.cmd run coverage --prefix frontend` | Runs frontend tests with coverage. |
-| `npm.cmd run test:e2e --prefix frontend` | Runs Playwright E2E tests. |
-| `npm.cmd run lint --prefix frontend` | Runs ESLint. |
+| `npm run test --prefix frontend` | Runs frontend unit and component tests. |
+| `npm run coverage --prefix frontend` | Runs frontend tests with coverage. |
 
 ## Testing
 
@@ -312,7 +308,7 @@ admin deletes the created service
 Before running E2E tests:
 
 1. Import `teenusteportaal.sql`.
-2. Create `backend/.env` with a valid `DATABASE_URL`.
+2. Create `backend/.env` with a valid `DATABASE_URL` if it is not already exists.
 3. Confirm the default staff accounts exist: `admin`, `moderator`, `support`.
 4. Set E2E customer and worker credentials in PowerShell.
 
@@ -451,19 +447,3 @@ They are already listed in `.gitignore`.
 - Verification and password reset codes are printed in the backend console during local development.
 - Regression tests use mocked database calls. Playwright E2E tests use the real database.
 
-## Recommended Check Before Pushing
-
-Run these commands before uploading the project to GitHub:
-
-```bat
-npm.cmd run test:backend
-npm.cmd run test:regression
-npm.cmd run coverage --prefix frontend
-npm.cmd run build --prefix frontend
-```
-
-Run the E2E test as an additional check when a local MySQL database is available:
-
-```powershell
-npm.cmd run test:e2e --prefix frontend -- --headed
-```
